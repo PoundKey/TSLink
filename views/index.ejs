@@ -1,7 +1,94 @@
 <% include header %>
 
-  <h1><%-title %></h1>
-  <p>Welcome to <%-title %></p>
-  <h3>This is an App for Translink bus schedule</h3>
+<!-- BEGIN MAIN PAGE -->
+<div id="page-main" class="page active">
+    <div class="content-wrapper with-footer">
+        <!-- BEGIN CONTENT SECTION FOR MAIN PAGE -->
+        <section class="content">
+            <div class="entries">
+                <div id="main" class="entry" style="opacity:0.6;position:relative;background-color:#000000;margin: 0 auto;width: 80%">
+                    <h1 id="logo" class="anim-go-left"><a href="#"><span>TSLink</span></a>
+                    </h1>
+
+                    <h3 class="anim-go-right"><i class="fa fa-bus"></i> TSLink </h3>
+                    <h5 class="anim-go-right">A Bus Scheduler App Via Translink</h5>
+
+                    <form id="newsletter-form" class="the-form anim-go-left" action="#">
+                        <div class="field-wrapper">
+                            <input type="text" class="textfield required" name="stop" placeholder="Please add a nearby bus stop..." />
+                            <button type="button" ng-click="addBusStop()" class="btn" style="width:120px">Add Stop
+                            </button>
+                        </div>
+                        <br>
+                        <hr>
+                        <br>
+
+                        <div ng-if="message!=undefined" class="fadeInUp">
+                            <div class="message">{{message}}</div>
+                            <div class="message">{{content}}</div>
+                            <br>
+                            <hr/>
+                        </div>
+                    </form>
+                    <!--
+                    <div id="countdown" class="anim-go-left"></div>
+                    -->
+                </div>
+            </div>
+            <div class="push"></div>
+        </section>
+        <!-- END CONTENT SECTION -->
+
+    </div>
+</div>
+<!-- END MAIN PAGE -->
+
+<!-- BEGIN CONTACT PAGE -->
+<div id="page-contact" class="page hidden deactive">
+    <div class="content-wrapper">
+        <!-- BEGIN CONTENT SECTION FOR CONTACT PAGE -->
+        <section class="content">
+            <div class="entries">
+                <div id="contact" class="entry">
+                    <a class="btn btn-trigger btn-close anim-go-left" href="#page-main">X</a>
+
+                    <h2 class="anim-go-left">Contact Us</h2>
+                    <br/>
+                    <h5 class="anim-go-right">Feel free to send an enquiry, we will reply as soon as possible.</h5>
+
+                    <form id="contact-form" class="the-form"
+                          action="http://duststone.com/templates/bersua/demos/contact.php">
+                        <div class="field-wrapper">
+                            <input type="text" class="textfield required anim-go-left" name="name"
+                                   placeholder="Name"/><br/>
+                            <input type="text" class="textfield required anim-go-right" name="email"
+                                   placeholder="Email address"/><br/>
+                            <textarea class="textarea required anim-go-left" name="message" placeholder="Message"
+                                      row="5"></textarea><br/>
+                            <button type="submit" class="btn anim-go-right">Submit</button>
+                            <input type="hidden" name="submit" value="1"/>
+                        </div>
+                        <div class="message anim-go-left"></div>
+                    </form>
+                </div>
+            </div>
+        </section>
+        <!-- END CONTENT SECTION -->
+    </div>
+</div>
+<!-- END CONTACT PAGE -->
+
+<!-- BEGIN FLARES
+<div id="flare-1" class="flare"><img src="images/flare-1.png"/></div>
+<div id="flare-2" class="flare"><img src="images/flare-2.png"/></div>
+<div id="flare-3" class="flare"><img src="images/flare-3.png"/></div>
+<div id="flare-4" class="flare"><img src="images/flare-4.png"/></div>
+<!-- END FLARES -->
+
+<!-- BEGIN BACKGROUND -->
+<div id="background">
+    <img src="images/bg.jpg"/>
+</div>
+<!-- END BACKGROUND -->
 
 <% include footer %>
