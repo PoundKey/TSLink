@@ -8,10 +8,9 @@ router.get('/', function (req, res) {
     res.send('respond with a resource');
 });
 
-router.get('/addBusStop', function (req, res) {
+router.post('/addBusStop', function (req, res) {
 
-
-    res.json({title: 'Mario Analyzer', content: 'Not ready yet.' });
+    res.json({title: 'Start fetching info for the given stop...', content: req.body.data });
 
 });
 
