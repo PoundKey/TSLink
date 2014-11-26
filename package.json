@@ -12,7 +12,8 @@
     "morgan": "~1.x",
     "serve-favicon": "~2.x",
     "debug": "~2.x",
-    "ejs": "*"
+    "ejs": "*",
+    "request": "~2.x"
   },
   "devDependencies": {
     "gulp": "~3.x",
