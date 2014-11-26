@@ -11,15 +11,41 @@ angular.module('myApp.controllers', [])
 
             var ref = new Firebase("https://tslink.firebaseio.com/");
             var sync = $firebase(ref);
+            var apiKey = 'yDC04D3XtydprTHAeB0Z', count = 1, tf = 60;
 
             $scope.busStops = sync.$asObject();
 
             $scope.busStops.$loaded().then(function(array) {
-                if ($scope.busStops.tslink == null){
+                if ($scope.busStops.tslink == null) {
                     //alert("Null Bus Stop Object, initializing...");
                     $scope.busStops.tslink = [];
                     $scope.busStops.$save();
                 }
+
+                var stopList = $scope.busStops.tslink;
+                angular.forEach(stopList, function(stop){
+
+                    var req = 'http://api.translink.ca/rttiapi/v1/stops/' + stop +
+                              '/estimates?apikey=' + apiKey + '&count=' + count + '&timeframe=' + tf;
+
+                    $http.post('/api/addBusStop', {data: req}).
+                      success(function(data, status, headers, config) {
+                        console.log(data); return;
+                         var stopInfo = {};
+                         angular.forEach(data, function(info) {
+                            var dest = info.Schedules[0].Destination;
+                            var arrivalTime = info.Schedules[0].ExpectedCountdown;
+                            alert("Destination: " + dest + " Arrives in: " + arrivalTime);
+
+                         });
+
+                      }).
+                      error(function(data, status, headers, config) {
+                        alert("Error when fetching stop info: " + stats);
+                        return;
+                      });
+
+                });
             });
 
             $scope.$watch('busStops',function(newVal, oldVal){
