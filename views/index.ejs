@@ -24,9 +24,10 @@
                         <hr>
                         <br>
 
-                        <div ng-if="message!=undefined" class="fadeInUp">
-                            <div class="message">{{message}}</div>
-                            <div class="message">{{content}}</div>
+                        <div class="fadeInUp">
+                        		<div class="message" ng-repeat="stop in busStops.tslink">{{stop}}
+														<button type="button" ng-click="removeStop(stop)" class="btn3"><i class="fa fa-trash-o"></i></button>
+                        		</div>
                             <br>
                             <hr/>
                         </div>

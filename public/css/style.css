@@ -762,6 +762,32 @@ hr {
 		color: #000;
 	}
 
+		.btn3 {
+		font: 200 18px 'Lato', Arial, Helvetica, sans-serif, serif;
+		font-weight: 300;
+		border: 0px solid #fff;
+		background: none transparent;
+		padding: 2px 5px;
+		margin: 0;
+		color: #ffffff;
+		cursor: pointer;
+		outline: none 0;
+		text-decoration: none;
+
+		-webkit-transition: all 0.25s ease-in-out;
+		-moz-transition: all 0.25s ease-in-out;
+		-ms-transition: all 0.25s ease-in-out;
+		-o-transition: all 0.25s ease-in-out;
+		transition: all 0.25s ease-in-out;
+	}
+
+	.btn3:hover{
+		background: none #fff;
+		color: #000;
+	}
+
+
+
 	form .btn {
 		width: 432px;
 	}

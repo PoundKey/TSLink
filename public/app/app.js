@@ -5,7 +5,8 @@
 var myApp = angular.module('myApp', [
   'ngRoute',
   'ngSanitize',
-  'myApp.controllers'
+  'myApp.controllers',
+  "firebase"
 
 ]);
 
