@@ -41,7 +41,7 @@ angular.module('myApp.controllers', [])
 
                       }).
                       error(function(data, status, headers, config) {
-                        alert("Error when fetching stop info: " + stats);
+                        alert("Error when fetching stop info: " + status);
                         return;
                       });
 

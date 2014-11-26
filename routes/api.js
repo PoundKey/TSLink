@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var request = require("request");
 
 var child = undefined;
 
@@ -10,7 +11,24 @@ router.get('/', function (req, res) {
 
 router.post('/addBusStop', function (req, res) {
 
-    res.json({title: 'Start fetching info for the given stop...', content: req.body.data });
+	var apiGet = req.body.data;
+	request({
+		url: apiGet,
+		method: "GET",
+		timeout: 3000,
+    headers: {
+        Accept:'application/JSON'
+    }
+	}, function(error, response, body) {
+			if (error) {
+				console.log(error);
+				res.json({title: 'Start fetching info for the given stop...', content: null });
+			}
+			console.log(body);
+			res.json({title: 'Start fetching info for the given stop...', content: null });
+
+	});
+
 
 });
 
