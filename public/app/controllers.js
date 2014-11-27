@@ -176,7 +176,7 @@ angular.module('myApp.controllers', [])
                               //alert("Route: " + info.route + " Index: " + index);
                               $scope.busStopDetails[stop][index].dest = dest;
                               $scope.busStopDetails[stop][index].cTime = countDowntime;
-                              $scope.busStopDetails[stop][index].dest = arrivalTime;
+                              $scope.busStopDetails[stop][index].aTime = arrivalTime;
                             }
 
                         });
