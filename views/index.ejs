@@ -25,8 +25,11 @@
                         <br>
 
                         <div class="fadeInUp">
-                        		<div class="message" ng-repeat="stop in busStopDetails">{{stop}}
-														<button type="button" ng-click="removeStop(stop)" class="btn3"><i class="fa fa-trash-o"></i></button>
+                        		<div class="message" ng-repeat="arrivals in busStopDetails">
+                                  <div class="message" ng-repeat="arrival in arrivals">{{arrival}}
+                                  <button ng-if="$first" type="button" ng-click="removeStop(stop)" class="btn3"><i class="fa fa-trash-o"></i></button>
+                                  </div>
+
                         		</div>
                             <br>
                             <hr/>
