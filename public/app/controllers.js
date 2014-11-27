@@ -6,7 +6,7 @@ angular.module('myApp.controllers', [])
     .controller('AppCtrl', ['$scope', '$location', '$http', '$routeParams', '$interval', '$firebase',
         function ($scope, $location, $http, $routeParams, $interval, $firebase) {
 
-            $scope.busStops = [];
+            $scope.busStops = {};
             $scope.busStopDetails = {};
 
             var ref = new Firebase("https://tslink.firebaseio.com/");
@@ -14,7 +14,6 @@ angular.module('myApp.controllers', [])
 
             $scope.busStops = sync.$asObject();
             var apiKey = 'yDC04D3XtydprTHAeB0Z', count = 1, tf = 60;
-
 
             $scope.busStops.$loaded().then(function(array) {
               if ($scope.busStops.tslink == null) {
@@ -24,12 +23,15 @@ angular.module('myApp.controllers', [])
                   }
 
               refreshStopInfo($scope.busStops.tslink);
+
+              //update the bus stop information every min
+              $interval(function(){
+                checkAllStops($scope.busStops.tslink);
+             }, 60000);
+
             });
 
-            $scope.turner = 0;
-             $interval(function(){
-                ($scope.turner == 0) ? $scope.turner = 1 : $scope.turner = 0;
-             }, 60000);
+
 
              /*
               * Checking the validity of the user input
@@ -140,17 +142,59 @@ angular.module('myApp.controllers', [])
                   });
             };
 
+            /*
+             * update a single stop info in interval of 1 min
+             */
             var checkSingleStop = function(stop) {
+                var stopInfo = [];
                 var req = 'http://api.translink.ca/rttiapi/v1/buses?apikey=' + apiKey + '&stopNo=' + stop;
                 $http.post('/api/handleBusStop', {data: req}).
                   success(function(data, status, headers, config) {
+                    //Error handle for invalid stop number, tho not necessary here
+                     if (data.info.Code) {
+                      alert("The bus stop number is invalid via Translink API.");
+                      var index = $scope.busStops.tslink.indexOf(stop);
+                      $scope.busStops.tslink.splice(index,1)[0];
+                      $scope.busStops.$save();
+                      return;
+                    }
 
+                    if (!$scope.busStopDetails[stop]) {
+                      alert("Stop doesn't exit on the busStopDetails object!");
+                      return;
+                    }
+
+                    stopInfo = $scope.busStopDetails[stop];
+                    alert(JSON.stringify(stopInfo)); return;
+
+                     angular.forEach(data.info, function(info) {
+                        var details = {};
+                        var routeNo = info.RouteNo;
+                        var dest = info.Schedules[0].Destination;
+                        var countDowntime = info.Schedules[0].ExpectedCountdown;
+                        var arrivalTime = info.Schedules[0].ExpectedLeaveTime;
+                        //alert("Destination: " + dest + " Arrives in: " + arrivalTime);
+                        details = {stop:stop, route:routeNo, dest:dest, cTime:countDowntime, aTime:arrivalTime};
+                        stopInfo.push(details);
+                        //console.log(stopInfo);
+
+
+                     });
 
                   }).
                   error(function(data, status, headers, config) {
                     alert("Error when fetching stop info: " + status);
                     return;
                   });
+            };
+
+            /*
+             * update all the stop info in interval of 1 min, by calling checkSingleStop();
+             */
+            var checkAllStops = function(stopList) {
+              angular.forEach(stopList, function(stop) {
+                checkSingleStop(stop);
+              });
             };
 
 
