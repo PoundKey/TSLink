@@ -94,6 +94,14 @@ angular.module('myApp.controllers', [])
                     });
             };
 
+            $scope.computeArrival = function (cTime) {
+
+                if (cTime <=0) {
+                  return "Arrvied";
+                }
+                return "Arrive in: " + cTime + " min";
+            };
+
             var refreshStopInfo = function(stopList) {
 
                 $scope.busStopDetails = {};
