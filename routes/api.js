@@ -9,7 +9,7 @@ router.get('/', function (req, res) {
     res.send('respond with a resource');
 });
 
-router.post('/addBusStop', function (req, res) {
+router.post('/handleBusStop', function (req, res) {
 
 	var apiGet = req.body.data;
 	request({
@@ -34,10 +34,7 @@ router.post('/addBusStop', function (req, res) {
 			}
 
 	});
-
-
 });
-
 
 
 

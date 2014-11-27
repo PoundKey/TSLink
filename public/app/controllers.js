@@ -63,9 +63,9 @@ angular.module('myApp.controllers', [])
                   return;
                 }
 
-                refreshSingleStop($scope.inputStop);
                 $scope.busStops.tslink.push($scope.inputStop);
                 $scope.busStops.$save();
+                refreshSingleStop($scope.inputStop);
             };
 
              /*
@@ -108,10 +108,15 @@ angular.module('myApp.controllers', [])
                 var req = 'http://api.translink.ca/rttiapi/v1/stops/' + stop +
                           '/estimates?apikey=' + apiKey + '&count=' + count + '&timeframe=' + tf;
 
-                $http.post('/api/addBusStop', {data: req}).
+                $http.post('/api/handleBusStop', {data: req}).
                   success(function(data, status, headers, config) {
-
-                    if (data.info.Code) return;
+                    if (data.info.Code) {
+                      alert("The bus stop number is invalid via Translink API.");
+                      var index = $scope.busStops.tslink.indexOf(stop);
+                      $scope.busStops.tslink.splice(index,1)[0];
+                      $scope.busStops.$save();
+                      return;
+                    }
                      //console.log(data.info); return;
                      angular.forEach(data.info, function(info) {
                         var details = {};
@@ -128,6 +133,19 @@ angular.module('myApp.controllers', [])
                         $scope.busStopDetails[stop] = stopInfo;
                        }
                      //console.log(JSON.stringify($scope.busStopDetails));
+                  }).
+                  error(function(data, status, headers, config) {
+                    alert("Error when fetching stop info: " + status);
+                    return;
+                  });
+            };
+
+            var checkSingleStop = function(stop) {
+                var req = 'http://api.translink.ca/rttiapi/v1/buses?apikey=' + apiKey + '&stopNo=' + stop;
+                $http.post('/api/handleBusStop', {data: req}).
+                  success(function(data, status, headers, config) {
+
+
                   }).
                   error(function(data, status, headers, config) {
                     alert("Error when fetching stop info: " + status);
