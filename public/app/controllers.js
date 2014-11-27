@@ -7,7 +7,7 @@ angular.module('myApp.controllers', [])
         function ($scope, $location, $http, $routeParams, $interval, $firebase) {
 
             $scope.busStops = [];
-            $scope.busStopDetails = undefined;
+            $scope.busStopDetails = {};
 
             var ref = new Firebase("https://tslink.firebaseio.com/");
             var sync = $firebase(ref);
@@ -26,9 +26,9 @@ angular.module('myApp.controllers', [])
               refreshStopInfo($scope.busStops.tslink);
             });
 
-            $scope.$watch('busStops.tslink',function(newVal, oldVal){
-              refreshStopInfo($scope.busStops.tslink);
-            });
+            // $scope.$watch('busStops.tslink',function(newVal, oldVal){
+            //   refreshStopInfo($scope.busStops.tslink);
+            // });
 
               /*
               *  Each minute the turner switches between 0 and 1,
@@ -59,8 +59,11 @@ angular.module('myApp.controllers', [])
                 var index = $scope.busStops.tslink.indexOf($scope.inputStop);
                 if (index >= 0) {
                   alert("The bus stop has already been added.")
+                  //console.log(JSON.stringify());
                   return;
                 }
+
+                refreshSingleStop($scope.inputStop);
                 $scope.busStops.tslink.push($scope.inputStop);
                 $scope.busStops.$save();
             };
@@ -72,6 +75,8 @@ angular.module('myApp.controllers', [])
                 var index = $scope.busStops.tslink.indexOf(stop);
                 $scope.busStops.tslink.splice(index,1)[0];
                 $scope.busStops.$save();
+                delete $scope.busStopDetails[stop];
+                //console.log(JSON.stringify($scope.busStopDetails));
             };
 
 
@@ -93,40 +98,46 @@ angular.module('myApp.controllers', [])
 
                 $scope.busStopDetails = {};
                 angular.forEach(stopList, function(stop){
-                    var stopInfo = [];
-                    var req = 'http://api.translink.ca/rttiapi/v1/stops/' + stop +
-                              '/estimates?apikey=' + apiKey + '&count=' + count + '&timeframe=' + tf;
-
-                    $http.post('/api/addBusStop', {data: req}).
-                      success(function(data, status, headers, config) {
-
-                         //console.log(data.info); return;
-                         angular.forEach(data.info, function(info) {
-                            var details = {};
-                            var routeNo = info.RouteNo;
-                            var dest = info.Schedules[0].Destination;
-                            var countDowntime = info.Schedules[0].ExpectedCountdown;
-                            var arrivalTime = info.Schedules[0].ExpectedLeaveTime;
-                            //alert("Destination: " + dest + " Arrives in: " + arrivalTime);
-                            details = {stop:stop, route:routeNo, dest:dest, cTime:countDowntime, aTime:arrivalTime};
-                            stopInfo.push(details);
-                            //console.log(stopInfo);
-                         });
-
-                         $scope.busStopDetails[stop] = stopInfo;
-                         //console.log(JSON.stringify($scope.busStopDetails));
-                      }).
-                      error(function(data, status, headers, config) {
-                        alert("Error when fetching stop info: " + status);
-                        return;
-                      });
-
+                  refreshSingleStop(stop);
                 }); //here we done for the stoplist info fecthing
+            };
+
+
+            var refreshSingleStop = function(stop) {
+                var stopInfo = [];
+                var req = 'http://api.translink.ca/rttiapi/v1/stops/' + stop +
+                          '/estimates?apikey=' + apiKey + '&count=' + count + '&timeframe=' + tf;
+
+                $http.post('/api/addBusStop', {data: req}).
+                  success(function(data, status, headers, config) {
+
+                    if (data.info.Code) return;
+                     //console.log(data.info); return;
+                     angular.forEach(data.info, function(info) {
+                        var details = {};
+                        var routeNo = info.RouteNo;
+                        var dest = info.Schedules[0].Destination;
+                        var countDowntime = info.Schedules[0].ExpectedCountdown;
+                        var arrivalTime = info.Schedules[0].ExpectedLeaveTime;
+                        //alert("Destination: " + dest + " Arrives in: " + arrivalTime);
+                        details = {stop:stop, route:routeNo, dest:dest, cTime:countDowntime, aTime:arrivalTime};
+                        stopInfo.push(details);
+                        //console.log(stopInfo);
+                     });
+                     if ($scope.busStopDetails[stop] == null) {
+                        $scope.busStopDetails[stop] = stopInfo;
+                       }
+                     //console.log(JSON.stringify($scope.busStopDetails));
+                  }).
+                  error(function(data, status, headers, config) {
+                    alert("Error when fetching stop info: " + status);
+                    return;
+                  });
             };
 
             var timeConf = function(aDate) {
 
-            }
+            };
 
 }]);
 
