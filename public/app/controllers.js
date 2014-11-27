@@ -26,18 +26,10 @@ angular.module('myApp.controllers', [])
               refreshStopInfo($scope.busStops.tslink);
             });
 
-            // $scope.$watch('busStops.tslink',function(newVal, oldVal){
-            //   refreshStopInfo($scope.busStops.tslink);
-            // });
-
-              /*
-              *  Each minute the turner switches between 0 and 1,
-              *  and the new bus arrival time is refreshed.
-              */
             $scope.turner = 0;
              $interval(function(){
                 ($scope.turner == 0) ? $scope.turner = 1 : $scope.turner = 0;
-             }, 3000);
+             }, 60000);
 
              /*
               * Checking the validity of the user input
@@ -161,9 +153,6 @@ angular.module('myApp.controllers', [])
                   });
             };
 
-            var timeConf = function(aDate) {
-
-            };
 
 }]);
 
