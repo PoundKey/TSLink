@@ -24,8 +24,14 @@ router.post('/addBusStop', function (req, res) {
 				console.log(error);
 				res.json({title: 'Start fetching info for the given stop...', content: null });
 			}
-			console.log(body);
-			res.json({title: 'Start fetching info for the given stop...', content: null });
+			//console.log('Type: ' + typeof(infoArray));
+			//console.log(JSON.stringify(infoArray));
+			var infoArray = JSON.parse(body);
+			if (infoArray){
+				res.json({info:infoArray});
+			}else {
+				res.json({info:[]});
+			}
 
 	});
 

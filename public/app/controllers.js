@@ -7,7 +7,7 @@ angular.module('myApp.controllers', [])
         function ($scope, $location, $http, $routeParams, $interval, $firebase) {
 
             $scope.busStops = [];
-            $scope.busStopDetails = [];
+            $scope.busStopDetails = {};
 
             var ref = new Firebase("https://tslink.firebaseio.com/");
             var sync = $firebase(ref);
@@ -25,20 +25,30 @@ angular.module('myApp.controllers', [])
                 var stopList = $scope.busStops.tslink;
                 angular.forEach(stopList, function(stop){
 
+                    var stopInfo = [];
                     var req = 'http://api.translink.ca/rttiapi/v1/stops/' + stop +
                               '/estimates?apikey=' + apiKey + '&count=' + count + '&timeframe=' + tf;
 
                     $http.post('/api/addBusStop', {data: req}).
                       success(function(data, status, headers, config) {
-                        console.log(data); return;
-                         var stopInfo = {};
-                         angular.forEach(data, function(info) {
-                            var dest = info.Schedules[0].Destination;
-                            var arrivalTime = info.Schedules[0].ExpectedCountdown;
-                            alert("Destination: " + dest + " Arrives in: " + arrivalTime);
 
+                         //console.log(data.info); return;
+                         angular.forEach(data.info, function(info) {
+                            var schedule = {}, details = [];
+                            var routeNo = info.RouteNo;
+                            var dest = info.Schedules[0].Destination;
+                            var countDowntime = info.Schedules[0].ExpectedCountdown;
+                            var arrivalTime = info.Schedules[0].ExpectedLeaveTime;
+                            //alert("Destination: " + dest + " Arrives in: " + arrivalTime);
+                            details.push(dest,countDowntime,arrivalTime);
+                            schedule[routeNo] = details;
+
+                            stopInfo.push(schedule);
+                            //console.log(stopInfo);
                          });
 
+                         $scope.busStopDetails[stop] = stopInfo;
+                         //console.log(JSON.stringify($scope.busStopDetails));
                       }).
                       error(function(data, status, headers, config) {
                         alert("Error when fetching stop info: " + status);
@@ -46,6 +56,10 @@ angular.module('myApp.controllers', [])
                       });
 
                 });
+
+
+
+
             });
 
             $scope.$watch('busStops',function(newVal, oldVal){
@@ -65,7 +79,7 @@ angular.module('myApp.controllers', [])
               * Checking the validity of the user input
               */
              var checkInputStop = function(stop){
-                var validity = !isNaN(stop) && (stop > 9999) && (stop <= 99999);
+                var validity = !isNaN(stop) && (stop > 50000) && (stop <= 70000);
                 return validity;
              };
 
