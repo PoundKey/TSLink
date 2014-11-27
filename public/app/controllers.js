@@ -27,7 +27,7 @@ angular.module('myApp.controllers', [])
               //update the bus stop information every min
               $interval(function(){
                 refreshAllStops($scope.busStops.tslink);
-             }, 11110000);
+             }, 60000);
 
             });
 
@@ -165,19 +165,19 @@ angular.module('myApp.controllers', [])
                       return;
                     }
 
-                    stopInfo = $scope.busStopDetails[stop];
-                    //alert(JSON.stringify(stopInfo)); return;
-
                      angular.forEach(data.info, function(info) {
-                      console.log(data.info); return;
                         var routeNo = info.RouteNo;
                         var dest = info.Schedules[0].Destination;
                         var countDowntime = info.Schedules[0].ExpectedCountdown;
                         var arrivalTime = info.Schedules[0].ExpectedLeaveTime;
-                         alert("Route: " + routeNo + " Destination: " + dest + " Arrives in: " + arrivalTime);
-                        angular.forEach(stopInfo, function(info) {
-
-
+                        //alert("Route: " + routeNo + " Destination: " + dest + " Arrives in: " + arrivalTime);
+                        angular.forEach($scope.busStopDetails[stop], function(info, index) {
+                            if (info.route == routeNo) {
+                              //alert("Route: " + info.route + " Index: " + index);
+                              $scope.busStopDetails[stop][index].dest = dest;
+                              $scope.busStopDetails[stop][index].cTime = countDowntime;
+                              $scope.busStopDetails[stop][index].dest = arrivalTime;
+                            }
 
                         });
                      });
