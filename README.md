@@ -1,8 +1,7 @@
 #TSLink
-##A Bus Scheduler App in Vancouver BC Via Translink
+>A Bus Scheduler App in Vancouver BC Via Translink
 
-
-####APIs include:
+###APIs include:
 - [Translink Vancouver BC](https://developer.translink.ca/ServicesRtti/ApiReference) Realtime Bus Data
 - [Firebase/AngularFire](https://www.firebase.com/docs/web/libraries/angular/api.html) (Data Storage)
 - [NodeJS](http://nodejs.org/api/) (Platform)
