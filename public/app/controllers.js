@@ -165,7 +165,7 @@ angular.module('myApp.controllers', [])
                     }
 
                     stopInfo = $scope.busStopDetails[stop];
-                    alert(JSON.stringify(stopInfo)); return;
+                    //alert(JSON.stringify(stopInfo)); return;
 
                      angular.forEach(data.info, function(info) {
                         var details = {};
