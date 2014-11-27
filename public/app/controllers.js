@@ -161,7 +161,7 @@ angular.module('myApp.controllers', [])
                     }
 
                     if (!$scope.busStopDetails[stop]) {
-                      alert("Stop doesn't exit on the busStopDetails object!");
+                      //alert("Stop doesn't exit on the busStopDetails object!");
                       return;
                     }
 
