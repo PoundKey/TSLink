@@ -22,12 +22,12 @@ angular.module('myApp.controllers', [])
                     $scope.busStops.$save();
                   }
 
-              refreshStopInfo($scope.busStops.tslink);
+              fetchAllStops($scope.busStops.tslink);
 
               //update the bus stop information every min
               $interval(function(){
-                checkAllStops($scope.busStops.tslink);
-             }, 60000);
+                refreshAllStops($scope.busStops.tslink);
+             }, 11110000);
 
             });
 
@@ -59,7 +59,7 @@ angular.module('myApp.controllers', [])
 
                 $scope.busStops.tslink.push($scope.inputStop);
                 $scope.busStops.$save();
-                refreshSingleStop($scope.inputStop);
+                fetchSingleStop($scope.inputStop);
             };
 
              /*
@@ -96,16 +96,16 @@ angular.module('myApp.controllers', [])
                 return "Arrive in: " + cTime + " min";
             };
 
-            var refreshStopInfo = function(stopList) {
+            var fetchAllStops = function(stopList) {
 
                 $scope.busStopDetails = {};
                 angular.forEach(stopList, function(stop){
-                  refreshSingleStop(stop);
+                  fetchSingleStop(stop);
                 }); //here we done for the stoplist info fecthing
             };
 
 
-            var refreshSingleStop = function(stop) {
+            var fetchSingleStop = function(stop) {
                 var stopInfo = [];
                 var req = 'http://api.translink.ca/rttiapi/v1/stops/' + stop +
                           '/estimates?apikey=' + apiKey + '&count=' + count + '&timeframe=' + tf;
@@ -145,9 +145,10 @@ angular.module('myApp.controllers', [])
             /*
              * update a single stop info in interval of 1 min
              */
-            var checkSingleStop = function(stop) {
+            var refreshSingleStop = function(stop) {
                 var stopInfo = [];
-                var req = 'http://api.translink.ca/rttiapi/v1/buses?apikey=' + apiKey + '&stopNo=' + stop;
+                var req = 'http://api.translink.ca/rttiapi/v1/stops/' + stop +
+                          '/estimates?apikey=' + apiKey + '&count=' + count + '&timeframe=' + tf;
                 $http.post('/api/handleBusStop', {data: req}).
                   success(function(data, status, headers, config) {
                     //Error handle for invalid stop number, tho not necessary here
@@ -168,17 +169,17 @@ angular.module('myApp.controllers', [])
                     //alert(JSON.stringify(stopInfo)); return;
 
                      angular.forEach(data.info, function(info) {
-                        var details = {};
+                      console.log(data.info); return;
                         var routeNo = info.RouteNo;
                         var dest = info.Schedules[0].Destination;
                         var countDowntime = info.Schedules[0].ExpectedCountdown;
                         var arrivalTime = info.Schedules[0].ExpectedLeaveTime;
-                        //alert("Destination: " + dest + " Arrives in: " + arrivalTime);
-                        details = {stop:stop, route:routeNo, dest:dest, cTime:countDowntime, aTime:arrivalTime};
-                        stopInfo.push(details);
-                        //console.log(stopInfo);
+                         alert("Route: " + routeNo + " Destination: " + dest + " Arrives in: " + arrivalTime);
+                        angular.forEach(stopInfo, function(info) {
 
 
+
+                        });
                      });
 
                   }).
@@ -189,11 +190,11 @@ angular.module('myApp.controllers', [])
             };
 
             /*
-             * update all the stop info in interval of 1 min, by calling checkSingleStop();
+             * update all the stop info in interval of 1 min, by calling refreshSingleStop();
              */
-            var checkAllStops = function(stopList) {
+            var refreshAllStops = function(stopList) {
               angular.forEach(stopList, function(stop) {
-                checkSingleStop(stop);
+                refreshSingleStop(stop);
               });
             };
 
