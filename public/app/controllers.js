@@ -11,9 +11,12 @@ angular.module('myApp.controllers', [])
 
             var ref = new Firebase("https://tslink.firebaseio.com/");
             var sync = $firebase(ref);
-            var apiKey = 'yDC04D3XtydprTHAeB0Z', count = 1, tf = 60;
 
             $scope.busStops = sync.$asObject();
+            var apiKey = 'yDC04D3XtydprTHAeB0Z', count = 1, tf = 60;
+            var timeConf = function(aDate) {
+
+            }
 
             $scope.busStops.$loaded().then(function(array) {
                 if ($scope.busStops.tslink == null) {
@@ -34,16 +37,14 @@ angular.module('myApp.controllers', [])
 
                          //console.log(data.info); return;
                          angular.forEach(data.info, function(info) {
-                            var schedule = {}, details = [];
+                            var details = {};
                             var routeNo = info.RouteNo;
                             var dest = info.Schedules[0].Destination;
                             var countDowntime = info.Schedules[0].ExpectedCountdown;
                             var arrivalTime = info.Schedules[0].ExpectedLeaveTime;
                             //alert("Destination: " + dest + " Arrives in: " + arrivalTime);
-                            details.push(dest,countDowntime,arrivalTime);
-                            schedule[routeNo] = details;
-
-                            stopInfo.push(schedule);
+                            details = {stop:stop, route:routeNo, dest:dest, cTime:countDowntime, aTime:arrivalTime};
+                            stopInfo.push(details);
                             //console.log(stopInfo);
                          });
 
@@ -91,6 +92,11 @@ angular.module('myApp.controllers', [])
                 if (checkInputStop($scope.inputStop) == false){
                     alert('Please enter an valid bus stop number.')
                     return;
+                }
+                var index = $scope.busStops.tslink.indexOf($scope.inputStop);
+                if (index >= 0) {
+                  alert("The bus stop has already been added.")
+                  return;
                 }
                 $scope.busStops.tslink.push($scope.inputStop);
                 $scope.busStops.$save();

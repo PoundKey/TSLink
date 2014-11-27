@@ -26,7 +26,11 @@
 
                         <div class="fadeInUp">
                         		<div class="message" ng-repeat="arrivals in busStopDetails">
-                                  <div class="message" ng-repeat="arrival in arrivals">{{arrival}}
+                                  <div class="message" ng-repeat="arrival in arrivals">
+                                  <i class="fa fa-flag-o"></i> {{arrival.stop}}
+                                  <i class="fa fa-bus"></i> {{arrival.route}} {{arrival.dest}}
+                                  <i class="fa fa-bell-o"></i> Arrive in: {{arrival.cTime}} minutes <i class="fa fa-at"></i> {{arrival.aTime}}
+
                                   <button ng-if="$first" type="button" ng-click="removeStop(stop)" class="btn3"><i class="fa fa-trash-o"></i></button>
                                   </div>
 
