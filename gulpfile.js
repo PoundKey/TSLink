@@ -1,6 +1,7 @@
 var gulp = require('gulp'),
   nodemon = require('gulp-nodemon'),
-  livereload = require('gulp-livereload');
+  livereload = require('gulp-livereload')
+  minify = require('gulp-minify-css');
 
 
 gulp.task('develop', function () {
@@ -15,6 +16,14 @@ gulp.task('develop', function () {
   });
 });
 
+gulp.task('minify', function() {
+  gulp.src('./tmp/*.css')
+    .pipe(minify({keepBreaks:false}))
+    .pipe(gulp.dest('./public/css'))
+});
+
 gulp.task('default', [
   'develop'
 ]);
+
+
