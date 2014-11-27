@@ -29,9 +29,9 @@
                                   <div class="message" ng-repeat="arrival in arrivals">
                                   <button class="btn">
                                   <i class="fa fa-bus"></i> {{arrival.route}} {{arrival.dest}} &nbsp;&#166;&nbsp;
-                                  <i class="fa fa-flag-o"></i> {{arrival.stop}} &nbsp;&#166;&nbsp;
-                                  <div class="pulse-grow"><i id='bell' class="fa fa-bell-o"></i> {{computeArrival(arrival.cTime)}} <i class="fa fa-at"></i> {{arrival.aTime}}
-                                  </div>
+                                  <div class="pulse-grow"><i class="fa fa-bell-o"></i> {{computeArrival(arrival.cTime)}} <i class="fa fa-at"></i> {{arrival.aTime}}
+                                  </div> &nbsp;&#166;&nbsp;
+                                  <i class="fa fa-flag-o"></i> {{arrival.stop}}
                                   </button>
                                   &nbsp;
                                    <button ng-if="$first" type="button" ng-click="removeStop(arrival.stop)" class="btn3"><i class="fa fa-trash-o"></i></button>
