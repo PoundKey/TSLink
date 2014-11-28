@@ -1,0 +1,51 @@
+.arrive-box{
+	width: 80%;
+}
+
+.arrive-left-item{
+	position: relative;
+	display: inline-block;
+	left: 0%;
+	width: 26%;
+}
+
+.arrive-mid-item{
+	display: inline-block;
+	position: relative;
+	width: 49%;
+}
+
+.arrive-right-item{
+	display: inline-block;
+	position: relative;
+	width: 12%;
+}
+
+.double-slash-bar{
+	display: inline-block;
+	position: relative;
+}
+
+@media screen and (max-width: 1068px) {
+    .arrive-left-item{
+	position: relative;
+	display: inline-block;
+	width: 100%;
+}
+
+.arrive-mid-item{
+	display: inline-block;
+	position: relative;
+	width: 100%;
+}
+
+.arrive-right-item{
+	display: inline-block;
+	position: relative;
+	width: 100%;
+}
+
+.double-slash-bar{
+	display: none;
+}
+}
