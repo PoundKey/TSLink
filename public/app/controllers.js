@@ -140,7 +140,7 @@ angular.module('myApp.controllers', [])
                      //console.log(JSON.stringify($scope.busStopDetails));
                   }).
                   error(function(data, status, headers, config) {
-                    alert("Error when fetching stop info: " + status);
+                    console.log("Error when fetching stop info: " + status);
                     return;
                   });
             };
@@ -187,7 +187,7 @@ angular.module('myApp.controllers', [])
 
                   }).
                   error(function(data, status, headers, config) {
-                    alert("Error when fetching stop info: " + status);
+                    console.log("Error when refreshing stop info: " + status);
                     return;
                   });
             };
