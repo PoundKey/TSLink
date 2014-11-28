@@ -28,7 +28,7 @@ angular.module('myApp.controllers', [])
               //update the bus stop information every min
               $interval(function(){
                 refreshAllStops($scope.busStops.tslink);
-             }, 60000);
+             }, 111160000);
 
             });
 
