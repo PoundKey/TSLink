@@ -8,7 +8,7 @@ gulp.task('develop', function () {
   livereload.listen();
   nodemon({
     script: 'bin/www',
-    ext: 'js ejs',
+    ext: 'js ejs css',
   }).on('restart', function () {
     setTimeout(function () {
       livereload.changed();
@@ -23,7 +23,7 @@ gulp.task('minify', function() {
 });
 
 gulp.task('default', [
-  'develop'
+  'develop', 'minify'
 ]);
 
 

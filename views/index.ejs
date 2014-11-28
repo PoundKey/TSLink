@@ -1,7 +1,10 @@
 <% include header %>
 
+<div class="preload load-container load3" ng-if="ajaxicon">
+     <div class="loader">Loading...</div>
+</div>
 <!-- BEGIN MAIN PAGE -->
-<div id="page-main" class="page active">
+<div id="page-main" class="page active" ng-if="!ajaxicon">
     <div class="content-wrapper with-footer">
         <!-- BEGIN CONTENT SECTION FOR MAIN PAGE -->
         <section class="content">
@@ -27,13 +30,12 @@
                         <hr>
                         <br>
 
-                        <div class="load-container load4" ng-if="ajaxicon">
-                          <div class="loader">Loading...</div>
-                        </div>
+
                         <div>
                         		<div class="message" ng-repeat="arrivals in busStopDetails">
                                   <div class="message animated fadeInUp" ng-repeat="arrival in arrivals">
                                   <button class="btn arrive-box">
+<<<<<<< HEAD
                                     <span class="arrive-left-item"><i class="fa fa-bus"></i> {{arrival.route}} {{arrival.dest}} </span>
                                     <span class="double-slash-bar">&nbsp;&#166;&nbsp;</span>
                                     <div class="arrive-mid-item"><i class="fa fa-bell-o"></i> {{computeArrival(arrival.cTime)}} <i class="fa fa-at"></i> {{arrival.aTime}}
@@ -42,6 +44,16 @@
                                     <span class="arrive-right-item">
                                       <i class="fa fa-flag-o"></i> {{arrival.stop}}
                                     </span>
+=======
+                                  <span class="arrive-left-item"><i class="fa fa-bus"></i> {{arrival.route}} {{arrival.dest}} </span>
+                                  <span>&nbsp;&#166;&nbsp;</span>
+                                  <div class="pulse-grow arrive-mid-item"><i class="fa fa-bell-o"></i> {{computeArrival(arrival.cTime)}} <i class="fa fa-at"></i> {{arrival.aTime}}
+                                  </div>
+                                  <span>&nbsp;&#166;&nbsp;</span>
+                                  <span class="arrive-right-item">
+                                    <i class="fa fa-flag-o"></i> {{arrival.stop}}
+                                  </span>
+>>>>>>> de5145438dc70e18c4a06c791ca8556e08e6e596
                                   </button>
                                   <span>&nbsp;</span>
                                    <button ng-if="$first" type="button" ng-click="removeStop(arrival.stop)" class="btn3"><i class="fa fa-trash-o"></i></button>
@@ -61,21 +73,32 @@
             <div class="push"></div>
         </section>
         <!-- END CONTENT SECTION -->
-
+    </div>
+    <div id="background">
+      <img src="images/ym.jpg"/>
     </div>
 </div>
 <!-- END MAIN PAGE -->
+<<<<<<< HEAD
 <div style="max-height: 800px;overflow: hidden">
+=======
+
+
+
+>>>>>>> de5145438dc70e18c4a06c791ca8556e08e6e596
 <div id="flare-1" class="flare"><img src="images/flare-1.png"/></div>
 <div id="flare-2" class="flare"><img src="images/flare-2.png"/></div>
 <div id="flare-3" class="flare"><img src="images/flare-3.png"/></div>
 <div id="flare-4" class="flare"><img src="images/flare-4.png"/></div>
 
+<<<<<<< HEAD
 <!-- BEGIN BACKGROUND -->
 <div id="background">
     <img src="images/ym.jpg"/>
 </div>
 <!-- END BACKGROUND -->
 </div>
+=======
+>>>>>>> de5145438dc70e18c4a06c791ca8556e08e6e596
 
 <% include footer %>
