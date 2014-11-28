@@ -7,10 +7,10 @@
         <section class="content">
             <div class="entries">
                 <div id="main" class="entry" style="opacity:0.6;position:relative;background-color:#000000;margin: 0 auto;width: 80%">
-                    <h1 id="logo" class="anim-go-left"><a href="https://github.com/poundkey"><span>TSLink</span></a>
-                    </h1>
 
-                    <h3 class="anim-go-right grow"><i class="fa fa-bus"></i> TSLink </h3>
+                    <br>
+                    <h1 class="anim-go-right grow">
+                    <a href="https://github.com/poundkey"><i class="fa fa-windows"></i></a> TSLink </h1>
                     <h5 class="anim-go-right">
                     <a href="https://github.com/poundkey/TSLink"><i class="fa fa-github grow"></i></a>
                     A Bus Scheduler App Via Translink Vancouver
@@ -27,20 +27,23 @@
                         <hr>
                         <br>
 
-                        <div class="fadeInUp">
+                        <div>
                         		<div class="message" ng-repeat="arrivals in busStopDetails">
-                                  <div class="message" ng-repeat="arrival in arrivals">
+                                  <div class="message animated fadeInUp" ng-repeat="arrival in arrivals">
                                   <button class="btn arrive-box">
-                                  <i class="fa fa-bus"></i> {{arrival.route}} {{arrival.dest}} &nbsp;&#166;&nbsp;
-                                  <div class="pulse-grow"><i class="fa fa-bell-o"></i> {{computeArrival(arrival.cTime)}} <i class="fa fa-at"></i> {{arrival.aTime}}
-                                  </div> &nbsp;&#166;&nbsp;
-                                  <i class="fa fa-flag-o"></i> {{arrival.stop}}
+                                  <span class="arrive-left-item"><i class="fa fa-bus"></i> {{arrival.route}} {{arrival.dest}} </span>
+                                  <span>&nbsp;&#166;&nbsp;</span>
+                                  <div class="pulse-grow arrive-mid-item"><i class="fa fa-bell-o"></i> {{computeArrival(arrival.cTime)}} <i class="fa fa-at"></i> {{arrival.aTime}}
+                                  </div> 
+                                  <span>&nbsp;&#166;&nbsp;</span>
+                                  <span class="arrive-right-item">
+                                    <i class="fa fa-flag-o"></i> {{arrival.stop}}
+                                  </span>
                                   </button>
-                                  &nbsp;
+                                  <span>&nbsp;</span>
                                    <button ng-if="$first" type="button" ng-click="removeStop(arrival.stop)" class="btn3"><i class="fa fa-trash-o"></i></button>
                                   <br><br>
                                   </div>
-
                         		</div>
                             <br>
                             <hr/>

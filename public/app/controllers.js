@@ -6,7 +6,7 @@ angular.module('myApp.controllers', [])
     .controller('AppCtrl', ['$scope', '$location', '$http', '$routeParams', '$interval', '$firebase',
         function ($scope, $location, $http, $routeParams, $interval, $firebase) {
 
-            $scope.busStops = [];
+            $scope.busStops = {};
             $scope.busStopDetails = {};
 
             var ref = new Firebase("https://tslink.firebaseio.com/");
@@ -15,7 +15,6 @@ angular.module('myApp.controllers', [])
             $scope.busStops = sync.$asObject();
             var apiKey = 'yDC04D3XtydprTHAeB0Z', count = 1, tf = 60;
 
-
             $scope.busStops.$loaded().then(function(array) {
               if ($scope.busStops.tslink == null) {
                     //alert("Null Bus Stop Object, initializing...");
@@ -23,13 +22,16 @@ angular.module('myApp.controllers', [])
                     $scope.busStops.$save();
                   }
 
-              refreshStopInfo($scope.busStops.tslink);
+              fetchAllStops($scope.busStops.tslink);
+
+              //update the bus stop information every min
+              $interval(function(){
+                refreshAllStops($scope.busStops.tslink);
+             }, 60000);
+
             });
 
-            $scope.turner = 0;
-             $interval(function(){
-                ($scope.turner == 0) ? $scope.turner = 1 : $scope.turner = 0;
-             }, 60000);
+
 
              /*
               * Checking the validity of the user input
@@ -57,13 +59,15 @@ angular.module('myApp.controllers', [])
 
                 $scope.busStops.tslink.push($scope.inputStop);
                 $scope.busStops.$save();
-                refreshSingleStop($scope.inputStop);
+                fetchSingleStop($scope.inputStop);
             };
 
              /*
               * Remove a bus stop to firebase, object $scope.busStops, array 'tslink'
               */
             $scope.removeStop = function(stop) {
+                var ans = confirm('Sure to delete this entry? User system is undergoing construction, so please do not delete entries randomly.');
+                if (!ans) return;
                 var index = $scope.busStops.tslink.indexOf(stop);
                 $scope.busStops.tslink.splice(index,1)[0];
                 $scope.busStops.$save();
@@ -94,16 +98,16 @@ angular.module('myApp.controllers', [])
                 return "Arrive in: " + cTime + " min";
             };
 
-            var refreshStopInfo = function(stopList) {
+            var fetchAllStops = function(stopList) {
 
                 $scope.busStopDetails = {};
                 angular.forEach(stopList, function(stop){
-                  refreshSingleStop(stop);
+                  fetchSingleStop(stop);
                 }); //here we done for the stoplist info fecthing
             };
 
 
-            var refreshSingleStop = function(stop) {
+            var fetchSingleStop = function(stop) {
                 var stopInfo = [];
                 var req = 'http://api.translink.ca/rttiapi/v1/stops/' + stop +
                           '/estimates?apikey=' + apiKey + '&count=' + count + '&timeframe=' + tf;
@@ -140,17 +144,60 @@ angular.module('myApp.controllers', [])
                   });
             };
 
-            var checkSingleStop = function(stop) {
-                var req = 'http://api.translink.ca/rttiapi/v1/buses?apikey=' + apiKey + '&stopNo=' + stop;
+            /*
+             * update a single stop info in interval of 1 min
+             */
+            var refreshSingleStop = function(stop) {
+                var stopInfo = [];
+                var req = 'http://api.translink.ca/rttiapi/v1/stops/' + stop +
+                          '/estimates?apikey=' + apiKey + '&count=' + count + '&timeframe=' + tf;
                 $http.post('/api/handleBusStop', {data: req}).
                   success(function(data, status, headers, config) {
+                    //Error handle for invalid stop number, tho not necessary here
+                     if (data.info.Code) {
+                      alert("The bus stop number is invalid via Translink API.");
+                      var index = $scope.busStops.tslink.indexOf(stop);
+                      $scope.busStops.tslink.splice(index,1)[0];
+                      $scope.busStops.$save();
+                      return;
+                    }
 
+                    if (!$scope.busStopDetails[stop]) {
+                      //alert("Stop doesn't exit on the busStopDetails object!");
+                      return;
+                    }
+
+                     angular.forEach(data.info, function(info) {
+                        var routeNo = info.RouteNo;
+                        var dest = info.Schedules[0].Destination;
+                        var countDowntime = info.Schedules[0].ExpectedCountdown;
+                        var arrivalTime = info.Schedules[0].ExpectedLeaveTime;
+                        //alert("Route: " + routeNo + " Destination: " + dest + " Arrives in: " + arrivalTime);
+                        angular.forEach($scope.busStopDetails[stop], function(info, index) {
+                            if (info.route == routeNo) {
+                              //alert("Route: " + info.route + " Index: " + index);
+                              $scope.busStopDetails[stop][index].dest = dest;
+                              $scope.busStopDetails[stop][index].cTime = countDowntime;
+                              $scope.busStopDetails[stop][index].aTime = arrivalTime;
+                            }
+
+                        });
+                     });
 
                   }).
                   error(function(data, status, headers, config) {
                     alert("Error when fetching stop info: " + status);
                     return;
                   });
+            };
+
+            /*
+             * update all the stop info in interval of 1 min, by calling refreshSingleStop();
+             */
+            var refreshAllStops = function(stopList) {
+              angular.forEach(stopList, function(stop) {
+                refreshSingleStop(stop);
+              });
             };
 
 
