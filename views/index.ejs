@@ -4,7 +4,7 @@
      <div class="loader">Loading...</div>
 </div>
 <!-- BEGIN MAIN PAGE -->
-<div id="page-main" class="page active" ng-if="!ajaxicon">
+<div id="page-main" class="page active" ng-show="!ajaxicon">
     <div class="content-wrapper with-footer">
         <!-- BEGIN CONTENT SECTION FOR MAIN PAGE -->
         <section class="content">
@@ -22,6 +22,7 @@
                     <form id="newsletter-form" class="the-form anim-go-left" ng-submit="addBusStop()">
                         <div class="field-wrapper">
                             <input type="text" class="textfield required" ng-model="inputStop" name="stop" placeholder="Please add a nearby bus stop..." />
+
                             <button type="submit" class="btn" style="width:120px">Add Stop
                             </button>
                         </div>
