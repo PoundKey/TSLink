@@ -27,6 +27,9 @@
                         <hr>
                         <br>
 
+                        <div class="load-container load4" ng-if="ajaxicon">
+                          <div class="loader">Loading...</div>
+                        </div>
                         <div>
                         		<div class="message" ng-repeat="arrivals in busStopDetails">
                                   <div class="message animated fadeInUp" ng-repeat="arrival in arrivals">

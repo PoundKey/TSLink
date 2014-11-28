@@ -8,6 +8,7 @@ angular.module('myApp.controllers', [])
 
             $scope.busStops = {};
             $scope.busStopDetails = {};
+            $scope.ajaxicon = true;
 
             var ref = new Firebase("https://tslink.firebaseio.com/");
             var sync = $firebase(ref);
@@ -23,7 +24,7 @@ angular.module('myApp.controllers', [])
                   }
 
               fetchAllStops($scope.busStops.tslink);
-
+              $scope.ajaxicon = false;
               //update the bus stop information every min
               $interval(function(){
                 refreshAllStops($scope.busStops.tslink);
