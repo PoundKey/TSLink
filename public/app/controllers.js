@@ -66,6 +66,8 @@ angular.module('myApp.controllers', [])
               * Remove a bus stop to firebase, object $scope.busStops, array 'tslink'
               */
             $scope.removeStop = function(stop) {
+                var ans = confirm('Sure to delete this entry? User system is undergoing construction, so please do not delete entries randomly.');
+                if (!ans) return;
                 var index = $scope.busStops.tslink.indexOf(stop);
                 $scope.busStops.tslink.splice(index,1)[0];
                 $scope.busStops.$save();
