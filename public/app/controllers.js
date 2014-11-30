@@ -204,7 +204,7 @@ angular.module('myApp.controllers', [])
 
                   }).
                   error(function(data, status, headers, config) {
-                    console.log("Error when refreshSingleStop: " + headers);
+                    console.log("Error when refreshSingleStop: " + stop);
                     return;
                   });
             };
