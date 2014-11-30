@@ -115,7 +115,7 @@ angular.module('myApp.controllers', [])
 
                 $http.post('/api/handleBusStop', {data: req}).
                   success(function(data, status, headers, config) {
-                    if (data.info.Code != undefined) {
+                    if (data.info.Code == 3002) {
                       alert("The bus stop number is invalid via Translink API.");
                       var index = $scope.busStops.tslink.indexOf(stop);
                       $scope.busStops.tslink.splice(index,1)[0];
@@ -132,10 +132,10 @@ angular.module('myApp.controllers', [])
                         }
 
                         var details = {};
-                        var routeNo = info.RouteNo;
-                        var dest = info.Schedules[0].Destination;
-                        var countDowntime = info.Schedules[0].ExpectedCountdown;
-                        var arrivalTime = info.Schedules[0].ExpectedLeaveTime;
+                        var routeNo = info.RouteNo || 'N/A';
+                        var dest = info.Schedules[0].Destination || 'N/A';
+                        var countDowntime = info.Schedules[0].ExpectedCountdown || 'N/A';
+                        var arrivalTime = info.Schedules[0].ExpectedLeaveTime || 'N/A';
                         //alert("Destination: " + dest + " Arrives in: " + arrivalTime);
                         details = {stop:stop, route:routeNo, dest:dest, cTime:countDowntime, aTime:arrivalTime};
                         stopInfo.push(details);
@@ -162,7 +162,7 @@ angular.module('myApp.controllers', [])
                 $http.post('/api/handleBusStop', {data: req}).
                   success(function(data, status, headers, config) {
                     //Error handle for invalid stop number, tho not necessary here
-                     if (data.info.Code != undefined) {
+                     if (data.info.Code == 3002) {
                       alert("The bus stop number is invalid via Translink API.");
                       var index = $scope.busStops.tslink.indexOf(stop);
                       $scope.busStops.tslink.splice(index,1)[0];
@@ -186,10 +186,10 @@ angular.module('myApp.controllers', [])
                           return;
                         }
 
-                        var routeNo = info.RouteNo;
-                        var dest = info.Schedules[0].Destination;
-                        var countDowntime = info.Schedules[0].ExpectedCountdown;
-                        var arrivalTime = info.Schedules[0].ExpectedLeaveTime;
+                        var routeNo = info.RouteNo || 'N/A';
+                        var dest = info.Schedules[0].Destination || 'N/A';
+                        var countDowntime = info.Schedules[0].ExpectedCountdown || 'N/A';
+                        var arrivalTime = info.Schedules[0].ExpectedLeaveTime || 'N/A';
                         //alert("Route: " + routeNo + " Destination: " + dest + " Arrives in: " + arrivalTime);
                         angular.forEach($scope.busStopDetails[stop], function(info, index) {
                             if (info.route == routeNo) {
