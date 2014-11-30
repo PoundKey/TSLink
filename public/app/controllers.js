@@ -30,6 +30,7 @@ angular.module('myApp.controllers', [])
                     $scope.busStops.$save();
                   }
 
+              //console.log($scope.busStops);
               fetchAllStops($scope.busStops.tslink);
               $scope.ajaxicon = false;
 
