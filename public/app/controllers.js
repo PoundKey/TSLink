@@ -94,7 +94,7 @@ angular.module('myApp.controllers', [])
             $scope.computeArrival = function (cTime) {
 
                 if (cTime == 'N/A')
-                  return 'N/A';
+                  return 'Delay';
                 if (cTime <=0)
                   return "Arrvied Now";
                 return "Arrive in: " + cTime + " min";
