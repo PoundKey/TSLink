@@ -115,7 +115,7 @@ angular.module('myApp.controllers', [])
 
                 $http.post('/api/handleBusStop', {data: req}).
                   success(function(data, status, headers, config) {
-                    if (data.info.Code) {
+                    if (data.info.Code != undefined) {
                       alert("The bus stop number is invalid via Translink API.");
                       var index = $scope.busStops.tslink.indexOf(stop);
                       $scope.busStops.tslink.splice(index,1)[0];
@@ -162,7 +162,7 @@ angular.module('myApp.controllers', [])
                 $http.post('/api/handleBusStop', {data: req}).
                   success(function(data, status, headers, config) {
                     //Error handle for invalid stop number, tho not necessary here
-                     if (data.info.Code) {
+                     if (data.info.Code != undefined) {
                       alert("The bus stop number is invalid via Translink API.");
                       var index = $scope.busStops.tslink.indexOf(stop);
                       $scope.busStops.tslink.splice(index,1)[0];
