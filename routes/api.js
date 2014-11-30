@@ -22,7 +22,7 @@ router.post('/handleBusStop', function (req, res) {
 	}, function(error, response, body) {
 			if (error) {
 				console.log(error);
-				res.json({title: 'Start fetching info for the given stop...', content: null });
+				res.json({msg: 'Failed to fetch info for the given stop... /handleBusStop', err: error});
 			}
 			//console.log('Type: ' + typeof(infoArray));
 			//console.log(JSON.stringify(infoArray));
