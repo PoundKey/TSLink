@@ -219,6 +219,17 @@ angular.module('myApp.controllers', [])
               });
             };
 
+            /**
+             * Trim the date and time format return from the api with time only
+             * @param  {date} aTime
+             * @return {time}
+             */
+            $scope.timeConf = function (aTime) {
+              var spaceIndex = aTime.indexOf(' ')
+              var time = spaceIndex < 0 ? aTime : aTime.substr(0,aTime.indexOf(' '));
+              return time;
+            }
+
 
 }]);
 
