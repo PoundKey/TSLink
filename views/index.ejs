@@ -28,10 +28,11 @@
                         </div>
                     </form>
                         <br>
+                        <div ng-repeat="err in errArray" ng-show="errShow">
+                            <div class="err animated bounceIn">{{err}}</div>
+                        </div>
                         <hr>
                         <br>
-
-
                         <div>
                         		<div class="message" ng-repeat="arrivals in busStopDetails">
                                   <div class="message animated fadeInUp" ng-repeat="arrival in arrivals">

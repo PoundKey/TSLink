@@ -3,12 +3,19 @@
 /* Controllers */
 
 angular.module('myApp.controllers', [])
-    .controller('AppCtrl', ['$scope', '$location', '$http', '$routeParams', '$interval', '$firebase',
-        function ($scope, $location, $http, $routeParams, $interval, $firebase) {
+    .controller('AppCtrl', ['$scope', '$location', '$http', '$routeParams', '$interval', '$firebase', '$timeout',
+        function ($scope, $location, $http, $routeParams, $interval, $firebase, $timeout) {
 
             $scope.busStops = {};
             $scope.busStopDetails = {};
             $scope.ajaxicon = true;
+
+            /**
+             * errArray: Array that holds all the error messages.
+             * @type {Array}
+             */
+            $scope.errArray = [];
+            $scope.errShow = true;
 
             var ref = new Firebase("https://ubccs.firebaseio.com/");
             var sync = $firebase(ref);
@@ -25,6 +32,13 @@ angular.module('myApp.controllers', [])
 
               fetchAllStops($scope.busStops.tslink);
               $scope.ajaxicon = false;
+
+              $timeout(function() {
+                $('.err').addClass('fadeOutUp');
+                $timeout(function(){
+                  $scope.errShow = false;
+                }, 500);
+              }, 5000);
               //update the bus stop information every min
               $interval(function(){
                 refreshAllStops($scope.busStops.tslink);
@@ -86,7 +100,9 @@ angular.module('myApp.controllers', [])
                       return;
                     } else if (data.info.Code) {
                       console.log("Error Code: " + data.info.Code);
-                      alert("Bus Stop " + stop + ": " + data.info.Message);
+                      var err = "Bus Stop " + stop + ": " + data.info.Message;
+                      $scope.errArray.push(err);
+
                       var index = $scope.busStops.tslink.indexOf(stop);
 
                       if (index < 0) {
