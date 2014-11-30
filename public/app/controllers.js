@@ -123,12 +123,12 @@ angular.module('myApp.controllers', [])
                       $scope.busStops.$save();
                       return;
                     }
+
                      //console.log(data.info); return;
                      angular.forEach(data.info, function(info) {
-
-                        // after midnight or the early evening, the busless period may cause unhandled error
-                        if (!info.Schedules[0]) {
-                          console.log('FetchSingleStop: No bus will arrive at current time perioid.');
+                        // after midnight or the early earlyevening, the busless period may cause unhandled error
+                        if (info.Schedules == undefined) {
+                          alert('Stop ' + stop + ': No bus will arrive at current time perioid.');
                           return;
                         }
 
@@ -178,7 +178,7 @@ angular.module('myApp.controllers', [])
 
                      angular.forEach(data.info, function(info) {
                       // after midnight or the early evening, the busless period may cause unhandled error
-                        if (!info.Schedules[0]) {
+                        if (info.Schedules == undefined) {
                           console.log('RefreshSingleStop: No bus will arrive at current time perioid.');
                           if ($scope.busStopDetails[stop]) {
                               var index = $scope.busStopDetails.indexOf(stop);
