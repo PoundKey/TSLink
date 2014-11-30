@@ -10,7 +10,7 @@ angular.module('myApp.controllers', [])
             $scope.busStopDetails = {};
             $scope.ajaxicon = true;
 
-            var ref = new Firebase("https://tslink.firebaseio.com/");
+            var ref = new Firebase("https://ubccs.firebaseio.com/");
             var sync = $firebase(ref);
 
             $scope.busStops = sync.$asObject();
@@ -51,18 +51,84 @@ angular.module('myApp.controllers', [])
                     alert('Please enter an valid bus stop number.')
                     return;
                 }
+
+                if ($scope.busStops.tslink == null) {
+                  console.log('Page has not been initialized yet...');
+                  return;
+                }
+
                 var index = $scope.busStops.tslink.indexOf($scope.inputStop);
-                if (index >= 0) {
+                if (index > -1) {
                   alert("The bus stop has already been added.")
                   //console.log(JSON.stringify());
                   return;
                 }
 
-                $scope.busStops.tslink.push($scope.inputStop);
-                $scope.busStops.$save();
                 fetchSingleStop($scope.inputStop);
             };
 
+            var fetchAllStops = function(stopList) {
+                angular.forEach(stopList, function(stop){
+                  fetchSingleStop(stop);
+                }); //here we done for the stoplist info fecthing
+            };
+
+
+            var fetchSingleStop = function(stop) {
+                var stopInfo = [];
+                var req = 'http://api.translink.ca/rttiapi/v1/stops/' + stop +
+                          '/estimates?apikey=' + apiKey + '&count=' + count + '&timeframe=' + tf;
+
+                $http.post('/api/handleBusStop', {data: req}).
+                  success(function(data, status, headers, config) {
+                    if (data.info.Code == 3002) {
+                      alert("The bus stop number is invalid via Translink API.");
+                      return;
+                    } else if (data.info.Code) {
+                      console.log("Error Code: " + data.info.Code);
+                      alert("Bus Stop " + stop + ": " + data.info.Message);
+                      var index = $scope.busStops.tslink.indexOf(stop);
+
+                      if (index < 0) {
+                        $scope.busStops.tslink.push(stop);
+                        $scope.busStops.$save();
+                      }
+                      return;
+                    }
+
+                    var index = $scope.busStops.tslink.indexOf(stop);
+                    if (index < 0) {
+                      $scope.busStops.tslink.push(stop);
+                      $scope.busStops.$save();
+                    }
+                     //console.log(data.info); return;
+                     angular.forEach(data.info, function(info) {
+                        // after midnight or the early earlyevening, the busless period may cause unhandled error
+                        if (info.Schedules == undefined) {
+                          alert('Stop ' + stop + ': No bus will arrive at current time perioid.');
+                          return;
+                        }
+
+                        var details = {};
+                        var routeNo = info.RouteNo || 'N/A';
+                        var dest = info.Schedules[0].Destination || 'N/A';
+                        var countDowntime = info.Schedules[0].ExpectedCountdown || 'N/A';
+                        var arrivalTime = info.Schedules[0].ExpectedLeaveTime || 'N/A';
+                        //alert("Destination: " + dest + " Arrives in: " + arrivalTime);
+                        details = {stop:stop, route:routeNo, dest:dest, cTime:countDowntime, aTime:arrivalTime};
+                        stopInfo.push(details);
+                        //console.log(stopInfo);
+                     });
+                     if ($scope.busStopDetails[stop] == null) {
+                        $scope.busStopDetails[stop] = stopInfo;
+                       }
+                     //console.log(JSON.stringify($scope.busStopDetails));
+                  }).
+                  error(function(data, status, headers, config) {
+                    console.log("Error when fetching stop info: " + data);
+                    return;
+                  });
+            };
              /*
               * Remove a bus stop to firebase, object $scope.busStops, array 'tslink'
               */
@@ -70,7 +136,7 @@ angular.module('myApp.controllers', [])
                 var ans = confirm('Sure to delete this entry? User system is undergoing construction, so please do not delete entries randomly.');
                 if (!ans) return;
                 var index = $scope.busStops.tslink.indexOf(stop);
-                $scope.busStops.tslink.splice(index,1)[0];
+                $scope.busStops.tslink.splice(index,1);
                 $scope.busStops.$save();
                 delete $scope.busStopDetails[stop];
                 //console.log(JSON.stringify($scope.busStopDetails));
@@ -100,74 +166,33 @@ angular.module('myApp.controllers', [])
                 return "Arrive in: " + cTime + " min";
             };
 
-            var fetchAllStops = function(stopList) {
 
-                $scope.busStopDetails = {};
-                angular.forEach(stopList, function(stop){
-                  fetchSingleStop(stop);
-                }); //here we done for the stoplist info fecthing
-            };
-
-
-            var fetchSingleStop = function(stop) {
-                var stopInfo = [];
-                var req = 'http://api.translink.ca/rttiapi/v1/stops/' + stop +
-                          '/estimates?apikey=' + apiKey + '&count=' + count + '&timeframe=' + tf;
-
-                $http.post('/api/handleBusStop', {data: req}).
-                  success(function(data, status, headers, config) {
-                    if (data.info.Code == 3002) {
-                      alert("The bus stop number is invalid via Translink API.");
-                      var index = $scope.busStops.tslink.indexOf(stop);
-                      $scope.busStops.tslink.splice(index,1)[0];
-                      $scope.busStops.$save();
-                      return;
-                    }
-
-                     //console.log(data.info); return;
-                     angular.forEach(data.info, function(info) {
-                        // after midnight or the early earlyevening, the busless period may cause unhandled error
-                        if (info.Schedules == undefined) {
-                          alert('Stop ' + stop + ': No bus will arrive at current time perioid.');
-                          return;
-                        }
-
-                        var details = {};
-                        var routeNo = info.RouteNo || 'N/A';
-                        var dest = info.Schedules[0].Destination || 'N/A';
-                        var countDowntime = info.Schedules[0].ExpectedCountdown || 'N/A';
-                        var arrivalTime = info.Schedules[0].ExpectedLeaveTime || 'N/A';
-                        //alert("Destination: " + dest + " Arrives in: " + arrivalTime);
-                        details = {stop:stop, route:routeNo, dest:dest, cTime:countDowntime, aTime:arrivalTime};
-                        stopInfo.push(details);
-                        //console.log(stopInfo);
-                     });
-                     if ($scope.busStopDetails[stop] == null) {
-                        $scope.busStopDetails[stop] = stopInfo;
-                       }
-                     //console.log(JSON.stringify($scope.busStopDetails));
-                  }).
-                  error(function(data, status, headers, config) {
-                    console.log("Error when fetching stop info: " + data);
-                    return;
-                  });
-            };
 
             /*
              * update a single stop info in interval of 1 min
              */
             var refreshSingleStop = function(stop) {
+              //alert("Refreshing Stop: " + stop);
                 var stopInfo = [];
                 var req = 'http://api.translink.ca/rttiapi/v1/stops/' + stop +
                           '/estimates?apikey=' + apiKey + '&count=' + count + '&timeframe=' + tf;
                 $http.post('/api/handleBusStop', {data: req}).
                   success(function(data, status, headers, config) {
                     //Error handle for invalid stop number, tho not necessary here
+                    /*
                      if (data.info.Code == 3002) {
                       alert("The bus stop number is invalid via Translink API.");
                       var index = $scope.busStops.tslink.indexOf(stop);
                       $scope.busStops.tslink.splice(index,1)[0];
                       $scope.busStops.$save();
+                      return;
+                    } else if (data.info.Code) {
+                      alert("Bus Stop " + stop + ": " + data.info.Message);
+                      return;
+                    }
+                    */
+                   if (data.info.Code) {
+                      console.log("Bus Stop " + stop + ": " + data.info.Message);
                       return;
                     }
 
@@ -182,7 +207,7 @@ angular.module('myApp.controllers', [])
                           console.log('RefreshSingleStop: No bus will arrive at current time perioid.');
                           if ($scope.busStopDetails[stop]) {
                               var index = $scope.busStopDetails.indexOf(stop);
-                              $scope.busStopDetails.splice(index,1)[0];
+                              $scope.busStopDetails.splice(index,1);
                           }
                           return;
                         }
