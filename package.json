@@ -6,6 +6,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "pg": "4.x",
     "express": "~4.x",
     "body-parser": "~1.x",
     "cookie-parser": "~1.x",
