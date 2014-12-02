@@ -14,7 +14,8 @@
     "serve-favicon": "~2.x",
     "debug": "~2.x",
     "ejs": "*",
-    "request": "~2.x"
+    "request": "~2.x",
+    "underscore" : "~1.x"
   },
   "devDependencies": {
     "gulp": "~3.x",
