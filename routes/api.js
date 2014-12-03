@@ -1,16 +1,16 @@
 var express = require('express');
 var router = express.Router();
 var request = require("request");
+var _ = require('underscore');
 
-var child = undefined;
 
 /* GET users listing. */
 router.get('/', function (req, res) {
     res.send('respond with a resource');
 });
 
-router.post('/handleBusStop', function (req, res) {
 
+router.post('/handleBusStop', function (req, res) {
 	var apiGet = req.body.data;
 	request({
 		url: apiGet,

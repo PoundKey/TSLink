@@ -6,9 +6,12 @@ angular.module('myApp.controllers', [])
     .controller('AppCtrl', ['$scope', '$location', '$http', '$routeParams', '$interval', '$firebase', '$timeout',
         function ($scope, $location, $http, $routeParams, $interval, $firebase, $timeout) {
 
+
+
             $scope.busStops = {};
             $scope.busStopDetails = {};
             $scope.ajaxicon = true;
+
 
             /**
              * errArray: Array that holds all the error messages.
@@ -17,7 +20,11 @@ angular.module('myApp.controllers', [])
             $scope.errArray = [];
             $scope.errShow = true;
 
-            var ref = new Firebase("https://ubccs.firebaseio.com/");
+            var fbase = 'https://ubccs.firebaseio.com/';
+            if (document.location.hostname == "localhost") {
+              fbase = 'https://tslinkdev.firebaseio.com';
+            }
+            var ref = new Firebase(fbase);
             var sync = $firebase(ref);
 
             $scope.busStops = sync.$asObject();
@@ -81,6 +88,7 @@ angular.module('myApp.controllers', [])
 
                 fetchSingleStop($scope.inputStop);
             };
+
 
             var fetchAllStops = function(stopList) {
                 angular.forEach(stopList, function(stop){
@@ -174,6 +182,12 @@ angular.module('myApp.controllers', [])
                     });
             };
 
+
+          /**
+           * Computer the arrival time according to the return value
+           * @param cTime
+           * @returns {string}
+           */
             $scope.computeArrival = function (cTime) {
 
                 if (cTime == 'N/A')
@@ -182,7 +196,6 @@ angular.module('myApp.controllers', [])
                   return "Arrvied Now";
                 return "Arrive in: " + cTime + " min";
             };
-
 
 
             /*
