@@ -15,7 +15,8 @@
     "debug": "~2.x",
     "ejs": "*",
     "request": "~2.x",
-    "underscore" : "~1.x"
+    "underscore" : "~1.x",
+    "socket.io": "^1.2.1"
   },
   "devDependencies": {
     "gulp": "~3.x",
