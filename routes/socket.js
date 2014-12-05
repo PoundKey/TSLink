@@ -11,7 +11,10 @@ var socketIO = function() {
 
 	io.on('connection', function(socket){
 
-
+		socket.on('rez', function(data){
+			console.log("Data From Client-side: " + data.info);
+			socket.emit('exe', 'Exchange data from the server side');
+		});
 
 	});
 

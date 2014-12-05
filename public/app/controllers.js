@@ -3,10 +3,19 @@
 /* Controllers */
 
 angular.module('myApp.controllers', [])
-    .controller('AppCtrl', ['$scope', '$location', '$http', '$routeParams', '$interval', '$firebase', '$timeout',
-        function ($scope, $location, $http, $routeParams, $interval, $firebase, $timeout) {
+    .controller('AppCtrl', ['$scope', '$location', '$http', '$routeParams',
+                '$interval', '$firebase', '$timeout', 'socket.io',
+        function ($scope, $location, $http, $routeParams, $interval, $firebase, $timeout, socket) {
 
 
+            socket.on('connect', function() {
+              console.log('Now is connecting to the localhost...');
+              socket.emit('rez', {info: 'Calling from the client side'});
+            });
+
+            socket.on('exe', function(data) {
+              console.log('Now is connecting to the localhost: ' + data);
+            });
 
             $scope.busStops = {};
             $scope.busStopDetails = {};
