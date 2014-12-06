@@ -4,8 +4,9 @@
      <div class="loader">Loading...</div>
 </div>
 <!-- BEGIN MAIN PAGE -->
-<div id="page-main" class="page active" ng-show="!ajaxicon">
-    <div class="content-wrapper with-footer">
+<div id="page-main" class="page active row" ng-show="!ajaxicon">
+    <div class="col-xs-0"></div>
+    <div class="content-wrapper with-footer col-xs-12">
         <!-- BEGIN CONTENT SECTION FOR MAIN PAGE -->
         <section class="content">
             <div class="entries">
@@ -21,8 +22,7 @@
 
                     <form id="newsletter-form" class="the-form anim-go-left" ng-submit="addBusStop()">
                         <div class="field-wrapper">
-                            <input type="text" class="textfield required" ng-model="inputStop" name="stop" placeholder="Please add a nearby bus stop..." />
-
+                            <input type="text" class="textfield required" ng-model="inputStop" name="stop" placeholder="Please add a nearby bus stop..."/>
                             <button type="submit" class="btn" style="width:120px">Add Stop
                             </button>
                         </div>
@@ -65,9 +65,10 @@
         </section>
         <!-- END CONTENT SECTION -->
     </div>
-    <div id="background">
+    <div class="col-xs-0"></div>
+<!--     <div id="background">
       <img src="images/ym.jpg"/>
-    </div>
+    </div> -->
 </div>
 <!-- END MAIN PAGE -->
 

@@ -1,3 +1,16 @@
+html {
+	height:100%;
+  width:100%;
+  position:relative;
+	background-image: url('../images/ym.jpg');
+	background-repeat: no-repeat;
+	background-position:center center;
+	-webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
 .arrive-box{
 	width: 70%;
 	left: 0px;
@@ -28,7 +41,7 @@
 }
 
 @media screen and (max-width: 1068px) {
-    .arrive-left-item{
+  .arrive-left-item{
 	position: relative;
 	display: inline-block;
 	width: 100%;
