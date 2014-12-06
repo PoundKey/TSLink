@@ -3,7 +3,7 @@ html {
   width:100%;
   position:relative;
 	background-image: url('../images/ym.jpg');
-	background-repeat: no-repeat;
+	background-repeat: repeat-y;
 	background-position:center center;
 	-webkit-background-size: cover;
   -moz-background-size: cover;
