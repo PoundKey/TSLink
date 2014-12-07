@@ -9,12 +9,11 @@ angular.module('myApp.controllers', [])
 
 
             socket.on('connect', function() {
-              console.log('Now is connecting to the localhost...');
-              socket.emit('rez', {info: 'Calling from the client side'});
+              socket.emit('fetchStop', 59844);
             });
 
-            socket.on('exe', function(data) {
-              console.log('Now is connecting to the localhost: ' + data);
+            socket.on('stopInfo', function(data) {
+              console.log('Bus Stop Data: ' + data);
             });
 
             $scope.busStops = {};
@@ -117,7 +116,7 @@ angular.module('myApp.controllers', [])
                       alert("The bus stop number is invalid via Translink API.");
                       return;
                     } else if (data.info.Code) {
-                      console.log("Error Code: " + data.info.Code);
+                      //console.log("Error Code: " + data.info.Code);
                       var err = "Bus Stop " + stop + ": " + data.info.Message;
                       $scope.errArray.push(err);
 
@@ -231,7 +230,7 @@ angular.module('myApp.controllers', [])
                     }
                     */
                    if (data.info.Code) {
-                      console.log("Bus Stop " + stop + ": " + data.info.Message);
+                      //console.log("Bus Stop " + stop + ": " + data.info.Message);
                       return;
                     }
 
