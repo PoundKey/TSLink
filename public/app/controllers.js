@@ -8,11 +8,11 @@ angular.module('myApp.controllers', [])
         function ($scope, $location, $http, $routeParams, $interval, $firebase, $timeout, socket) {
 
             socket.on('connect', function() {
-              socket.emit('fetchStop', 59844);
+              //socket.emit('fetchStop', 59844);
             });
 
             socket.on('stopInfo', function(data) {
-              //console.log('Bus Stop Data: ' + data);
+              console.log('Bus Stop Data: ' + data);
             });
 
             $scope.busStops = {};
@@ -174,13 +174,19 @@ angular.module('myApp.controllers', [])
               * Remove a bus stop to firebase, object $scope.busStops, array 'tslink'
               */
             $scope.removeStop = function(stop) {
-                var ans = confirm('Sure to delete this entry? User system is undergoing construction, so please do not delete entries randomly.');
-                if (!ans) return;
-                var index = $scope.busStops.tslink.indexOf(stop);
-                $scope.busStops.tslink.splice(index,1);
-                $scope.busStops.$save();
-                delete $scope.busStopDetails[stop];
-                //console.log(JSON.stringify($scope.busStopDetails));
+              sweetAlert({title: "Are you sure?",
+                text: "User system is undergoing construction, so please do not delete entries randomly.",
+                type: "info", allowOutsideClick:true, showCancelButton: true, confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Confirm", closeOnConfirm: false
+                }, function(ans){
+                  if (ans){
+                    var index = $scope.busStops.tslink.indexOf(stop);
+                    $scope.busStops.tslink.splice(index,1);
+                    $scope.busStops.$save();
+                    delete $scope.busStopDetails[stop];
+                    sweetAlert("Deleted!", "The bus stop entry has been deleted.", "success");
+                  }
+                });
             };
 
 
