@@ -14,6 +14,3 @@ var myApp = angular.module('myApp', [
 myApp.factory('socket.io', function (socketFactory) {
   return socketFactory();
 });
-
-
-

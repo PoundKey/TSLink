@@ -7,13 +7,12 @@ angular.module('myApp.controllers', [])
                 '$interval', '$firebase', '$timeout', 'socket.io',
         function ($scope, $location, $http, $routeParams, $interval, $firebase, $timeout, socket) {
 
-
             socket.on('connect', function() {
               socket.emit('fetchStop', 59844);
             });
 
             socket.on('stopInfo', function(data) {
-              console.log('Bus Stop Data: ' + data);
+              //console.log('Bus Stop Data: ' + data);
             });
 
             $scope.busStops = {};
@@ -78,7 +77,10 @@ angular.module('myApp.controllers', [])
 
             $scope.addBusStop = function () {
                 if (checkInputStop($scope.inputStop) == false){
-                    alert('Please enter an valid bus stop number.')
+                    //swal('Please enter an valid bus stop number.');
+                    sweetAlert({title: "Oops...",
+                                text: "Please enter an valid bus stop number.",
+                                type: "warning", allowOutsideClick:true});
                     return;
                 }
 
@@ -89,7 +91,10 @@ angular.module('myApp.controllers', [])
 
                 var index = $scope.busStops.tslink.indexOf($scope.inputStop);
                 if (index > -1) {
-                  alert("The bus stop has already been added.")
+                  sweetAlert({title: "Oops...",
+                              text: "The bus stop has already been added.",
+                              type: "warning", allowOutsideClick:true});
+
                   //console.log(JSON.stringify());
                   return;
                 }
@@ -113,7 +118,10 @@ angular.module('myApp.controllers', [])
                 $http.post('/api/handleBusStop', {data: req}).
                   success(function(data, status, headers, config) {
                     if (data.info.Code == 3002) {
-                      alert("The bus stop number is invalid via Translink API.");
+                      //alert("The bus stop number is invalid via Translink API.");
+                      sweetAlert({title: "Oops...",
+                              text: "The bus stop number is invalid via Translink API.",
+                              type: "warning", allowOutsideClick:true});
                       return;
                     } else if (data.info.Code) {
                       //console.log("Error Code: " + data.info.Code);
