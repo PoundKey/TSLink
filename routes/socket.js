@@ -3,6 +3,7 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var request = require('request');
 var _ = require('underscore');
+var async = require('async');
 
 /**
  * Info of the translink API Request

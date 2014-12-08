@@ -1,5 +1,5 @@
 #TSLink
-###A Bus Scheduler App in Vancouver BC Via Translink
+###A Realtime Bus Scheduler App in Vancouver BC Via Translink
 The bus arrival time for each stop refreshes automatically on minute-by-minute basis.
 Duty of making the API requests and forming the formatted JSON object are moved to the server-side, and the exchange of data between frontend and backend is done through socket.io.
 
@@ -10,9 +10,9 @@ Duty of making the API requests and forming the formatted JSON object are moved 
 - [ExpressJS](http://expressjs.com/4x/api.html) (Back-end Framework)
 - [AngularJS](https://docs.angularjs.org/api) (Front-end Framework)
 - [Socket.io](http://socket.io) (Data Exchange Channel)
-- [Gulp.js](http://gulpjs.com/) (Tasks Automation)  
+- [Gulp.js](http://gulpjs.com/) (Tasks Automation)
 - [Yeoman.io](http://yeoman.io/) (Generator)
 - [Heroku](https://www.heroku.com/) (Deployment)
-      
+
 
 

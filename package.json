@@ -1,13 +1,13 @@
 {
   "name": "tslink",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "start": "node ./bin/www"
   },
   "dependencies": {
-    "pg": "4.x",
-    "express": "~4.x",
+    "pg": "~4.0",
+    "express": "~4.10",
     "body-parser": "~1.x",
     "cookie-parser": "~1.x",
     "morgan": "~1.x",
@@ -16,7 +16,8 @@
     "ejs": "*",
     "request": "~2.x",
     "underscore" : "~1.x",
-    "socket.io": "^1.2.1"
+    "socket.io": "^1.2.1",
+    "async": "~0.9"
   },
   "devDependencies": {
     "gulp": "~3.x",
