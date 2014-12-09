@@ -85,8 +85,8 @@ angular.module('myApp.controllers', [])
                 }
 
                 if ($scope.busStops.tslink == null) {
-                  console.log('Page has not been initialized yet...');
-                  return;
+                    $scope.busStops.tslink = [];
+                    $scope.busStops.$save();
                 }
 
                 var index = $scope.busStops.tslink.indexOf($scope.inputStop);
