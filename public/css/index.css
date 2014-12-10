@@ -65,6 +65,9 @@ html {
 
 @media screen and (max-width: 1092px) {
 
+.arrive-box{
+	width: 60%;
+}
   .arrive-left-item{
 	width: 100%;
 }
@@ -79,5 +82,11 @@ html {
 
 .double-slash-bar{
 	display: none;
+}
+}
+
+@media screen and (max-width: 640px) {
+.arrive-box{
+	width: 85%;
 }
 }
