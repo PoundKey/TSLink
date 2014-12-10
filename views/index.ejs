@@ -1,22 +1,22 @@
 <% include header %>
-
 <div class="preload load-container load3" ng-if="ajaxicon">
      <div class="loader">Loading...</div>
 </div>
 <!-- BEGIN MAIN PAGE -->
-<div id="page-main" class="page active" ng-show="!ajaxicon">
+<div id="page-main" class="page active grid-container" ng-show="!ajaxicon">
+
     <div class="content-wrapper with-footer">
         <!-- BEGIN CONTENT SECTION FOR MAIN PAGE -->
         <section class="content animated zoomIn">
             <div class="entries">
-                <div id="main" class="entry" style="opacity:0.6;position:relative;background-color:#000000;margin: 0 auto;width: 80%">
+                <div id="main" class="entry mview">
 
                     <br>
                     <h1 class="anim-go-right grow">
                     <a href="https://github.com/poundkey"><i class="fa fa-windows"></i></a> TSLink </h1>
                     <h5 class="anim-go-right">
                     <a href="https://github.com/poundkey/TSLink"><i class="fa fa-github grow"></i></a>
-                    A Bus Scheduler App Via Translink Vancouver
+                    A Realtime Bus Timer App Via Translink Vancouver
                     </h5>
 
                     <form id="newsletter-form" class="the-form anim-go-left" ng-submit="addBusStop()">
@@ -61,7 +61,6 @@
                     -->
                 </div>
             </div>
-            <div class="push"></div>
         </section>
         <!-- END CONTENT SECTION -->
     </div>

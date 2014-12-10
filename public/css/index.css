@@ -11,6 +11,28 @@ html {
   background-size: cover;
 }
 
+.mview {
+	opacity: 0.6;
+	background-color:#000000;
+	width: 65%;
+	margin: 0 auto;
+}
+
+@media screen and (max-width: 1068px) {
+.mview {
+	width: 80%;
+	}
+}
+
+@media screen and (max-width: 720px) {
+.mview {
+	width: 100%;
+	}
+}
+
+
+
+
 .arrive-box{
 	width: 70%;
 	left: 0px;

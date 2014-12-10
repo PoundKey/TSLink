@@ -1,5 +1,5 @@
 #TSLink
-###A Realtime Bus Scheduler App in Vancouver BC Via Translink
+###A Realtime Bus Timer App in Vancouver BC Via Translink
 The bus arrival time for each stop refreshes automatically on minute-by-minute basis.
 Duty of making the API requests and forming the formatted JSON object are moved to the server-side, and the exchange of data between frontend and backend is done through socket.io.
 
