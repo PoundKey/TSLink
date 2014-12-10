@@ -18,7 +18,7 @@ html {
 	margin: 0 auto;
 }
 
-@media screen and (max-width: 1068px) {
+@media screen and (max-width: 1280px) {
 .mview {
 	width: 80%;
 	}
@@ -63,7 +63,7 @@ html {
 }
 
 
-@media screen and (max-width: 1279px) {
+@media screen and (max-width: 1092px) {
 
   .arrive-left-item{
 	width: 100%;
