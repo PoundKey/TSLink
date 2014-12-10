@@ -14,7 +14,7 @@ html {
 .mview {
 	opacity: 0.6;
 	background-color:#000000;
-	width: 65%;
+	width: 68%;
 	margin: 0 auto;
 }
 
@@ -34,7 +34,7 @@ html {
 
 
 .arrive-box{
-	width: 70%;
+	width: 82%;
 	left: 0px;
 }
 
@@ -42,19 +42,19 @@ html {
 	position: relative;
 	display: inline-block;
 	left: 0%;
-	width: 26%;
+	width: 32%;
 }
 
 .arrive-mid-item{
 	display: inline-block;
 	position: relative;
-	width: 49%;
+	width: 40%;
 }
 
 .arrive-right-item{
 	display: inline-block;
 	position: relative;
-	width: 12%;
+	width: 17%;
 }
 
 .double-slash-bar{
@@ -62,22 +62,18 @@ html {
 	position: relative;
 }
 
-@media screen and (max-width: 1068px) {
+
+@media screen and (max-width: 1279px) {
+
   .arrive-left-item{
-	position: relative;
-	display: inline-block;
 	width: 100%;
 }
 
 .arrive-mid-item{
-	display: inline-block;
-	position: relative;
 	width: 100%;
 }
 
 .arrive-right-item{
-	display: inline-block;
-	position: relative;
 	width: 100%;
 }
 
