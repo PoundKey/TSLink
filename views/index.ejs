@@ -20,7 +20,7 @@
                     <a href="https://github.com/poundkey/TSLink"><i class="fa fa-github grow"></i></a>
                     A Realtime Bus Timer App Via Translink Vancouver
                     </h5>
-                    <div ng-if="!user">
+                    <div ng-show="!user">
                         <form id="newsletter-form" class="the-form anim-go-left" ng-submit="enterUser()">
                             <div class="field-wrapper">
                                 <input type="text" class="textfield required" ng-model="username" name="username" placeholder="Please enter your username..."/>
@@ -31,7 +31,7 @@
                         </form>
                     </div>
 
-                    <div ng-if="user">
+                    <div ng-show="user">
                         <form id="newsletter-form" class="the-form anim-go-left" ng-submit="addBusStop()">
                             <div class="field-wrapper">
                                 <input type="text" class="textfield required" ng-model="inputStop" name="stop" placeholder="Please add a nearby bus stop..."/>

@@ -3,18 +3,16 @@
 /* Controllers */
 
 angular.module('myApp.controllers', [])
-    .controller('AppCtrl', ['$scope', '$location', '$http', '$routeParams',
-                '$interval', '$firebase', '$timeout', 'socket.io', 'localStorageService', 'cloudBase',
+    .controller('AppCtrl', ['$scope', '$location', '$http', '$routeParams', '$interval',
+                            '$timeout', 'socket.io', 'localStorageService', 'cloudBase',
         function ($scope, $location, $http, $routeParams, $interval,
-                                $firebase, $timeout, socket, login, cloud) {
+                                $timeout, socket, login, cloud) {
 
             $scope.user = login.get('user');
 
-
             var localhost = document.location.hostname == "localhost" ;
-            var fbase = localhost ? cloud[1]: cloud[0];
-            //info needed to connect to firebase, return a bus list contains all bus stop
-            var ref, sync, main, buslist;
+            var sqlBase = localhost ? cloud[1]: cloud[0];
+
 
             $scope.busStops = {};
             $scope.busStopDetails = {};
@@ -25,7 +23,33 @@ angular.module('myApp.controllers', [])
 
             $scope.enterUser = function() {
               var uname = $scope.username;
-              alert(uname);return;
+              var newUser = {};
+              if (!checkUsername(uname)) {
+                iAlert('Oops...', "Please enter a valid username. (3~15 Characters)", 'warning');
+                return;
+              }
+
+              var uDict = rootDB.users;
+              var uArray = _.keys(uDict);
+              console.log(uArray);
+              if (_.contains(uArray, uname)) {
+                iAlert('Not Available.', "Please choose another username. (3~15 Characters)", 'warning');
+                return;
+              }
+
+              var memo = new Date();
+              var stamp = memo.toLocaleString();
+              newUser[uname] = stamp;
+              _.extend(uDict, newUser);
+              if (rootDB.$save()) {
+                iAlert('Welcome, ' + uname + '!', "You can start adding bus stops now.", 'success');
+              } else {
+                iAlert('Oops...', "Something went wrong, please check the internet connection.", 'error');
+              }
+
+              return;
+
+
             };
 
 
@@ -90,7 +114,7 @@ angular.module('myApp.controllers', [])
                 if (!checkInputStop($scope.inputStop)){
                     //swal('Please enter an valid bus stop number.');
                     sweetAlert({title: "Oops...",
-                                text: "Please enter an valid bus stop number.",
+                                text: "Please enter a valid bus stop number.",
                                 type: "warning", allowOutsideClick:true});
                     return;
                 }
@@ -342,9 +366,14 @@ angular.module('myApp.controllers', [])
             }
 
             function fbInit (sync) {
-              if (!sync.users) sync.users = {info : '$init'};
-              if (!sync.api) sync.api = {info : '$init'};
-              sync.$save();
+              if (!sync.users) {
+                sync.users = {info : '$init'};
+                sync.$save();
+              };
+              if (!sync.api) {
+                sync.api = {info : '$init'};
+                sync.$save();
+              }
             }//end of fbInit()
 
             function iAlert (title, msg, type) {
@@ -356,10 +385,9 @@ angular.module('myApp.controllers', [])
               });
             }//end of iAlert()
 
-            function mockup () {
-              ref = new Firebase(fbase);
-              sync = $firebase(ref);
-              $scope.busStops = sync.$asObject();
+            function checkUsername (uname) {
+                var validity = _.isString(uname) && (uname.length >=3) && (uname.length <=15);
+                return validity;             // body...
             }
 
 

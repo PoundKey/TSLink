@@ -18,7 +18,6 @@
     "underscore" : "~1.x",
     "socket.io": "^1.2.1",
     "async": "~0.9",
-    "firebase": "~2.0.6"
   },
   "devDependencies": {
     "gulp": "~3.x",
