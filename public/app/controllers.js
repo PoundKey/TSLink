@@ -48,10 +48,8 @@ angular.module('myApp.controllers', [])
 
               //console.log($scope.busStops);
               fetchAllStops($scope.busStops.tslink);
-              $timeout(function() {
-                $scope.ajaxicon = false;
-              }, 300);
 
+              $scope.ajaxicon = false;
               $timeout(function() {
                 $('.err').addClass('fadeOutUp');
                 $timeout(function(){
