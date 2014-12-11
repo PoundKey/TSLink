@@ -4,11 +4,13 @@
 
 angular.module('myApp.controllers', [])
     .controller('AppCtrl', ['$scope', '$location', '$http', '$routeParams',
-                '$interval', '$firebase', '$timeout', 'socket.io',
-        function ($scope, $location, $http, $routeParams, $interval, $firebase, $timeout, socket) {
+                '$interval', '$firebase', '$timeout', 'socket.io', 'localStorageService',
+        function ($scope, $location, $http, $routeParams, $interval,
+                                $firebase, $timeout, socket, login) {
 
             socket.on('connect', function() {
               //socket.emit('fetchStop', 59844);
+
             });
 
             socket.on('stopInfo', function(data) {

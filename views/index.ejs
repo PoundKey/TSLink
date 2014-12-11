@@ -38,12 +38,14 @@
                                   <button class="btn arrive-box">
                                     <span class="arrive-left-item"><i class="fa fa-bus"></i> {{arrival.route}} {{arrival.dest}} </span>
                                     <span class=" double-slash-bar">&nbsp;&#166;&nbsp;</span>
-                                    <div class="pulse-grow arrive-mid-item"><i class="fa fa-bell-o"></i> {{computeArrival(arrival.cTime)}} <i class="fa fa-at"></i> {{timeConf(arrival.aTime)}}
+                                    <div class="pulse-grow arrive-mid-item"><i class="fa fa-bell-o"></i> {{computeArrival(arrival.cTime)}}
+                                    <i class="fa fa-at"></i> {{timeConf(arrival.aTime)}}
                                     </div>
                                     <span class="double-slash-bar">&nbsp;&#166;&nbsp;</span>
                                     <span class="arrive-right-item">
                                       <i class="fa fa-flag-o"></i> {{arrival.stop}}
-                                                                        <a ng-click="removeStop(arrival.stop)" class="btn3"><i class="fa fa-trash-o"></i></a>
+                                      <a ng-click="removeStop(arrival.stop)" class="btn3">
+                                      <i class="fa fa-trash-o"></i></a>
                                     </span>
                                   </button>
 

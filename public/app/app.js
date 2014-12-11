@@ -7,7 +7,8 @@ var myApp = angular.module('myApp', [
   'ngSanitize',
   'myApp.controllers',
   "firebase",
-  'btford.socket-io'
+  'btford.socket-io',
+  'LocalStorageModule'
 
 ]);
 

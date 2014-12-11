@@ -88,7 +88,7 @@ var socketIO = function() {
  function translinkAPI (stop, apiKey, count, timeFrame, callback) {
 
  		var req = 'http://api.translink.ca/rttiapi/v1/stops/' + stop +
- 							'/estimates?apikey=' + apiKey + '&count=' + count + '&timeframe=' + timeFrame;
+ 		          '/estimates?apikey=' + apiKey + '&count=' + count + '&timeframe=' + timeFrame;
 
 		request({url: req, method: "GET", timeout: 1500, headers: {Accept:'application/JSON'}},
 			function(error, response, body) {
