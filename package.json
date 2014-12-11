@@ -6,18 +6,19 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
-    "pg": "~4.0",
-    "express": "~4.10",
+    "async": "~0.9",
     "body-parser": "~1.x",
     "cookie-parser": "~1.x",
-    "morgan": "~1.x",
-    "serve-favicon": "~2.x",
     "debug": "~2.x",
     "ejs": "*",
+    "express": "~4.10",
+    "morgan": "~1.x",
+    "orchestrate": "^0.3.14",
+    "pg": "~4.0",
     "request": "~2.x",
-    "underscore" : "~1.x",
+    "serve-favicon": "~2.x",
     "socket.io": "^1.2.1",
-    "async": "~0.9",
+    "underscore": "~1.x"
   },
   "devDependencies": {
     "gulp": "~3.x",
