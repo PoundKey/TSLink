@@ -4,7 +4,6 @@ var io = require('socket.io')(http);
 var request = require('request');
 var _ = require('underscore');
 var async = require('async');
-
 /**
  * Info of the translink API Request
  * apiKey: UID, count: next {count} number of bus scheduled, tf: time frame, in minutes
@@ -24,51 +23,10 @@ var socketIO = function() {
 
 	io.on('connection', function(socket){
 
-		/**
-		 * Fetch a single bus stop information, given its stop number
-		 * @param  {int} data :bus stop number
-		 * @return {json}  A JSON object containing the stop info or error code/message
-		 */
-		socket.on('fetchStop', function(data){
-			var busStop = data;
-			translinkAPI(busStop, apiKey, count, tf, function (stopInfo) {
-				socket.emit('stopInfo', stopInfo);
-			});
+		socket.on('login', function(data) {
+
+			startListening(socket);
 		});
-
-
-
-		/**
-		 * Refresh a single bus stop information, given its stop number
-		 * @param  {int} data :bus stop number
-		 * @return {json}  A JSON object containing the stop info or error code/message
-		 */
-		socket.on('refreshStop', function(data){
-			var busStop = data;
-			translinkAPI(busStop, apiKey, count, tf, function (stopInfo) {
-				//todo
-			});
-
-		});
-
-
-
-		/**
-		 * Add a single bus stop information, given its stop number
-		 * @param  {int} data :bus stop number
-		 * @return {json}  A JSON object containing the stop info or error code/message
-		 */
-		socket.on('addStop', function(data){
-			var busStop = data;
-			translinkAPI(busStop, apiKey, count, tf, function (stopInfo) {
-				//todo
-			});
-
-		});
-
-
-
-
 
 
 
@@ -100,6 +58,57 @@ var socketIO = function() {
 				if (!stopInfo) return;
 				callback(stopInfo);
 		});
+ }
+
+
+/**
+ * listening to those events only with user logged in
+ * @param  {object} socket
+ * @return {void}
+ */
+ function startListening(socket) {
+
+			/**
+			 * Fetch a single bus stop information, given its stop number
+			 * @param  {int} data :bus stop number
+			 * @return {json}  A JSON object containing the stop info or error code/message
+			 */
+			socket.on('fetchStop', function(data){
+				var busStop = data;
+				translinkAPI(busStop, apiKey, count, tf, function (stopInfo) {
+					socket.emit('stopInfo', stopInfo);
+				});
+			});
+
+
+
+			/**
+			 * Refresh a single bus stop information, given its stop number
+			 * @param  {int} data :bus stop number
+			 * @return {json}  A JSON object containing the stop info or error code/message
+			 */
+			socket.on('refreshStop', function(data){
+				var busStop = data;
+				translinkAPI(busStop, apiKey, count, tf, function (stopInfo) {
+					//todo
+				});
+
+			});
+
+
+
+			/**
+			 * Add a single bus stop information, given its stop number
+			 * @param  {int} data :bus stop number
+			 * @return {json}  A JSON object containing the stop info or error code/message
+			 */
+			socket.on('addStop', function(data){
+				var busStop = data;
+				translinkAPI(busStop, apiKey, count, tf, function (stopInfo) {
+					//todo
+				});
+
+			});
  }
 
 

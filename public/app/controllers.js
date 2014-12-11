@@ -8,8 +8,11 @@ angular.module('myApp.controllers', [])
         function ($scope, $location, $http, $routeParams, $interval,
                                 $firebase, $timeout, socket, login) {
 
+            $scope.user = login.get('user');
+
             socket.on('connect', function() {
-              //socket.emit('fetchStop', 59844);
+
+              socket.emit('fetchStop', 59844);
 
             });
 
@@ -190,22 +193,6 @@ angular.module('myApp.controllers', [])
                   }
                 });
             };
-
-
-
-            $scope.addBusStopViaSQL = function () {
-
-                $http.post('/api/addBusStop', {data: $scope.inputStop})
-                    .success(function (data, status, headers, config) {
-                        $scope.message = data.title;
-                        $scope.content = data.content;
-
-                    })
-                    .error(function (data, status, headers, config) {
-                        alert("Error when sending the AJAX request. ");
-                    });
-            };
-
 
           /**
            * Computer the arrival time according to the return value
