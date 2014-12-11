@@ -1,7 +1,7 @@
 // SweetAlert
 // 2014 (c) - Tristan Edwards
 // github.com/t4t5/sweetalert
-;(function(window, document) {
+(function(window, document) {
 
   var modalClass   = '.sweet-alert',
       overlayClass = '.sweet-overlay',
@@ -93,20 +93,15 @@
       elem.style.left = '-9999px';
       elem.style.display = 'block';
 
-      var height = elem.clientHeight,
-          padding;
-      if (typeof getComputedStyle !== "undefined") { /* IE 8 */
-        padding = parseInt(getComputedStyle(elem).getPropertyValue('padding'), 10);
-      } else{
-        padding = parseInt(elem.currentStyle.padding);
-      }
+      var height = elem.clientHeight;
+      var padding = parseInt(getComputedStyle(elem).getPropertyValue('padding'), 10);
 
       elem.style.left = '';
       elem.style.display = 'none';
       return ('-' + parseInt(height / 2 + padding) + 'px');
     },
     fadeIn = function(elem, interval) {
-      if (+elem.style.opacity < 1) {
+      if(+elem.style.opacity < 1) {
         interval = interval || 16;
         elem.style.opacity = 0;
         elem.style.display = 'block';
@@ -121,7 +116,6 @@
         };
         tick();
       }
-      elem.style.display = 'block'; //fallback IE8
     },
     fadeOut = function(elem, interval) {
       interval = interval || 16;
@@ -189,7 +183,16 @@
 
     // For readability: check sweet-alert.html
     document.body.appendChild(sweetWrap);
-  };
+
+    // For development use only!
+    /*jQuery.ajax({
+      url: '../lib/sweet-alert.html', // Change path depending on file location
+      dataType: 'html'
+    })
+    .done(function(html) {
+      jQuery('body').append(html);
+    });*/
+  }
 
   /*
    * Global sweetAlert function
@@ -253,8 +256,8 @@
     var modal = getModal();
 
     // Mouse interactions
-    var onButtonEvent = function(event) {
-      var e = event || window.event;
+    var onButtonEvent = function(e) {
+
       var target = e.target || e.srcElement,
           targetedConfirm    = (target.className === 'confirm'),
           modalIsVisible     = hasClass(modal, 'visible'),
@@ -263,22 +266,22 @@
       switch (e.type) {
         case ("mouseover"):
           if (targetedConfirm) {
-            target.style.backgroundColor = colorLuminance(params.confirmButtonColor, -0.04);
+            e.target.style.backgroundColor = colorLuminance(params.confirmButtonColor, -0.04);
           }
           break;
         case ("mouseout"):
           if (targetedConfirm) {
-            target.style.backgroundColor = params.confirmButtonColor;
+            e.target.style.backgroundColor = params.confirmButtonColor;
           }
           break;
         case ("mousedown"):
           if (targetedConfirm) {
-            target.style.backgroundColor = colorLuminance(params.confirmButtonColor, -0.14);
+            e.target.style.backgroundColor = colorLuminance(params.confirmButtonColor, -0.14);
           }
           break;
         case ("mouseup"):
           if (targetedConfirm) {
-            target.style.backgroundColor = colorLuminance(params.confirmButtonColor, -0.04);
+            e.target.style.backgroundColor = colorLuminance(params.confirmButtonColor, -0.04);
           }
           break;
         case ("focus"):
@@ -332,12 +335,11 @@
 
     // Remember the current document.onclick event.
     previousDocumentClick = document.onclick;
-    document.onclick = function(event) {
-      var e = event || window.event;
+    document.onclick = function(e) {
       var target = e.target || e.srcElement;
 
       var clickedOnModal = (modal === target),
-          clickedOnModalChild = isDescendant(modal, target),
+          clickedOnModalChild = isDescendant(modal, e.target),
           modalIsVisible = hasClass(modal, 'visible'),
           outsideClickIsAllowed = modal.getAttribute('data-allow-ouside-click') === 'true';
 
@@ -353,8 +355,7 @@
         $modalButtons = modal.querySelectorAll('button:not([type=hidden])');
 
 
-    function handleKeyDown(event) {
-      var e = event || window.event;
+    function handleKeyDown(e) {
       var keyCode = e.keyCode || e.which;
 
       if ([9,13,32,27].indexOf(keyCode) === -1) {
@@ -416,8 +417,7 @@
     previousWindowKeyDown = window.onkeydown;
     window.onkeydown = handleKeyDown;
 
-    function handleOnBlur(event) {
-      var e = event || window.event;
+    function handleOnBlur(e) {
       var $targetElement = e.target || e.srcElement,
           $focusElement = e.relatedTarget,
           modalIsVisible = hasClass(modal, 'visible');
@@ -536,9 +536,11 @@
 
     // Custom image
     if (params.imageUrl) {
-      var $customIcon = modal.querySelector('.icon.custom');
+      var $icons = modal.querySelectorAll('.icon'),
+          $customIcon = modal.querySelector('.icon.custom');
 
       $customIcon.style.backgroundImage = 'url(' + params.imageUrl + ')';
+      hide($icons);
       show($customIcon);
 
       var _imgWidth  = 80,
@@ -553,11 +555,6 @@
         } else {
           _imgWidth  = imgWidth;
           _imgHeight = imgHeight;
-
-          $customIcon.css({
-            'width': imgWidth + 'px',
-            'height': imgHeight + 'px'
-          });
         }
       }
       $customIcon.setAttribute('style', $customIcon.getAttribute('style') + 'width:' + _imgWidth + 'px; height:' + _imgHeight + 'px');
@@ -663,9 +660,8 @@
     }, 500);
 
     var timer = modal.getAttribute('data-timer');
-
-    if (timer !== "null" && timer !== "") {
-      modal.timeout = setTimeout(function() {
+    if (timer !== "null") {
+      setTimeout(function() {
         closeModal();
       }, timer);
     }
@@ -704,7 +700,6 @@
       previousActiveElement.focus();
     }
     lastFocusedButton = undefined;
-    clearTimeout(modal.timeout);
   }
 
 
@@ -726,18 +721,18 @@
 
   (function () {
 	  if (document.readyState === "complete" || document.readyState === "interactive" && document.body) {
-		  window.sweetAlertInitialize();
+		  sweetAlertInitialize();
 	  } else {
 		  if (document.addEventListener) {
 			  document.addEventListener('DOMContentLoaded', function factorial() {
 				  document.removeEventListener('DOMContentLoaded', arguments.callee, false);
-				  window.sweetAlertInitialize();
+				  sweetAlertInitialize();
 			  }, false);
 		  } else if (document.attachEvent) {
 			  document.attachEvent('onreadystatechange', function() {
 				  if (document.readyState === 'complete') {
 					  document.detachEvent('onreadystatechange', arguments.callee);
-					  window.sweetAlertInitialize();
+					  sweetAlertInitialize();
 				  }
 			  });
 		  }

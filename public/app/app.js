@@ -15,3 +15,7 @@ var myApp = angular.module('myApp', [
 myApp.factory('socket.io', function (socketFactory) {
   return socketFactory();
 });
+
+myApp.value('cloudBase', ['https://ubccs.firebaseio.com/',
+													'https://tslinkdev.firebaseio.com/']);
+

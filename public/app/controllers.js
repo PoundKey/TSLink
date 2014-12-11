@@ -4,11 +4,30 @@
 
 angular.module('myApp.controllers', [])
     .controller('AppCtrl', ['$scope', '$location', '$http', '$routeParams',
-                '$interval', '$firebase', '$timeout', 'socket.io', 'localStorageService',
+                '$interval', '$firebase', '$timeout', 'socket.io', 'localStorageService', 'cloudBase',
         function ($scope, $location, $http, $routeParams, $interval,
-                                $firebase, $timeout, socket, login) {
+                                $firebase, $timeout, socket, login, cloud) {
 
             $scope.user = login.get('user');
+
+
+            var localhost = document.location.hostname == "localhost" ;
+            var fbase = localhost ? cloud[1]: cloud[0];
+            //info needed to connect to firebase, return a bus list contains all bus stop
+            var ref, sync, main, buslist;
+
+            $scope.busStops = {};
+            $scope.busStopDetails = {};
+            $scope.ajaxicon = true;
+
+            //getUserInfo($scope.user);
+            mockup();
+
+            $scope.enterUser = function() {
+              var uname = $scope.username;
+              alert(uname);return;
+            };
+
 
             socket.on('connect', function() {
 
@@ -20,11 +39,6 @@ angular.module('myApp.controllers', [])
               console.log('Bus Stop Data: ' + data);
             });
 
-            $scope.busStops = {};
-            $scope.busStopDetails = {};
-            $scope.ajaxicon = true;
-
-
             /**
              * errArray: Array that holds all the error messages.
              * @type {Array}
@@ -32,14 +46,6 @@ angular.module('myApp.controllers', [])
             $scope.errArray = [];
             $scope.errShow = true;
 
-            var fbase = 'https://ubccs.firebaseio.com/';
-            if (document.location.hostname == "localhost") {
-              fbase = 'https://tslinkdev.firebaseio.com';
-            }
-            var ref = new Firebase(fbase);
-            var sync = $firebase(ref);
-
-            $scope.busStops = sync.$asObject();
             var apiKey = 'yDC04D3XtydprTHAeB0Z', count = 1, tf = 60;
 
             $scope.busStops.$loaded().then(function(array) {
@@ -81,7 +87,7 @@ angular.module('myApp.controllers', [])
               */
 
             $scope.addBusStop = function () {
-                if (checkInputStop($scope.inputStop) == false){
+                if (!checkInputStop($scope.inputStop)){
                     //swal('Please enter an valid bus stop number.');
                     sweetAlert({title: "Oops...",
                                 text: "Please enter an valid bus stop number.",
@@ -275,8 +281,7 @@ angular.module('myApp.controllers', [])
                     return;
                   });
             };
-
-            /*
+           /*
              * update all the stop info in interval of 1 min, by calling refreshSingleStop();
              */
             var refreshAllStops = function(stopList) {
@@ -284,6 +289,7 @@ angular.module('myApp.controllers', [])
                 refreshSingleStop(stop);
               });
             };
+
 
             /**
              * Trim the date and time format return from the api with time only
@@ -294,7 +300,69 @@ angular.module('myApp.controllers', [])
               var spaceIndex = aTime.indexOf(' ')
               var time = spaceIndex < 0 ? aTime : aTime.substr(0,aTime.indexOf(' '));
               return time;
+            };
+
+            $scope.flipSide = function() {
+              if ($scope.user) {
+                $scope.user = null;
+                login.set('user', undefined);
+              }
+            };
+
+            function getUserInfo (uname) {
+
+              if (uname) {
+                ref = new Firebase(fbase);
+                sync = $firebase(ref);
+                main = sync.$asObject();
+                fbInit(main);
+                buslist = main.api[uname];
+              } else {
+                $timeout(function() {
+                  sweetAlert({
+                     title: "Welcome!",
+                     text: "Please create a username before proceeding.",
+                     allowOutsideClick: true,
+                     imageUrl: "images/tslink2.png",
+                     imageSize: "120x120",
+                     timer: 10000
+                  })
+                }, 3000);
+              }
+            } // end of getUserInfo();
+
+            /**
+             * Acess firebase cloud storage
+             * @return {object} root object
+             */
+            function accessCloud () {
+              var ref = new Firebase(fbase);
+              var sync = $firebase(ref);
+              return sync.$asObject();
             }
+
+            function fbInit (sync) {
+              if (!sync.users) sync.users = {info : '$init'};
+              if (!sync.api) sync.api = {info : '$init'};
+              sync.$save();
+            }//end of fbInit()
+
+            function iAlert (title, msg, type) {
+              sweetAlert({
+                 title: title,
+                 text: msg,
+                 type: type,
+                 allowOutsideClick: true,
+              });
+            }//end of iAlert()
+
+            function mockup () {
+              ref = new Firebase(fbase);
+              sync = $firebase(ref);
+              $scope.busStops = sync.$asObject();
+            }
+
+
 
 
 }]);

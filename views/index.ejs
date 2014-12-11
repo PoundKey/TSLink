@@ -2,6 +2,8 @@
 <div class="preload load-container load3" ng-if="ajaxicon">
      <div class="loader">Loading...</div>
 </div>
+
+<button type="button" class="btn" ng-click="flipSide()">FlipSide</button>
 <!-- BEGIN MAIN PAGE -->
 <div id="page-main" class="page active grid-container" ng-show="!ajaxicon">
 
@@ -21,7 +23,7 @@
                     <div ng-if="!user">
                         <form id="newsletter-form" class="the-form anim-go-left" ng-submit="enterUser()">
                             <div class="field-wrapper">
-                                <input type="text" class="textfield required" ng-model="username" name="stop" placeholder="Please enter an username..."/>
+                                <input type="text" class="textfield required" ng-model="username" name="username" placeholder="Please enter your username..."/>
                                 <button type="submit" class="btn">
                                 <i class="fa fa-paper-plane-o"></i> Enter
                                 </button>
@@ -41,12 +43,12 @@
                     </div>
 
                         <br>
-                        <div ng-repeat="err in errArray" ng-show="errShow">
+                        <div ng-repeat="err in errArray" ng-show="errShow" ng-if="user">
                             <div class="err animated bounceIn">{{err}}</div>
                         </div>
                         <hr>
                         <br>
-                        <div>
+                        <div ng-if="user">
                         		<div class="message" ng-repeat="arrivals in busStopDetails">
                                   <div class="message animated fadeInUp" ng-repeat="arrival in arrivals">
                                   <button class="btn arrive-box">
