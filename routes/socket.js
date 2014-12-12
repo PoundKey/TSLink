@@ -4,6 +4,7 @@ var io = require('socket.io')(http);
 var request = require('request');
 var _ = require('underscore');
 var async = require('async');
+var orchestrate = require('orchestrate');
 /**
  * Info of the translink API Request
  * apiKey: UID, count: next {count} number of bus scheduled, tf: time frame, in minutes
@@ -11,7 +12,8 @@ var async = require('async');
 var apiKey = 'yDC04D3XtydprTHAeB0Z', count = 1, tf = 60;
 
 // https://dashboard.orchestrate.io/  ||extra importent piece
-var DB;
+// COL = collection , db = the database connection instance
+var COL, TOKEN, db;
 /**
  * Server side socket listens to requests coming from the client-side
  * @return SocketIO
@@ -26,7 +28,14 @@ var socketIO = function() {
 	io.on('connection', function(socket){
 
 		socket.on('DB_STORE', function (data) {
-			DB = data;
+			TOKEN = data.TOKEN;
+			COL   = data.DB_STORE;
+		});
+
+		socket.on('createUser', function (data, callback) {
+			db = orchestrate(TOKEN);
+
+
 		});
 
 		socket.on('login', function(data) {

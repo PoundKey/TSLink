@@ -16,30 +16,53 @@ angular.module('myApp.controllers', [])
             $scope.coreData = {};
             $scope.ajaxicon = true;
 
+            socket.on('connect', function() {
+              socket.emit('DB_STORE', {TOKEN: cloud.API_KEY, DB_STORE: DB_STORE});
+            });
+
             getUserInfo($scope.user);
 
+            /**
+             * called when user create an account or login to TSLink
+             * @param {string} $scope.username
+             * @return {void} success alert and login or error alert and return
+             */
             $scope.enterUser = function() {
               var uname = $scope.username;
-              var newUser = {};
+              var newUser;
               if (!checkUsername(uname)) {
                 iAlert('Oops...', "Please enter a valid username. (3~15 Characters)", 'warning');
                 return;
               }
+              var memo = new Date();
+              var stamp = memo.toLocaleString();
 
-              var uDict = rootDB.users;
-              var uArray = _.keys(uDict);
-              console.log(uArray);
+              newUser = {uid : uname, ctime: stamp};
+
+              socket.emit('createUser', newUser, function (error, data) {
+
+                if (error) {
+                  console.log(error.status);
+                  iAlert('Not Available.', "Please choose another username. (3~15 Characters)", 'warning');
+                  return;
+                }
+
+                iAlert(info.message, "You can start adding bus stops now.", 'success');
+                login.set('user', uname);
+                // maybe construct the coreData object => 'Welcome, ' + uname + '!'
+
+              });
+
               if (_.contains(uArray, uname)) {
                 iAlert('Not Available.', "Please choose another username. (3~15 Characters)", 'warning');
                 return;
               }
 
-              var memo = new Date();
-              var stamp = memo.toLocaleString();
+
               newUser[uname] = stamp;
               _.extend(uDict, newUser);
               if (rootDB.$save()) {
-                iAlert('Welcome, ' + uname + '!', "You can start adding bus stops now.", 'success');
+
               } else {
                 iAlert('Oops...', "Something went wrong, please check the internet connection.", 'error');
               }
@@ -50,9 +73,6 @@ angular.module('myApp.controllers', [])
             };
 
 
-            socket.on('connect', function() {
-              socket.emit('DB_STORE', DB_STORE);
-            });
 
             socket.on('stopInfo', function(data) {
               console.log('Bus Stop Data: ' + data);
