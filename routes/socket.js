@@ -176,10 +176,14 @@ var socketIO = function() {
 			socket.on('addStop', function(data, callback){
 				var stop = data;
 				translinkAPI(stop, apiKey, count, tf, function (res) {
-					var val = checkAPICode(res);
+					var info = JSON.parse(res);
+					var val = checkAPICode(info);
 					if (!val.status) {
-						console.log(val.info);return;
+						var error = {status:"error", message:val.info};
+						callback(error, null);
+						return;
 					}
+
 				});
 
 			});
@@ -217,16 +221,25 @@ var socketIO = function() {
  * @return {string} error message
  */
  function checkAPICode (res) {
- 		var info, status;
- 		if (res.Code == '3005') {
-	 			info = "Sorry, no stop estimattes found yet at this momment.";
-	 			status: false;
- 		} else if (res.Code == '3002' || res.Code == '3001') {
-	 			info = "NONONO";
-	 			status: false;
- 		} else if (_.isArray(res)) {
+ 	var info, status;
+ 		if (res.Code) {
+				switch(res.Code) {
+				    case '3001':
+				    case '3002':
+					 			info = res.Message;
+					 			status = false;
+				        break;
+				    case '3005':
+					 			info = "Sorry, no stop estimates found yet at this momment.";
+					 			status = false;
+				        break;
+				    default:
+					 			info = "Oops... Something went wrong.";
+					 			status = false;
+				}
+ 		} else {
 	 			info = 'Valid bus stop, proceeding...';
-	 			status: true;
+	 			status = true;
  		}
  		return {info:info, status:status};
  }
