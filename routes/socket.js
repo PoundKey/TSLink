@@ -41,15 +41,13 @@ var socketIO = function() {
 			db.get(COL, uname)
 			.then(function () {
 				// it's used, callback(error, null)
-				callback({status:"error", message:"The username has been taken."}, null);
+				var error = {status:"error", message:"Please choose another username. (3~15 Characters)"};
+				callback(error, null);
 			})
 			.fail(function () {
-				// it's good, callback(null, message)
-				var info = 'Welcome, ' + uname + '!';
-				callback(null, {status:"success", message: info});
-
+				// it's good, create the entry with key=uname, then callback when done or failed
+				updateUser(db, uname, stamp, callback);
 			})
-
 		});
 
 		socket.on('login', function(data) {
@@ -137,6 +135,28 @@ var socketIO = function() {
 				});
 
 			});
+ }
+
+/**
+ * create/update a user entry on the collection
+ * @param  {object} db
+ * @param  {string} uname
+ * @param  {string} stamp
+ * @return {callback} callback(null, msg) if create/update successfully, callback(error, null) otherwise
+ */
+ function updateUser (db, uname, stamp, callback) {
+		db.put(COL, uname, {
+		  info : [],
+		  reg : stamp
+		})
+		.then(function (result) {
+			var info = 'Welcome, ' + uname + '!';
+			callback(null, {status:"success", message: info});
+		})
+		.fail(function (err) {
+			var error = {status:"error", message:"Something went wrong, please check the Internet connection."};
+			callback(error, null);
+		})
  }
 
 

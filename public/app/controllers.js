@@ -44,15 +44,16 @@ angular.module('myApp.controllers', [])
               socket.emit('createUser', newUser, function (error, data) {
 
                 if (error) {
-                  console.log(error.message);
-                  iAlert('Not Available.', "Please choose another username. (3~15 Characters)", 'warning');
+                  //console.log(error.message);
+                  iAlert('Oops...', error.message, 'error');
                   $scope.delay = false;
                   return;
                 }
 
-                iAlert(data.message, "You can start adding bus stops now.", 'success');
+                iAlert(data.message, "You can start adding bus stops now; wish you enjoy TSLink.", 'success');
                 $scope.delay = false;
-                //login.set('user', uname);
+                login.set('user', uname);
+                $scope.user = uname;
                 // maybe construct the coreData object =>
 
               });
