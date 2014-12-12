@@ -8,19 +8,16 @@ angular.module('myApp.controllers', [])
         function ($scope, $location, $http, $routeParams, $interval,
                                 $timeout, socket, login, cloud) {
 
-            /**
-             * variables for ng-if/ng-show state
-             */
+            $scope.user = login.get('user');
+            $scope.coreData = {};
+            var localhost = document.location.hostname == "localhost" ;
+            var DB_STORE = localhost ? cloud.DEV_DB: cloud.PRO_DB;
+
+            // <---------------------- visiability control ----------------------->
             $scope.signup = false;
             $scope.signin = false;
             $scope.delay = false;
             $scope.ajaxicon = false;
-            $scope.user = login.get('user');
-
-            var localhost = document.location.hostname == "localhost" ;
-            var DB_STORE = localhost ? cloud.DEV_DB: cloud.PRO_DB;
-            $scope.coreData = {};
-
             $scope.signup_c = function() {
               $scope.signup = true;
             };
@@ -34,12 +31,27 @@ angular.module('myApp.controllers', [])
               $scope.signin = false;
             }
 
+            // <------------------- end of visiability control ------------------->
+
+
+            // <--------------------- Socket IO data exchange ------------------->
+
             socket.on('connect', function() {
               socket.emit('DB_STORE', {TOKEN: cloud.API_KEY, DB_STORE: DB_STORE});
             });
 
-            getUserInfo($scope.user);
 
+            socket.on('stopInfo', function(data) {
+              console.log('Bus Stop Data: ' + data);
+            });
+
+            // <----------------- end of Socket IO data exchange ---------------->
+
+
+
+            // <---------------------- Application workflow --------------------->
+
+            getUserInfo($scope.user);
 
             /**
              * called when user create an account on TSLink
@@ -78,35 +90,18 @@ angular.module('myApp.controllers', [])
             };
 
 
+            // <------------------- End of Application workflow ------------------->
 
-            socket.on('stopInfo', function(data) {
-              console.log('Bus Stop Data: ' + data);
-            });
 
+
+
+            // <------------------------- core functions -------------------------->
             /**
              * errArray: Array that holds all the error messages.
              * @type {Array}
              */
             $scope.errArray = [];
             $scope.errShow = true;
-
-            /**
-             * Trim the date and time format return from the api with time only
-             * @param  {date} aTime
-             * @return {time}
-             */
-            $scope.timeConf = function (aTime) {
-              var spaceIndex = aTime.indexOf(' ')
-              var time = spaceIndex < 0 ? aTime : aTime.substr(0,aTime.indexOf(' '));
-              return time;
-            };
-
-            $scope.flipSide = function() {
-              if ($scope.user) {
-                $scope.user = null;
-                login.set('user', undefined);
-              }
-            };
 
             /**
              * get user's information upon open the website
@@ -133,6 +128,14 @@ angular.module('myApp.controllers', [])
 
 
 
+            // <--------------------- end of core functions ------------------->
+
+
+
+
+
+            // <---------------------- helper functions ----------------------->
+
             function iAlert (title, msg, type) {
               sweetAlert({
                  title: title,
@@ -147,6 +150,25 @@ angular.module('myApp.controllers', [])
                 return validity;             // body...
             }
 
+            /**
+             * Trim the date and time format return from the api with time only
+             * @param  {date} aTime
+             * @return {time}
+             */
+            $scope.timeConf = function (aTime) {
+              var spaceIndex = aTime.indexOf(' ')
+              var time = spaceIndex < 0 ? aTime : aTime.substr(0,aTime.indexOf(' '));
+              return time;
+            };
+
+            $scope.flipSide = function() {
+              if ($scope.user) {
+                $scope.user = null;
+                login.set('user', undefined);
+              }
+            };
+
+             // <------------------ end of helper functions ------------------->
 
 
 
