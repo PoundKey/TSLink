@@ -27,6 +27,8 @@ var socketIO = function() {
 
 	io.on('connection', function(socket){
 
+		var coreArray = [];
+
 		socket.on('DB_STORE', function (data) {
 			TOKEN = data.TOKEN;
 			COL   = data.DB_STORE;
@@ -48,14 +50,31 @@ var socketIO = function() {
 			.fail(function () {
 				// it's good, create the entry with key=uname, then callback when done or failed
 				updateUser(db, uname, stamp, callback);
+				coreArray = [];
 			});
 		});
 
 
 		socket.on('login', function(data, callback) {
 			var uname = data;
-			// todo
-			startListening(socket);
+			db = orchestrate(TOKEN);
+
+			//check if the username does exist
+			db.get(COL, uname)
+			.then(function (res) {
+				// it's good, fetch the bus stop array
+				var info = 'Welcome back, ' + uname + '!';
+				coreArray = res.info ? res.info : ['init','coreArray'];
+				console.log(coreArray);
+				callback(null, {status:"success", message: info});
+				startListening(socket);
+			})
+			.fail(function () {
+				// it's  not existed, callback(error, null)
+				var error = {status:"error", message:'Are you sure that "' + uname + '" is your username?'};
+				callback(error, null);
+			});
+
 		});
 
 

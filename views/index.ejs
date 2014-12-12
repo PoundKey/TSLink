@@ -54,10 +54,10 @@
 
                         <div ng-if='delay'><i class="fa fa-spinner fa-spin"></i></div>
 
-                        <div ng-show="user">
-                            <form id="newsletter-form" class="the-form anim-go-left" ng-submit="addBusStop()">
+                        <div ng-if="user">
+                            <form id="newsletter-form" class="the-form anim-go-left" ng-submit="addStop()">
                                 <div class="field-wrapper">
-                                    <input type="text" class="textfield required" ng-model="inputStop" name="stop" placeholder="Please add a nearby bus stop..."/>
+                                    <input type="text" class="textfield required" ng-model="$parent.inputStop" name="stop" placeholder="Please enter a nearby bus stop..." />
                                     <button type="submit" class="btn">
                                         <i class="fa fa-search-plus"></i> Add
                                     </button>
@@ -66,7 +66,7 @@
                         </div>
 
                         <br>
-                        <div ng-repeat="err in errArray" ng-show="errShow" ng-if="user">
+                        <div ng-repeat="err in errArray" ng-show="errShow" ng-if="false">
                             <div class="err animated bounceIn">{{err}}</div>
                         </div>
                         <hr>
@@ -75,27 +75,6 @@
                         </button>
                         <br>
                         <div ng-if="user">
-                          <div class="message" ng-repeat="arrivals in busStopDetails">
-                              <div class="message animated fadeInUp" ng-repeat="arrival in arrivals">
-                                  <button class="btn arrive-box">
-                                    <span class="arrive-left-item"><i class="fa fa-bus"></i> {{arrival.route}} {{arrival.dest}} </span>
-                                    <span class=" double-slash-bar">&nbsp;&#166;&nbsp;</span>
-                                    <div class="pulse-grow arrive-mid-item"><i class="fa fa-bell-o"></i> {{computeArrival(arrival.cTime)}}
-                                        <i class="fa fa-at"></i> {{timeConf(arrival.aTime)}}
-                                    </div>
-                                    <span class="double-slash-bar">&nbsp;&#166;&nbsp;</span>
-                                    <span class="arrive-right-item">
-                                      <i class="fa fa-flag-o"></i> {{arrival.stop}}
-                                      <a ng-click="removeStop(arrival.stop)" class="btn3">
-                                          <i class="fa fa-trash-o"></i></a>
-                                      </span>
-                                  </button>
-
-                                  <span>&nbsp;</span>
-
-                                  <br><br>
-                              </div>
-                          </div>
                           <br>
                           <hr/><br>
                           <div ng-if="user">

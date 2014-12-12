@@ -93,7 +93,7 @@ angular.module('myApp.controllers', [])
                   return;
                 }
 
-                iAlert(data.message, "You can start adding bus stops now; wish you enjoy TSLink.", 'success');
+                iAlert(data.message, "You can start adding bus stops now. Wish you enjoy TSLink.", 'success');
                 $scope.delay = false;
                 login.set('user', uname);
                 $scope.user = uname;
@@ -125,7 +125,7 @@ angular.module('myApp.controllers', [])
                   return;
                 }
 
-                iAlert(data.message, "You can start adding bus stops now; wish you enjoy TSLink.", 'success');
+                iAlert(data.message, "Good luck on catching the bus! Wish you enjoy TSLink.", 'success');
                 $scope.delay = false;
                 login.set('user', uname);
                 $scope.user = uname;
@@ -143,7 +143,9 @@ angular.module('myApp.controllers', [])
             function getUserInfo (uname) {
 
               if (uname) {
-                socket.emit('login', uname);
+                socket.emit('backin', uname, function(data, callback) {
+
+                });
               } else {
                 $timeout(function() {
                   sweetAlert({
@@ -157,6 +159,18 @@ angular.module('myApp.controllers', [])
                 }, 3000);
               }
             } // end of getUserInfo();
+
+            /**
+             * add a bus stop number to the datastore
+             * @param  {int} $scope.inputStop
+             */
+             $scope.addStop = function() {
+              alert('adding bus stop....'); return;
+              $scope.delay = true;
+              var uname = $scope.username;
+              var stop = $scope.inputStop;
+              alert(stop);
+            }
 
 
 
