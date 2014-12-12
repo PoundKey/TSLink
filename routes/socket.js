@@ -29,12 +29,13 @@ var socketIO = function() {
 
 		var coreArray = [];
 
+		//activated immediate upon connection, crucial DB_INFO
 		socket.on('DB_STORE', function (data) {
 			TOKEN = data.TOKEN;
 			COL   = data.DB_STORE;
 		});
 
-
+		// activated when user tries to create an account
 		socket.on('createUser', function (data, callback) {
 			var uname = data.uid;
 			var stamp = data.cTime;
@@ -55,6 +56,7 @@ var socketIO = function() {
 		});
 
 
+		// activated when user tries login with username
 		socket.on('login', function(data, callback) {
 			var uname = data;
 			db = orchestrate(TOKEN);
@@ -65,7 +67,6 @@ var socketIO = function() {
 				// it's good, fetch the bus stop array
 				var info = 'Welcome back, ' + uname + '!';
 				coreArray = res.info ? res.info : ['init','coreArray'];
-				console.log(coreArray);
 				callback(null, {status:"success", message: info});
 				startListening(socket);
 			})
@@ -77,6 +78,26 @@ var socketIO = function() {
 
 		});
 
+		// activated when user back in TSLink, with local cache log.get('user') defined.
+		socket.on('backin', function(data, callback) {
+			var uname = data;
+			if (!db) db = orchestrate(TOKEN);
+			//check if the username does exist
+			db.get(COL, uname)
+			.then(function (res) {
+				// it's good, fetch the bus stop array
+				var info = 'Welcome back, ' + uname + '!';
+				coreArray = res.info ? res.info : ['init','coreArray'];
+				callback(null, {status:"success", message: info});
+				startListening(socket);
+			})
+			.fail(function () {
+				// it's  not existed, callback(error, null)
+				var error = {status:"error", message:'Something went wrong, please double check the Internet connection.'};
+				callback(error, null);
+			});
+
+		});
 
 
 	});
@@ -100,12 +121,12 @@ var socketIO = function() {
 		request({url: req, method: "GET", timeout: 1500, headers: {Accept:'application/JSON'}},
 			function(error, response, body) {
 				if (error) {
-					console.log(error);
+					//console.log(error);
 					return;
 				}
-				var stopInfo = body ? body : null;
-				if (!stopInfo) return;
-				callback(stopInfo);
+				var res = body ? body : null;
+				if (!res) return;
+				callback(res);
 		});
  }
 
@@ -123,9 +144,9 @@ var socketIO = function() {
 			 * @return {json}  A JSON object containing the stop info or error code/message
 			 */
 			socket.on('fetchStop', function(data){
-				var busStop = data;
-				translinkAPI(busStop, apiKey, count, tf, function (stopInfo) {
-					socket.emit('stopInfo', stopInfo);
+				var stop = data;
+				translinkAPI(stop, apiKey, count, tf, function (stopInfo) {
+					//socket.emit('stopInfo', stopInfo);
 				});
 			});
 
@@ -137,8 +158,8 @@ var socketIO = function() {
 			 * @return {json}  A JSON object containing the stop info or error code/message
 			 */
 			socket.on('refreshStop', function(data){
-				var busStop = data;
-				translinkAPI(busStop, apiKey, count, tf, function (stopInfo) {
+				var stop = data;
+				translinkAPI(stop, apiKey, count, tf, function (res) {
 					//todo
 				});
 
@@ -151,13 +172,20 @@ var socketIO = function() {
 			 * @param  {int} data :bus stop number
 			 * @return {json}  A JSON object containing the stop info or error code/message
 			 */
-			socket.on('addStop', function(data){
-				var busStop = data;
-				translinkAPI(busStop, apiKey, count, tf, function (stopInfo) {
-					//todo
+			socket.on('addStop', function(data, callback){
+				var stop = data;
+				translinkAPI(stop, apiKey, count, tf, function (res) {
+					var val = checkAPICode(res);
+					if (!val.status) {
+						console.log(val.info);return;
+					}
 				});
 
 			});
+
+
+
+
  }
 
 /**
@@ -180,6 +208,26 @@ var socketIO = function() {
 			var error = {status:"error", message:"Something went wrong, please check the Internet connection."};
 			callback(error, null);
 		})
+ }
+
+/**
+ * check the response error code from Translink API call
+ * @param  {object} res
+ * @return {string} error message
+ */
+ function checkAPICode (res) {
+ 		var info, status;
+ 		if (res.Code == '3005') {
+	 			info = "Sorry, no stop estimattes found yet at this momment.";
+	 			status: false;
+ 		} else if (res.Code == '3002' || res.Code == '3001') {
+	 			info = "NONONO";
+	 			status: false;
+ 		} else if (_.isArray(res)) {
+	 			info = 'Valid bus stop, proceeding...';
+	 			status: true;
+ 		}
+ 		return {info:info, status:status};
  }
 
 

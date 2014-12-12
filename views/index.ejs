@@ -3,7 +3,6 @@
    <div class="loader">Loading...</div>
 </div>
 
-<button type="button" class="btn" ng-click="flipSide()">FlipSide</button>
 <!-- BEGIN MAIN PAGE -->
 <div id="page-main" class="page active grid-container" ng-show="!ajaxicon">
 
@@ -33,8 +32,7 @@
                                 </div>
                             </form>
                         </div>
-                        <div ng-if='delay'><i class="fa fa-spinner fa-spin"></i></div>
-
+                        <div ng-if='delay'><br><i class="fa fa-spinner fa-spin"></i></div>
                         <br>
                         <div ng-repeat="err in errArray" ng-show="errShow" ng-if="false">
                             <div class="err animated bounceIn">{{err}}</div>
@@ -45,6 +43,7 @@
                         </button>
                         <br>
                         <div ng-if="user">
+                          <% include info %>
                           <br>
                           <hr/><br>
                           <div>

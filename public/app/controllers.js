@@ -143,8 +143,9 @@ angular.module('myApp.controllers', [])
             function getUserInfo (uname) {
 
               if (uname) {
-                socket.emit('backin', uname, function(data, callback) {
-
+                socket.emit('backin', uname, function(error, data) {
+                  if (error) console.log(error.message);
+                  if (data) console.log(data.message);
                 });
               } else {
                 $timeout(function() {
@@ -165,12 +166,29 @@ angular.module('myApp.controllers', [])
              * @param  {int} $scope.inputStop
              */
              $scope.addStop = function() {
-              alert('adding bus stop....'); return;
               $scope.delay = true;
               var uname = $scope.username;
               var stop = $scope.inputStop;
-              alert(stop);
-            }
+              if (!checkInputStop(stop)){
+                $scope.delay = false;
+                iAlert("Oops...", "Please enter an valid bus stop number.", "warning");
+                return;
+              }
+
+              socket.emit('addStop', stop, function (error, data) {
+
+                if (error) {
+                  iAlert('Oops...', error.message, 'error');
+                  $scope.delay = false;
+                  return;
+                }
+                return;
+                //iAlert(data.message, "Good luck on catching the bus! Wish you enjoy TSLink.", 'success');
+                //todo: configure coreData
+                _.extend($scope.coreData, data);
+                $scope.delay = false;
+              });
+            };
 
 
 
@@ -196,6 +214,8 @@ angular.module('myApp.controllers', [])
                 return validity;             // body...
             }
 
+
+
             /**
              * Trim the date and time format return from the api with time only
              * @param  {date} aTime
@@ -207,20 +227,25 @@ angular.module('myApp.controllers', [])
               return time;
             };
 
-            $scope.flipSide = function() {
-              if ($scope.user) {
-                $scope.user = null;
-                login.set('user', undefined);
-              }
-            };
-
+            /**
+             * logout the user, if logged in
+             * @return login.set('user', undefined);
+             */
             $scope.logout = function() {
                 if ($scope.user) {
                 $scope.user = null;
                 login.set('user', undefined);
               }
-
             }
+
+                         /*
+              * Checking the validity of the user input
+              */
+             function checkInputStop(stop){
+                var validity = !isNaN(stop) && (stop > 50000) && (stop <= 70000);
+                return validity;
+             };
+
 
              // <------------------ end of helper functions ------------------->
 
