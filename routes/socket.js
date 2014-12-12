@@ -33,8 +33,22 @@ var socketIO = function() {
 		});
 
 		socket.on('createUser', function (data, callback) {
+			var uname = data.uid;
+			var stamp = data.cTime;
 			db = orchestrate(TOKEN);
 
+			//check if the username has been used
+			db.get(COL, uname)
+			.then(function () {
+				// it's used, callback(error, null)
+				callback({status:"error", message:"The username has been taken."}, null);
+			})
+			.fail(function () {
+				// it's good, callback(null, message)
+				var info = 'Welcome, ' + uname + '!';
+				callback(null, {status:"success", message: info});
+
+			})
 
 		});
 

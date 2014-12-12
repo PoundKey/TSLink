@@ -1,6 +1,6 @@
 <% include header %>
 <div class="preload load-container load3" ng-if="ajaxicon">
-     <div class="loader">Loading...</div>
+   <div class="loader">Loading...</div>
 </div>
 
 <button type="button" class="btn" ng-click="flipSide()">FlipSide</button>
@@ -15,32 +15,33 @@
 
                     <br>
                     <h1 class="anim-go-right grow">
-                    <a href="https://github.com/poundkey"><i class="fa fa-windows"></i></a> TSLink </h1>
-                    <h5 class="anim-go-right">
-                    <a href="https://github.com/poundkey/TSLink"><i class="fa fa-github grow"></i></a>
-                    A Realtime Bus Timer App Via Translink Vancouver
-                    </h5>
-                    <div ng-show="!user">
-                        <form id="newsletter-form" class="the-form anim-go-left" ng-submit="enterUser()">
-                            <div class="field-wrapper">
-                                <input type="text" class="textfield required" ng-model="username" name="username" placeholder="Please enter your username..."/>
-                                <button type="submit" class="btn">
-                                <i class="fa fa-paper-plane-o"></i> Enter
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+                        <a href="https://github.com/poundkey"><i class="fa fa-windows"></i></a> TSLink </h1>
+                        <h5 class="anim-go-right">
+                            <a href="https://github.com/poundkey/TSLink"><i class="fa fa-github grow"></i></a>
+                            A Realtime Bus Timer App Via Translink Vancouver
+                        </h5>
+                        <div ng-show="!user">
+                            <form id="newsletter-form" class="the-form anim-go-left" ng-submit="enterUser()">
+                                <div class="field-wrapper">
+                                    <input type="text" class="textfield required" ng-model="username" name="username" placeholder="Please enter your username..."/>
+                                    <button type="submit" class="btn">
+                                        <i class="fa fa-paper-plane-o"></i> Enter
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        <div ng-if='delay'><i class="fa fa-spinner fa-spin"></i></div>
 
-                    <div ng-show="user">
-                        <form id="newsletter-form" class="the-form anim-go-left" ng-submit="addBusStop()">
-                            <div class="field-wrapper">
-                                <input type="text" class="textfield required" ng-model="inputStop" name="stop" placeholder="Please add a nearby bus stop..."/>
-                                <button type="submit" class="btn">
-                                <i class="fa fa-search-plus"></i> Add
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+                        <div ng-show="user">
+                            <form id="newsletter-form" class="the-form anim-go-left" ng-submit="addBusStop()">
+                                <div class="field-wrapper">
+                                    <input type="text" class="textfield required" ng-model="inputStop" name="stop" placeholder="Please add a nearby bus stop..."/>
+                                    <button type="submit" class="btn">
+                                        <i class="fa fa-search-plus"></i> Add
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
 
                         <br>
                         <div ng-repeat="err in errArray" ng-show="errShow" ng-if="user">
@@ -49,43 +50,42 @@
                         <hr>
                         <br>
                         <div ng-if="user">
-                        		<div class="message" ng-repeat="arrivals in busStopDetails">
-                                  <div class="message animated fadeInUp" ng-repeat="arrival in arrivals">
+                          <div class="message" ng-repeat="arrivals in busStopDetails">
+                              <div class="message animated fadeInUp" ng-repeat="arrival in arrivals">
                                   <button class="btn arrive-box">
                                     <span class="arrive-left-item"><i class="fa fa-bus"></i> {{arrival.route}} {{arrival.dest}} </span>
                                     <span class=" double-slash-bar">&nbsp;&#166;&nbsp;</span>
                                     <div class="pulse-grow arrive-mid-item"><i class="fa fa-bell-o"></i> {{computeArrival(arrival.cTime)}}
-                                    <i class="fa fa-at"></i> {{timeConf(arrival.aTime)}}
+                                        <i class="fa fa-at"></i> {{timeConf(arrival.aTime)}}
                                     </div>
                                     <span class="double-slash-bar">&nbsp;&#166;&nbsp;</span>
                                     <span class="arrive-right-item">
                                       <i class="fa fa-flag-o"></i> {{arrival.stop}}
                                       <a ng-click="removeStop(arrival.stop)" class="btn3">
-                                      <i class="fa fa-trash-o"></i></a>
-                                    </span>
+                                          <i class="fa fa-trash-o"></i></a>
+                                      </span>
                                   </button>
 
                                   <span>&nbsp;</span>
 
                                   <br><br>
-                                  </div>
-                        		</div>
-                            <br>
-                            <hr/><br>
-                            <div class="animated flipInX" ng-if="user">
+                              </div>
+                          </div>
+                          <br>
+                          <hr/><br>
+                          <div class="animated flipInX" ng-if="user">
                             <button type="button" class="btn" ng-click="logout">{{user}}</button>
-                            </div>
                         </div>
-                        <br>
-                    </form>
+                    </div>
+                    <br>
                     <!--
                     <div id="countdown" class="anim-go-left"></div>
-                    -->
-                </div>
+                -->
             </div>
-        </section>
-        <!-- END CONTENT SECTION -->
-    </div>
+        </div>
+    </section>
+    <!-- END CONTENT SECTION -->
+</div>
 </div>
 <!-- END MAIN PAGE -->
 

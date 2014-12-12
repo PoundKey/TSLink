@@ -9,12 +9,13 @@ angular.module('myApp.controllers', [])
                                 $timeout, socket, login, cloud) {
 
             $scope.user = login.get('user');
+            $scope.delay = false;
 
             var localhost = document.location.hostname == "localhost" ;
             var DB_STORE = localhost ? cloud.DEV_DB: cloud.PRO_DB;
 
             $scope.coreData = {};
-            $scope.ajaxicon = true;
+            $scope.ajaxicon = false;
 
             socket.on('connect', function() {
               socket.emit('DB_STORE', {TOKEN: cloud.API_KEY, DB_STORE: DB_STORE});
@@ -28,6 +29,7 @@ angular.module('myApp.controllers', [])
              * @return {void} success alert and login or error alert and return
              */
             $scope.enterUser = function() {
+              $scope.delay = true;
               var uname = $scope.username;
               var newUser;
               if (!checkUsername(uname)) {
@@ -37,39 +39,23 @@ angular.module('myApp.controllers', [])
               var memo = new Date();
               var stamp = memo.toLocaleString();
 
-              newUser = {uid : uname, ctime: stamp};
+              newUser = {uid : uname, cTime: stamp};
 
               socket.emit('createUser', newUser, function (error, data) {
 
                 if (error) {
-                  console.log(error.status);
+                  console.log(error.message);
                   iAlert('Not Available.', "Please choose another username. (3~15 Characters)", 'warning');
+                  $scope.delay = false;
                   return;
                 }
 
-                iAlert(info.message, "You can start adding bus stops now.", 'success');
-                login.set('user', uname);
-                // maybe construct the coreData object => 'Welcome, ' + uname + '!'
+                iAlert(data.message, "You can start adding bus stops now.", 'success');
+                $scope.delay = false;
+                //login.set('user', uname);
+                // maybe construct the coreData object =>
 
               });
-
-              if (_.contains(uArray, uname)) {
-                iAlert('Not Available.', "Please choose another username. (3~15 Characters)", 'warning');
-                return;
-              }
-
-
-              newUser[uname] = stamp;
-              _.extend(uDict, newUser);
-              if (rootDB.$save()) {
-
-              } else {
-                iAlert('Oops...', "Something went wrong, please check the internet connection.", 'error');
-              }
-
-              return;
-
-
             };
 
 
@@ -125,6 +111,7 @@ angular.module('myApp.controllers', [])
                 }, 3000);
               }
             } // end of getUserInfo();
+
 
 
             function iAlert (title, msg, type) {
