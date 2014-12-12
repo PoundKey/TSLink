@@ -47,7 +47,7 @@ var socketIO = function() {
 			.fail(function () {
 				// it's good, create the entry with key=uname, then callback when done or failed
 				updateUser(db, uname, stamp, callback);
-			})
+			});
 		});
 
 		socket.on('login', function(data) {

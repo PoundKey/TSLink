@@ -20,16 +20,38 @@
                             <a href="https://github.com/poundkey/TSLink"><i class="fa fa-github grow"></i></a>
                             A Realtime Bus Timer App Via Translink Vancouver
                         </h5>
-                        <div ng-show="!user">
+
+                        <div ng-show="!user && !signup && !signin">
+                            <button type="button" class="btn" ng-click="signin_c()">
+                                <i class="fa fa-terminal"></i> Log in
+                            </button>
+                            &nbsp;
+                             <button type="button" class="btn" ng-click="signup_c()">
+                                <i class="fa fa-fire"></i> Sign up
+                            </button>
+                        </div>
+
+                        <div ng-if="!user && signin">
                             <form id="newsletter-form" class="the-form anim-go-left" ng-submit="enterUser()">
                                 <div class="field-wrapper">
-                                    <input type="text" class="textfield required" ng-model="username" name="username" placeholder="Please enter your username..."/>
+                                    <input type="text" class="textfield required" ng-model="$parent.username" name="username" placeholder="Please enter your username..." autofocus />
                                     <button type="submit" class="btn">
-                                        <i class="fa fa-paper-plane-o"></i> Enter
+                                        <i class="fa fa-terminal"></i> Log in
                                     </button>
                                 </div>
                             </form>
                         </div>
+
+                        <div ng-if="!user && signup">
+                            <form id="newsletter-form" class="the-form anim-go-left" ng-submit="createUser()">
+                                <div class="field-wrapper">
+                                    <input type="text" class="textfield required" ng-model="$parent.username" name="username" placeholder="Please enter your username..." autofocus />
+                                    <button type="submit" class="btn">
+                                        <i class="fa fa-fire"></i> Sign up
+                                    </button>
+                                </div>
+                        </div>
+
                         <div ng-if='delay'><i class="fa fa-spinner fa-spin"></i></div>
 
                         <div ng-show="user">
@@ -48,6 +70,9 @@
                             <div class="err animated bounceIn">{{err}}</div>
                         </div>
                         <hr>
+                        <button type="button" class="btn3" ng-click='reset()' ng-if="!user">
+                            <i class="fa fa-arrow-circle-o-left fa-lg"></i>
+                        </button>
                         <br>
                         <div ng-if="user">
                           <div class="message" ng-repeat="arrivals in busStopDetails">
@@ -73,14 +98,11 @@
                           </div>
                           <br>
                           <hr/><br>
-                          <div class="animated flipInX" ng-if="user">
+                          <div ng-if="user">
                             <button type="button" class="btn" ng-click="logout">{{user}}</button>
                         </div>
                     </div>
                     <br>
-                    <!--
-                    <div id="countdown" class="anim-go-left"></div>
-                -->
             </div>
         </div>
     </section>

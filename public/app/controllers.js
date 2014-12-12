@@ -8,14 +8,31 @@ angular.module('myApp.controllers', [])
         function ($scope, $location, $http, $routeParams, $interval,
                                 $timeout, socket, login, cloud) {
 
-            $scope.user = login.get('user');
+            /**
+             * variables for ng-if/ng-show state
+             */
+            $scope.signup = false;
+            $scope.signin = false;
             $scope.delay = false;
+            $scope.ajaxicon = false;
+            $scope.user = login.get('user');
 
             var localhost = document.location.hostname == "localhost" ;
             var DB_STORE = localhost ? cloud.DEV_DB: cloud.PRO_DB;
-
             $scope.coreData = {};
-            $scope.ajaxicon = false;
+
+            $scope.signup_c = function() {
+              $scope.signup = true;
+            };
+
+            $scope.signin_c = function() {
+              $scope.signin = true;
+            };
+
+            $scope.reset = function() {
+              $scope.signup = false;
+              $scope.signin = false;
+            }
 
             socket.on('connect', function() {
               socket.emit('DB_STORE', {TOKEN: cloud.API_KEY, DB_STORE: DB_STORE});
@@ -23,16 +40,18 @@ angular.module('myApp.controllers', [])
 
             getUserInfo($scope.user);
 
+
             /**
-             * called when user create an account or login to TSLink
+             * called when user create an account on TSLink
              * @param {string} $scope.username
              * @return {void} success alert and login or error alert and return
              */
-            $scope.enterUser = function() {
+            $scope.createUser = function() {
               $scope.delay = true;
               var uname = $scope.username;
               var newUser;
               if (!checkUsername(uname)) {
+                $scope.delay = false;
                 iAlert('Oops...', "Please enter a valid username. (3~15 Characters)", 'warning');
                 return;
               }
@@ -54,8 +73,7 @@ angular.module('myApp.controllers', [])
                 $scope.delay = false;
                 login.set('user', uname);
                 $scope.user = uname;
-                // maybe construct the coreData object =>
-
+                $scope.coreData = {};
               });
             };
 
@@ -128,6 +146,8 @@ angular.module('myApp.controllers', [])
                 var validity = _.isString(uname) && (uname.length >=3) && (uname.length <=15);
                 return validity;             // body...
             }
+
+
 
 
 
