@@ -32,6 +32,7 @@ var socketIO = function() {
 			COL   = data.DB_STORE;
 		});
 
+
 		socket.on('createUser', function (data, callback) {
 			var uname = data.uid;
 			var stamp = data.cTime;
@@ -50,7 +51,10 @@ var socketIO = function() {
 			});
 		});
 
-		socket.on('login', function(data) {
+
+		socket.on('login', function(data, callback) {
+			var uname = data;
+			// todo
 			startListening(socket);
 		});
 

@@ -13,11 +13,14 @@ angular.module('myApp.controllers', [])
             var localhost = document.location.hostname == "localhost" ;
             var DB_STORE = localhost ? cloud.DEV_DB: cloud.PRO_DB;
 
-            // <---------------------- visiability control ----------------------->
+            // <---------------------- visibility control ----------------------->
             $scope.signup = false;
             $scope.signin = false;
             $scope.delay = false;
             $scope.ajaxicon = false;
+            $scope.errArray = [];
+            $scope.errShow = true;
+
             $scope.signup_c = function() {
               $scope.signup = true;
             };
@@ -31,7 +34,7 @@ angular.module('myApp.controllers', [])
               $scope.signin = false;
             }
 
-            // <------------------- end of visiability control ------------------->
+            // <------------------- end of visibility control ------------------->
 
 
             // <--------------------- Socket IO data exchange ------------------->
@@ -53,7 +56,16 @@ angular.module('myApp.controllers', [])
 
             getUserInfo($scope.user);
 
-            /**
+
+
+
+            // <------------------- End of Application workflow ------------------->
+
+
+
+
+            // <------------------------- core functions -------------------------->
+           /**
              * called when user create an account on TSLink
              * @param {string} $scope.username
              * @return {void} success alert and login or error alert and return
@@ -89,19 +101,39 @@ angular.module('myApp.controllers', [])
               });
             };
 
-
-            // <------------------- End of Application workflow ------------------->
-
-
-
-
-            // <------------------------- core functions -------------------------->
             /**
-             * errArray: Array that holds all the error messages.
-             * @type {Array}
+             * login user to TSLink, given username
+             * @type {string} $scope.username
+             *  @return {void} successful login alert or login failure alert
              */
-            $scope.errArray = [];
-            $scope.errShow = true;
+            $scope.loginUser = function() {
+              $scope.delay = true;
+              var uname = $scope.username;
+
+              if (!checkUsername(uname)) {
+                $scope.delay = false;
+                iAlert('Oops...', "Please enter a valid username. (3~15 Characters)", 'warning');
+                return;
+              }
+
+              socket.emit('login', uname, function (error, data) {
+
+                if (error) {
+                  //console.log(error.message);
+                  iAlert('Oops...', error.message, 'error');
+                  $scope.delay = false;
+                  return;
+                }
+
+                iAlert(data.message, "You can start adding bus stops now; wish you enjoy TSLink.", 'success');
+                $scope.delay = false;
+                login.set('user', uname);
+                $scope.user = uname;
+                //todo
+                //$scope.coreData = {};
+              });
+            }
+
 
             /**
              * get user's information upon open the website
