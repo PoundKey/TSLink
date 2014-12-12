@@ -10,6 +10,8 @@ var async = require('async');
  */
 var apiKey = 'yDC04D3XtydprTHAeB0Z', count = 1, tf = 60;
 
+// https://dashboard.orchestrate.io/  ||extra importent piece
+var DB;
 /**
  * Server side socket listens to requests coming from the client-side
  * @return SocketIO
@@ -23,8 +25,11 @@ var socketIO = function() {
 
 	io.on('connection', function(socket){
 
-		socket.on('login', function(data) {
+		socket.on('DB_STORE', function (data) {
+			DB = data;
+		});
 
+		socket.on('login', function(data) {
 			startListening(socket);
 		});
 

@@ -11,15 +11,12 @@ angular.module('myApp.controllers', [])
             $scope.user = login.get('user');
 
             var localhost = document.location.hostname == "localhost" ;
-            var sqlBase = localhost ? cloud[1]: cloud[0];
+            var DB_STORE = localhost ? cloud.DEV_DB: cloud.PRO_DB;
 
-
-            $scope.busStops = {};
-            $scope.busStopDetails = {};
+            $scope.coreData = {};
             $scope.ajaxicon = true;
 
-            //getUserInfo($scope.user);
-            mockup();
+            getUserInfo($scope.user);
 
             $scope.enterUser = function() {
               var uname = $scope.username;
@@ -54,9 +51,7 @@ angular.module('myApp.controllers', [])
 
 
             socket.on('connect', function() {
-
-              socket.emit('fetchStop', 59844);
-
+              socket.emit('DB_STORE', DB_STORE);
             });
 
             socket.on('stopInfo', function(data) {
@@ -333,6 +328,11 @@ angular.module('myApp.controllers', [])
               }
             };
 
+            /**
+             * get user's information upon open the website
+             * @param  {string} uname login('user')
+             * @return {void}       store info in coreData or alert login required
+             */
             function getUserInfo (uname) {
 
               if (uname) {
