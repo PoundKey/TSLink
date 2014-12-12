@@ -214,6 +214,14 @@ angular.module('myApp.controllers', [])
               }
             };
 
+            $scope.logout = function() {
+                if ($scope.user) {
+                $scope.user = null;
+                login.set('user', undefined);
+              }
+
+            }
+
              // <------------------ end of helper functions ------------------->
 
 
