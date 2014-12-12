@@ -30,6 +30,7 @@ var socketIO = function() {
 		var coreArray = [];
 
 		//activated immediate upon connection, crucial DB_INFO
+
 		socket.on('DB_STORE', function (data) {
 			TOKEN = data.TOKEN;
 			COL   = data.DB_STORE;

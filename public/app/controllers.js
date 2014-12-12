@@ -3,10 +3,9 @@
 /* Controllers */
 
 angular.module('myApp.controllers', [])
-    .controller('AppCtrl', ['$scope', '$location', '$http', '$routeParams', '$interval',
-                            '$timeout', 'socket.io', 'localStorageService', 'cloudBase',
-        function ($scope, $location, $http, $routeParams, $interval,
-                                $timeout, socket, login, cloud) {
+    .controller('AppCtrl', ['$scope', '$http', '$interval', '$timeout', 'socket.io',
+                            'localStorageService', 'cloudBase',
+        function ($scope, $http, $interval, $timeout, socket, login, cloud) {
 
             $scope.user = login.get('user');
             $scope.coreData = {};
@@ -40,7 +39,7 @@ angular.module('myApp.controllers', [])
             // <--------------------- Socket IO data exchange ------------------->
 
             socket.on('connect', function() {
-              socket.emit('DB_STORE', {TOKEN: cloud.API_KEY, DB_STORE: DB_STORE});
+              controlFlow();
             });
 
 
@@ -54,9 +53,14 @@ angular.module('myApp.controllers', [])
 
             // <---------------------- Application workflow --------------------->
 
-            getUserInfo($scope.user);
 
-
+            function controlFlow() {
+              var OP = {TOKEN: cloud.API_KEY, DB_STORE: DB_STORE};
+              socket.emit('DB_STORE', OP);
+              $timeout(function() {
+                getUserInfo($scope.user);
+              }, 50);
+            }
 
 
             // <------------------- End of Application workflow ------------------->
@@ -65,6 +69,8 @@ angular.module('myApp.controllers', [])
 
 
             // <------------------------- core functions -------------------------->
+
+
            /**
              * called when user create an account on TSLink
              * @param {string} $scope.username
