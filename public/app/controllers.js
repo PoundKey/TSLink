@@ -152,14 +152,14 @@ angular.module('myApp.controllers', [])
                   if (data) console.log(data.message);
                 });
               } else {
-                $interval(function() {
+                $timeout(function() {
                   sweetAlert({
                      title: "Welcome!",
-                     text: "Please create a username before proceeding.",
+                     text: "Please log in or sign up before proceeding.",
                      allowOutsideClick: true,
                      imageUrl: "images/tslink2.png",
                      imageSize: "120x120",
-                     timer: 10000
+                     timer: 3000
                   })
                 }, 3000);
               }
