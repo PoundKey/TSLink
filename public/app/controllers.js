@@ -149,8 +149,9 @@ angular.module('myApp.controllers', [])
             function getUserInfo (uname) {
 
               if (uname) {
-                socket.emit('backin', uname, function(error) {
+                socket.emit('backin', uname, function(error, data) {
                   if (error) console.log(error.message);
+                  if (data) console.log(data.message);
                 });
               } else {
                 $timeout(function() {

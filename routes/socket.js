@@ -76,6 +76,7 @@ var socketIO = function() {
 				var info = 'Welcome back, ' + uname + '!';
 				coreArray = res.body.info ? res.body.info : [];
 				coreUser = uname;
+				emitCoreData(socket);
 				startListening(socket);
 				callback(null, {status:"success", message: info});
 			})
@@ -98,10 +99,9 @@ var socketIO = function() {
 				var info = 'Welcome back, ' + uname + '!';
 				coreArray = res.body.info ? res.body.info : [];
 				coreUser = uname;
-				//console.log('coreArray: ' + coreArray + " coreUser: " + coreUser);
-				startListening(socket);
 				emitCoreData(socket); // emit coreData at once.
-				callback(null);
+				startListening(socket);
+				callback(null, {status:"success", message: info});
 			})
 			.fail(function () {
 				// it's  not existed, callback(error, null)
@@ -205,7 +205,6 @@ var socketIO = function() {
 						errorHandler(error, val.info, callback);
 						return;
 					}
-
 					// a response stop object to via the socket
 					// example:
 					// { '59844': [ { route: '003', dest: 'DOWNTOWN', cTime: 10, aTime: '8:27pm' } ] }
