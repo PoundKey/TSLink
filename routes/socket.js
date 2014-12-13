@@ -15,10 +15,14 @@ var apiKey = 'yDC04D3XtydprTHAeB0Z', count = 1, tf = 60;
 // https://dashboard.orchestrate.io/  ||extra importent piece
 // COL = collection , db = the database connection instance
 var COL, TOKEN, db;
+
+var coreArray = [];
+
 /**
  * Server side socket listens to requests coming from the client-side
  * @return SocketIO
  */
+
 var socketIO = function() {
 
 	TOKEN = cloud.API_KEY;
@@ -31,11 +35,10 @@ var socketIO = function() {
 
 	io.on('connection', function(socket){
 
+
 		socket.on('localhost', function () {
 			COL = cloud.DEV_DB;
 		});
-
-		var coreArray = [];
 
 		// activated when user tries to create an account
 		socket.on('createUser', function (data, callback) {
@@ -68,9 +71,9 @@ var socketIO = function() {
 			.then(function (res) {
 				// it's good, fetch the bus stop array
 				var info = 'Welcome back, ' + uname + '!';
-				coreArray = res.info ? res.info : ['init','coreArray'];
-				callback(null, {status:"success", message: info});
+				coreArray = res.info ? res.info : [];
 				startListening(socket);
+				callback(null, {status:"success", message: info});
 			})
 			.fail(function () {
 				// it's  not existed, callback(error, null)
@@ -89,9 +92,9 @@ var socketIO = function() {
 			.then(function (res) {
 				// it's good, fetch the bus stop array
 				var info = 'Welcome back, ' + uname + '!';
-				coreArray = res.info ? res.info : ['init','coreArray'];
-				callback(null, {status:"success", message: info});
+				coreArray = res.info ? res.info : [];
 				startListening(socket);
+				callback(null, {status:"success", message: info});
 			})
 			.fail(function () {
 				// it's  not existed, callback(error, null)
@@ -140,18 +143,6 @@ var socketIO = function() {
  */
  function startListening(socket) {
 
-			/**
-			 * Fetch a single bus stop information, given its stop number
-			 * @param  {int} data :bus stop number
-			 * @return {json}  A JSON object containing the stop info or error code/message
-			 */
-			socket.on('fetchStop', function(data){
-				var stop = data;
-				translinkAPI(stop, apiKey, count, tf, function (stopInfo) {
-					//socket.emit('stopInfo', stopInfo);
-				});
-			});
-
 
 
 			/**
@@ -159,7 +150,7 @@ var socketIO = function() {
 			 * @param  {int} data :bus stop number
 			 * @return {json}  A JSON object containing the stop info or error code/message
 			 */
-			socket.on('refreshStop', function(data){
+			socket.on('refresh', function(data){
 				var stop = data;
 				translinkAPI(stop, apiKey, count, tf, function (res) {
 					//todo
@@ -175,6 +166,7 @@ var socketIO = function() {
 			 * @return {json}  A JSON object containing the stop info or error code/message
 			 */
 			socket.on('addStop', function(data, callback){
+				//console.log('receving addstop singal from the client side...');
 				var stop = data;
 
 				if (_.contains(coreArray, stop)){
@@ -198,6 +190,7 @@ var socketIO = function() {
 					//console.log(stopRes);
 					coreArray.push(stop);
 					callback(null, stopRes);
+
 				});
 
 			});

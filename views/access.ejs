@@ -1,31 +1,31 @@
 <div ng-show="!user && !signup && !signin">
-    <button type="button" class="btn" ng-click="signin_c()">
-        <i class="fa fa-terminal"></i> Log in
-    </button>
-    &nbsp;
-    <button type="button" class="btn" ng-click="signup_c()">
-        <i class="fa fa-fire"></i> Sign up
-    </button>
+  <button type="button" class="btn" ng-click="signin_c()">
+    <i class="fa fa-terminal"></i> Log in
+  </button>
+  &nbsp;
+  <button type="button" class="btn" ng-click="signup_c()">
+    <i class="fa fa-fire"></i> Sign up
+  </button>
 </div>
 
 <div ng-if="!user && signin">
-    <form id="newsletter-form" class="the-form anim-go-left" ng-submit="loginUser()">
-        <div class="field-wrapper">
-            <input type="text" class="textfield required" ng-model="$parent.username" name="username" placeholder="Please enter your username..." autofocus />
-            <button type="submit" class="btn">
-                <i class="fa fa-terminal"></i> Log in
-            </button>
-        </div>
-    </form>
+  <form id="newsletter-form" class="the-form anim-go-left" ng-submit="loginUser()">
+    <div class="field-wrapper">
+      <input type="text" class="textfield required" ng-model="$parent.username" name="username" placeholder="Please enter your username..." autofocus />
+      <button type="submit" class="btn">
+        <i class="fa fa-terminal"></i> Log in
+      </button>
+    </div>
+  </form>
 </div>
 
 <div ng-if="!user && signup">
-    <form id="newsletter-form" class="the-form anim-go-left" ng-submit="createUser()">
-        <div class="field-wrapper">
-            <input type="text" class="textfield required" ng-model="$parent.username" name="username" placeholder="Please enter your username..." autofocus />
-            <button type="submit" class="btn">
-                <i class="fa fa-fire"></i> Sign up
-            </button>
-        </div>
-    </form>
+  <form id="newsletter-form" class="the-form anim-go-left" ng-submit="createUser()">
+    <div class="field-wrapper">
+      <input type="text" class="textfield required" ng-model="$parent.username" name="username" placeholder="Please enter your username..." autofocus />
+      <button type="submit" class="btn">
+        <i class="fa fa-fire"></i> Sign up
+      </button>
+    </div>
+  </form>
 </div>

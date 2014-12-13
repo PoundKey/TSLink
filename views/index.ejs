@@ -1,62 +1,62 @@
 <% include header %>
 <div class="preload load-container load3" ng-if="ajaxicon">
-   <div class="loader">Loading...</div>
+ <div class="loader">Loading...</div>
 </div>
 
 <!-- BEGIN MAIN PAGE -->
 <div id="page-main" class="page active grid-container" ng-show="!ajaxicon">
 
-    <div class="content-wrapper with-footer">
-        <!-- BEGIN CONTENT SECTION FOR MAIN PAGE -->
-        <section class="content animated zoomIn">
-            <div class="entries">
-                <div id="main" class="entry mview">
+  <div class="content-wrapper with-footer">
+    <!-- BEGIN CONTENT SECTION FOR MAIN PAGE -->
+    <section class="content animated zoomIn">
+      <div class="entries">
+        <div id="main" class="entry mview">
 
-                    <br>
-                    <h1 class="anim-go-right grow">
-                        <img src="images/tslink.png" alt="TSLink Vancouver" class="tslogo">TSLink
-                    </h1>
-                        <h5 class="anim-go-right">
-                            <a href="https://github.com/poundkey/TSLink"><i class="fa fa-github grow"></i></a>
-                            A Realtime Bus Timer App Via Translink Vancouver
-                        </h5>
+          <br>
+          <h1 class="anim-go-right grow">
+            <img src="images/tslink.png" alt="TSLink Vancouver" class="tslogo">TSLink
+          </h1>
+          <h5 class="anim-go-right">
+            <a href="https://github.com/poundkey/TSLink"><i class="fa fa-github grow"></i></a>
+            A Realtime Bus Timer App Via Translink Vancouver
+          </h5>
 
-                        <% include access %>
+          <% include access %>
 
-                        <div ng-if="user">
-                            <form id="newsletter-form" class="the-form anim-go-left" ng-submit="addStop()">
-                                <div class="field-wrapper">
-                                    <input type="text" class="textfield required" ng-model="$parent.inputStop" name="stop" placeholder="Please enter a nearby bus stop..." />
-                                    <button type="submit" class="btn">
-                                        <i class="fa fa-search-plus"></i> Add
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                        <div ng-if='delay'><br><i class="fa fa-spinner fa-spin"></i></div>
-                        <br>
-                        <div ng-repeat="err in errArray" ng-show="errShow" ng-if="false">
-                            <div class="err animated bounceIn">{{err}}</div>
-                        </div>
-                        <hr>
-                        <button type="button" class="btn3" ng-click='reset()' ng-if="!user">
-                            <i class="fa fa-arrow-circle-o-left fa-lg"></i>
-                        </button>
-                        <br>
-                        <div ng-if="user">
-                          <% include info %>
-                          <br>
-                          <hr/><br>
-                          <div>
-                            <button type="button" class="btn" ng-click="logout()">{{user}}</button>
-                          </div>
-                        </div>
-                    <br>
+          <div ng-if="user">
+            <form id="newsletter-form" class="the-form anim-go-left" ng-submit="addStop()">
+              <div class="field-wrapper">
+                <input type="text" class="textfield required" ng-model="$parent.inputStop" name="stop" placeholder="Please enter a nearby bus stop..." />
+                <button type="submit" class="btn">
+                  <i class="fa fa-search-plus"></i> Add
+                </button>
+              </div>
+            </form>
+          </div>
+          <div ng-if='delay'><br><i class="fa fa-spinner fa-spin"></i></div>
+          <br>
+          <div ng-repeat="err in errArray" ng-show="errShow" ng-if="false">
+            <div class="err animated bounceIn">{{err}}</div>
+          </div>
+          <hr>
+          <button type="button" class="btn3" ng-click='reset()' ng-if="!user">
+            <i class="fa fa-arrow-circle-o-left fa-lg"></i>
+          </button>
+          <br>
+          <div ng-if="user">
+            <% include info %>
+            <br>
+            <hr/><br>
+            <div>
+              <button type="button" class="btn" ng-click="logout()">Log out</button>
             </div>
+          </div>
+          <br>
         </div>
+      </div>
     </section>
     <!-- END CONTENT SECTION -->
-</div>
+  </div>
 </div>
 <!-- END MAIN PAGE -->
 

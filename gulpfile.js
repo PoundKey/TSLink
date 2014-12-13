@@ -8,7 +8,7 @@ gulp.task('develop', function () {
   livereload.listen();
   nodemon({
     script: 'bin/www',
-    ext: 'js ejs css',
+    ext: 'js',
   }).on('restart', function () {
     setTimeout(function () {
       livereload.changed();

@@ -57,6 +57,7 @@ angular.module('myApp.controllers', [])
               if (localhost) {
                 socket.emit('localhost');
               }
+              getUserInfo($scope.user);
             }
 
 
@@ -175,6 +176,7 @@ angular.module('myApp.controllers', [])
               if (!checkInputStop(stop)){
                 $scope.delay = false;
                 iAlert("Oops...", "Please enter an valid bus stop number.", "warning");
+                $scope.inputStop = null;
                 return;
               }
 
@@ -183,6 +185,7 @@ angular.module('myApp.controllers', [])
                 if (error) {
                   iAlert('Oops...', error.message, 'error');
                   $scope.delay = false;
+                  $scope.inputStop = null;
                   return;
                 }
                 //iAlert(data.message, "Good luck on catching the bus! Wish you enjoy TSLink.", 'success');
@@ -190,6 +193,10 @@ angular.module('myApp.controllers', [])
                 //example: data => { '59844': [ { route: '003', dest: 'DOWNTOWN', cTime: 10, aTime: '8:27pm' } ] }
                 _.extend($scope.coreData, data);
                 $scope.delay = false;
+                $scope.inputStop = null;
+                //console.log($scope.coreData);
+
+
               });
             };
 
@@ -218,7 +225,19 @@ angular.module('myApp.controllers', [])
                 return validity;             // body...
             }
 
+            /**
+             * Computer the arrival time according to the return value
+             * @param cTime
+             * @returns {string}
+             */
+              $scope.compute = function (cTime) {
 
+                  if (cTime == 'N/A')
+                    return 'Delay';
+                  if (cTime <=0)
+                    return "Arrvied Now";
+                  return "Arrive in: " + cTime + " min";
+              };
 
             /**
              * Trim the date and time format return from the api with time only

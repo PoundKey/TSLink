@@ -1,21 +1,45 @@
-<div class="message" ng-repeat="arrivals in busStopDetails">
-  <div class="message animated fadeInUp" ng-repeat="arrival in arrivals">
+<!--
+    todo: configure coreData, which contails all data, each data is a stop object.
+    //example: data => { '59844': [ { route: '003', dest: 'DOWNTOWN', cTime: 10, aTime: '8:27pm' } ] }
+-->
+<div class="message" ng-repeat="(stop, detail) in coreData">
+  <div class="message animated fadeInUp" ng-repeat="route in detail">
     <button class="btn arrive-box">
-      <span class="arrive-left-item"><i class="fa fa-bus"></i> {{arrival.route}} {{arrival.dest}} </span>
+      <span class="arrive-left-item"><i class="fa fa-bus"></i> {{route.route}} {{route.dest}} </span>
       <span class=" double-slash-bar">&nbsp;&#166;&nbsp;</span>
-      <div class="pulse-grow arrive-mid-item"><i class="fa fa-bell-o"></i> {{computeArrival(arrival.cTime)}}
-        <i class="fa fa-at"></i> {{timeConf(arrival.aTime)}}
+      <div class="pulse-grow arrive-mid-item">
+        <i class="fa fa-bell-o"></i> {{cpmpute(route.cTime)}}
+        <i class="fa fa-at"></i> {{route.aTime}}
       </div>
       <span class="double-slash-bar">&nbsp;&#166;&nbsp;</span>
       <span class="arrive-right-item">
-        <i class="fa fa-flag-o"></i> {{arrival.stop}}
-        <a ng-click="removeStop(arrival.stop)" class="btn3">
+        <i class="fa fa-flag-o"></i> {{stop}}
+        <a ng-click="remove(stop)" class="btn3">
           <i class="fa fa-trash-o"></i></a>
         </span>
       </button>
-
       <span>&nbsp;</span>
-
       <br><br>
   </div>
 </div>
+
+<!--
+<div class="message" ng-repeat="(stop, detail) in coreData">
+  <button class="btn animated fadeInUp arrive-box">
+    <div class="message" ng-repeat="route in detail">
+      <span class="arrive-left-item"><i class="fa fa-bus"></i> {{route.route}} {{route.dest}} </span>
+      <span class="double-slash-bar">&nbsp;&#166;&nbsp;</span>
+      <div class="pulse-grow arrive-mid-item">
+        <i class="fa fa-bell-o"></i> {{compute(route.cTime)}}
+        <i class="fa fa-at"></i> {{route.aTime}}
+      </div>
+      <span class="double-slash-bar">&nbsp;&#166;&nbsp;</span>
+      <span class="arrive-right-item">
+        <i class="fa fa-flag-o"></i> {{stop}}
+        <a ng-click="remove(stop)" class="btn3"><i class="fa fa-trash-o"></i></a>
+      </span>
+    </div>
+  </button>
+</div>
+<br><br><br>
+-->
