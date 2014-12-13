@@ -104,6 +104,20 @@ var socketIO = function() {
 
 		});
 
+		// activate when user tries to remove a bus stop
+		socket.on('remove', function(stop, callback) {
+			var error = {status:"error", message:null};
+			var i = _.indexOf(coreArray, stop);
+			if (i < 0) {
+				error.message = 'Something went wrong, please directly contact the author PoundKey.';
+				callback(error);
+			}
+
+			coreArray.splice(i, 1);
+			callback(null);
+
+		}); //end of remove event
+
 
 	});
 }

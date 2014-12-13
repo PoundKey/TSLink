@@ -41,7 +41,7 @@ angular.module('myApp.controllers', [])
             });
 
 
-            socket.on('stopInfo', function(data) {
+            socket.on('update', function(data) {
               console.log('Bus Stop Data: ' + data);
             });
 
@@ -205,12 +205,23 @@ angular.module('myApp.controllers', [])
                 $scope.delay = false;
                 $scope.inputStop = null;
                 //console.log($scope.coreData);
-
-
               });
             };
 
-
+            /**
+             * remove a bus stop number to the datastore
+             * @param  {int} stop number
+             */
+            $scope.remove = function (stop) {
+              //todo
+              removal($scope.coreData, stop);
+              socket.emit('remove', stop, function (error) {
+                if (error) {
+                  iAlert('Oops...', error.message, 'error');
+                  return;
+                }
+              });
+            };
 
 
             // <--------------------- end of core functions ------------------->
@@ -279,18 +290,17 @@ angular.module('myApp.controllers', [])
                 return validity;
              };
 
-             /*
-               $scope.coreData = {
-                  stopNumber: {
-                      busRoute: {
-
-                      }
-                  }
-
-               }
-
-
+             /**
+              * remove the property with key pf 'stop' from the obj object
+              * @param  {object} obj  example: $scope.coreData
+              * @param  {int} stop
+              * @return {void}
               */
+             function removal (obj, stop) {
+               var keys = _.keys(obj);
+               if (!_.contains(keys, stop)) return;
+               delete obj[stop];
+             }
 
 
              // <------------------ end of helper functions ------------------->
