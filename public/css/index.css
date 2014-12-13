@@ -11,6 +11,14 @@ html {
   background-size: cover;
 }
 
+.tslogo {
+	width:72px;
+	height:72px;
+	top: 15px;
+	position: relative;
+
+}
+
 .mview {
 	opacity: 0.6;
 	background-color:#000000;
@@ -29,8 +37,6 @@ html {
 	width: 100%;
 	}
 }
-
-
 
 
 .arrive-box{

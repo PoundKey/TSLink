@@ -3,14 +3,12 @@
 /* Controllers */
 
 angular.module('myApp.controllers', [])
-    .controller('AppCtrl', ['$scope', '$http', '$interval', '$timeout', 'socket.io',
-                            'localStorageService', 'cloudBase',
-        function ($scope, $http, $interval, $timeout, socket, login, cloud) {
+    .controller('AppCtrl', ['$scope', '$http', '$interval', '$timeout',
+                            'socket.io', 'localStorageService',
+        function ($scope, $http, $interval, $timeout, socket, login) {
 
             $scope.user = login.get('user');
             $scope.coreData = {};
-            var localhost = document.location.hostname == "localhost" ;
-            var DB_STORE = localhost ? cloud.DEV_DB: cloud.PRO_DB;
 
             // <---------------------- visibility control ----------------------->
             $scope.signup = false;
@@ -55,11 +53,10 @@ angular.module('myApp.controllers', [])
 
 
             function controlFlow() {
-              var OP = {TOKEN: cloud.API_KEY, DB_STORE: DB_STORE};
-              socket.emit('DB_STORE', OP);
-              $timeout(function() {
-                getUserInfo($scope.user);
-              }, 50);
+              var localhost = document.location.hostname == "localhost" ;
+              if (localhost) {
+                socket.emit('localhost');
+              }
             }
 
 
@@ -188,13 +185,14 @@ angular.module('myApp.controllers', [])
                   $scope.delay = false;
                   return;
                 }
-                return;
                 //iAlert(data.message, "Good luck on catching the bus! Wish you enjoy TSLink.", 'success');
-                //todo: configure coreData
+                //todo: configure coreData, data is a stop object
+                //example: data => { '59844': [ { route: '003', dest: 'DOWNTOWN', cTime: 10, aTime: '8:27pm' } ] }
                 _.extend($scope.coreData, data);
                 $scope.delay = false;
               });
             };
+
 
 
 
@@ -244,13 +242,26 @@ angular.module('myApp.controllers', [])
               }
             }
 
-                         /*
+             /*
               * Checking the validity of the user input
               */
              function checkInputStop(stop){
                 var validity = !isNaN(stop) && (stop > 50000) && (stop <= 70000);
                 return validity;
              };
+
+             /*
+               $scope.coreData = {
+                  stopNumber: {
+                      busRoute: {
+
+                      }
+                  }
+
+               }
+
+
+              */
 
 
              // <------------------ end of helper functions ------------------->

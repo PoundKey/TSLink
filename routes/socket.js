@@ -1,4 +1,5 @@
 var app = require('../app');
+var cloud = require('./models');
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var request = require('request');
@@ -20,6 +21,9 @@ var COL, TOKEN, db;
  */
 var socketIO = function() {
 
+	TOKEN = cloud.API_KEY;
+  COL = cloud.PRO_DB;
+
 	http.listen(app.get('port'), function() {
 		console.log("Express now is listening on port with SocketIO: " + app.get('port'));
 	});
@@ -27,14 +31,11 @@ var socketIO = function() {
 
 	io.on('connection', function(socket){
 
-		var coreArray = [];
-
-		//activated immediate upon connection, crucial DB_INFO
-
-		socket.on('DB_STORE', function (data) {
-			TOKEN = data.TOKEN;
-			COL   = data.DB_STORE;
+		socket.on('localhost', function () {
+			COL = cloud.DEV_DB;
 		});
+
+		var coreArray = [];
 
 		// activated when user tries to create an account
 		socket.on('createUser', function (data, callback) {
@@ -175,6 +176,13 @@ var socketIO = function() {
 			 */
 			socket.on('addStop', function(data, callback){
 				var stop = data;
+
+				if (_.contains(coreArray, stop)){
+					var error = {status:"error", message:'The bus stop has already been added.'};
+					callback(error, null);
+					return;
+				}
+
 				translinkAPI(stop, apiKey, count, tf, function (res) {
 					var info = JSON.parse(res);
 					var val = checkAPICode(info);
@@ -183,7 +191,13 @@ var socketIO = function() {
 						callback(error, null);
 						return;
 					}
-
+					// a response stop object to via the socket
+					// example:
+					// { '59844': [ { route: '003', dest: 'DOWNTOWN', cTime: 10, aTime: '8:27pm' } ] }
+					var stopRes = createStop(stop, info);
+					//console.log(stopRes);
+					coreArray.push(stop);
+					callback(null, stopRes);
 				});
 
 			});
@@ -244,5 +258,41 @@ var socketIO = function() {
  		return {info:info, status:status};
  }
 
+/**
+ * create a stop object with format {stopNumber: []}
+ * @param  {int} stopNumber
+ * @param  {array} res   response array returned from the API call
+ * @return {object}
+ * example: {"59844" : [{route:'003', dest:'dest', cTime:'countdown', aTime:'arrival'}, {...}]}
+ */
+function createStop(stopNumber, res) {
+	var stop = {};
+	var stopDetail = [];
+	//stopDetail array contains 1 to many route
+	_.each(res, function(el, i){
+		var route = {};
+		var sche = el.Schedules[0]; //count = 1
+		route['route'] = el.RouteNo;
+		route['dest'] = sche.Destination;
+		route['cTime'] = sche.ExpectedCountdown; // count down time, in minute
+		route['aTime'] = timeConf(sche.ExpectedLeaveTime); // estimated arrival time, in date format
+		//console.log("Route: " + route);
+		stopDetail.push(route);
+	});
+	//console.log('stopDetail: ' + stopDetail);
+	stop[stopNumber] = stopDetail;
+	return stop;
+
+}
+/**
+* Trim the date and time format return from the api with time only
+* @param  {date} aTime
+* @return {time}
+*/
+function timeConf(aTime) {
+	var spaceIndex = aTime.indexOf(' ')
+	var time = spaceIndex < 0 ? aTime : aTime.substr(0,aTime.indexOf(' '));
+	return time;
+};
 
 module.exports = socketIO;
