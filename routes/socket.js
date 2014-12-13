@@ -101,7 +101,6 @@ var socketIO = function() {
 				var error = {status:"error", message:'Something went wrong, please double check the Internet connection.'};
 				callback(error, null);
 			});
-
 		});
 
 		// activate when user tries to remove a bus stop

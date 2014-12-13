@@ -4,19 +4,29 @@
 -->
 <div class="message" ng-repeat="(stop, detail) in coreData">
   <div class="message animated fadeInUp" ng-repeat="route in detail">
-    <button class="btn arrive-box">
-      <span class="arrive-left-item"><i class="fa fa-bus"></i> {{route.route}} {{route.dest}} </span>
-      <span class=" double-slash-bar">&nbsp;&#166;&nbsp;</span>
-      <div class="pulse-grow arrive-mid-item">
-        <i class="fa fa-bell-o"></i> {{compute(route.cTime)}}
-        <i class="fa fa-at"></i> {{route.aTime}}
-      </div>
-      <span class="double-slash-bar">&nbsp;&#166;&nbsp;</span>
-      <span class="arrive-right-item">
-        <i class="fa fa-flag-o"></i> {{stop}}
-        <a ng-click="remove(stop)" class="btn3">
-          <i class="fa fa-trash-o"></i></a>
+    <button class="btn arrive-box" ng-init="tuner=false" ng-click="(tuner = tuner ? false : true)">
+      <div class='prev'>
+        <span class="arrive-left-item"><i class="fa fa-bus"></i> {{route.route}} {{route.dest}} </span>
+        <span class=" double-slash-bar">&nbsp;&#166;&nbsp;</span>
+        <div class="pulse-grow arrive-mid-item">
+          <i class="fa fa-bell-o"></i> {{compute(route.cTime)}}
+          <i class="fa fa-at"></i> {{route.aTime}}
+        </div>
+        <span class="double-slash-bar">&nbsp;&#166;&nbsp;</span>
+        <span class="arrive-right-item">
+          <i class="fa fa-flag-o"></i> {{stop}}
+          <a ng-click="remove(stop)" class="btn3">
+            <i class="fa fa-trash-o"></i></a>
         </span>
+      </div>
+
+      <div class="future animated pullUp" ng-if="tuner">
+        <hr />
+        <div>
+        Next &#10098; <i class="fa fa-bus"></i>  {{route.route}}&#10099; Arrive in:
+        </div>
+        <br>
+      </div>
       </button>
       <span>&nbsp;</span>
       <br><br>

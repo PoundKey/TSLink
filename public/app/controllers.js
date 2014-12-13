@@ -303,6 +303,8 @@ angular.module('myApp.controllers', [])
              }
 
 
+
+
              // <------------------ end of helper functions ------------------->
 
 
