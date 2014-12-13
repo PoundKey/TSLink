@@ -44,6 +44,10 @@ angular.module('myApp.controllers', [])
               console.log('Bus Stop Data: ' + data);
             });
 
+            socket.on('coreData', function(data) {
+              _.extend($scope.coreData, data);
+            });
+
             // <----------------- end of Socket IO data exchange ---------------->
 
 
@@ -145,9 +149,8 @@ angular.module('myApp.controllers', [])
             function getUserInfo (uname) {
 
               if (uname) {
-                socket.emit('backin', uname, function(error, data) {
+                socket.emit('backin', uname, function(error) {
                   if (error) console.log(error.message);
-                  $scope.coreData = data;
                 });
               } else {
                 $timeout(function() {

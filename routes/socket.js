@@ -100,8 +100,8 @@ var socketIO = function() {
 				coreUser = uname;
 				//console.log('coreArray: ' + coreArray + " coreUser: " + coreUser);
 				startListening(socket);
-				var coreData = computeCoreData(); //compute coreData at once.
-				callback(null, coreData);
+				emitCoreData(socket); // emit coreData at once.
+				callback(null);
 			})
 			.fail(function () {
 				// it's  not existed, callback(error, null)
@@ -315,10 +315,10 @@ function createStop(stopNumber, res) {
 
 /**
  * compute coreData when user login or backin
+ * @param {object} socket
  * @return {object} coreData used for $scope.coreData
  */
-function computeCoreData() {
-	var coreData = {};
+function emitCoreData(socket) {
 	_.each(coreArray, function(stop, index) {
 
 			translinkAPI(stop, apiKey, count, tf, function (res) {
@@ -327,12 +327,8 @@ function computeCoreData() {
 				if (!val.status) return;
 
 				var stopRes = createStop(stop, info);
-				_.extend(coreData, stopRes);
-
+				socket.emit('coreData', stopRes);
 			});
-	console.log(coreData);
-	return coreData;
-
 	});
 }
 
