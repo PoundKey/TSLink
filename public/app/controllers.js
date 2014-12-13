@@ -33,7 +33,6 @@ angular.module('myApp.controllers', [])
 
             // <------------------- end of visibility control ------------------->
 
-
             // <--------------------- Socket IO data exchange ------------------->
 
             socket.on('connect', function() {
@@ -58,6 +57,7 @@ angular.module('myApp.controllers', [])
                 socket.emit('localhost');
               }
               getUserInfo($scope.user);
+
             }
 
 
@@ -152,7 +152,7 @@ angular.module('myApp.controllers', [])
                   if (data) console.log(data.message);
                 });
               } else {
-                $timeout(function() {
+                $interval(function() {
                   sweetAlert({
                      title: "Welcome!",
                      text: "Please create a username before proceeding.",

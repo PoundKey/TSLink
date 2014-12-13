@@ -250,7 +250,7 @@ var socketIO = function() {
 					 			status = false;
 				        break;
 				    case '3005':
-					 			info = "Sorry, no stop estimates found yet at this momment.";
+					 			info = "Sorry, no stop estimates found yet at this moment.";
 					 			status = false;
 				        break;
 				    default:
