@@ -17,7 +17,11 @@ var apiKey = 'yDC04D3XtydprTHAeB0Z', count = 1, tf = 60;
 var COL, TOKEN, db;
 
 var coreArray = [];
+var coreUser;
 
+// error and sucess code used to notify client
+var error = {status:"error", message:null};
+var success = {status:'success', message:null};
 /**
  * Server side socket listens to requests coming from the client-side
  * @return SocketIO
@@ -56,7 +60,6 @@ var socketIO = function() {
 			.fail(function () {
 				// it's good, create the entry with key=uname, then callback when done or failed
 				updateUser(db, uname, stamp, callback);
-				coreArray = [];
 			});
 		});
 
@@ -71,7 +74,8 @@ var socketIO = function() {
 			.then(function (res) {
 				// it's good, fetch the bus stop array
 				var info = 'Welcome back, ' + uname + '!';
-				coreArray = res.info ? res.info : [];
+				coreArray = res.body.info ? res.body.info : [];
+				coreUser = uname;
 				startListening(socket);
 				callback(null, {status:"success", message: info});
 			})
@@ -92,9 +96,12 @@ var socketIO = function() {
 			.then(function (res) {
 				// it's good, fetch the bus stop array
 				var info = 'Welcome back, ' + uname + '!';
-				coreArray = res.info ? res.info : [];
+				coreArray = res.body.info ? res.body.info : [];
+				coreUser = uname;
+				//console.log('coreArray: ' + coreArray + " coreUser: " + coreUser);
 				startListening(socket);
-				callback(null, {status:"success", message: info});
+				var coreData = computeCoreData(); //compute coreData at once.
+				callback(null, coreData);
 			})
 			.fail(function () {
 				// it's  not existed, callback(error, null)
@@ -156,8 +163,6 @@ var socketIO = function() {
  */
  function startListening(socket) {
 
-
-
 			/**
 			 * Refresh a single bus stop information, given its stop number
 			 * @param  {int} data :bus stop number
@@ -180,11 +185,16 @@ var socketIO = function() {
 			 */
 			socket.on('addStop', function(data, callback){
 				//console.log('receving addstop singal from the client side...');
-				var stop = data;
+				var stop = data.stop;
+				var stamp = data.cTime;
+
+				if (!coreUser) {
+					errorHandler(error, 'Something went wrong (Code: Xe86)...', callback);
+					return;
+				};
 
 				if (_.contains(coreArray, stop)){
-					var error = {status:"error", message:'The bus stop has already been added.'};
-					callback(error, null);
+					errorHandler(error, 'The bus stop has already been added.', callback);
 					return;
 				}
 
@@ -192,18 +202,29 @@ var socketIO = function() {
 					var info = JSON.parse(res);
 					var val = checkAPICode(info);
 					if (!val.status) {
-						var error = {status:"error", message:val.info};
-						callback(error, null);
+						errorHandler(error, val.info, callback);
 						return;
 					}
+
 					// a response stop object to via the socket
 					// example:
 					// { '59844': [ { route: '003', dest: 'DOWNTOWN', cTime: 10, aTime: '8:27pm' } ] }
 					var stopRes = createStop(stop, info);
 					//console.log(stopRes);
-					coreArray.push(stop);
-					callback(null, stopRes);
+					if (!db) db = orchestrate(TOKEN);
 
+					coreArray.push(stop);
+					db.put(COL, coreUser, {
+					  info : coreArray,
+					  reg : stamp
+					})
+					.then(function (res) {
+						successHandler(stopRes, callback);
+					})
+					.fail(function (err) {
+						coreArray.pop();
+					  errorHandler(error, 'Something went wrong... Please check the Internet connection.', callback);
+					});
 				});
 
 			});
@@ -214,7 +235,7 @@ var socketIO = function() {
  }
 
 /**
- * create/update a user entry on the collection
+ * create/update user entry on the collection
  * @param  {object} db
  * @param  {string} uname
  * @param  {string} stamp
@@ -227,6 +248,8 @@ var socketIO = function() {
 		})
 		.then(function (result) {
 			var info = 'Welcome, ' + uname + '!';
+			coreArray = [];
+			coreUser = uname;
 			callback(null, {status:"success", message: info});
 		})
 		.fail(function (err) {
@@ -288,17 +311,63 @@ function createStop(stopNumber, res) {
 	//console.log('stopDetail: ' + stopDetail);
 	stop[stopNumber] = stopDetail;
 	return stop;
-
 }
+
+/**
+ * compute coreData when user login or backin
+ * @return {object} coreData used for $scope.coreData
+ */
+function computeCoreData() {
+	var coreData = {};
+	_.each(coreArray, function(stop, index) {
+
+			translinkAPI(stop, apiKey, count, tf, function (res) {
+				var info = JSON.parse(res);
+				var val = checkAPICode(info);
+				if (!val.status) return;
+
+				var stopRes = createStop(stop, info);
+				_.extend(coreData, stopRes);
+
+			});
+	console.log(coreData);
+	return coreData;
+
+	});
+}
+
 /**
 * Trim the date and time format return from the api with time only
 * @param  {date} aTime
 * @return {time}
 */
 function timeConf(aTime) {
-	var spaceIndex = aTime.indexOf(' ')
+	var spaceIndex = aTime.indexOf(' ');
 	var time = spaceIndex < 0 ? aTime : aTime.substr(0,aTime.indexOf(' '));
 	return time;
-};
+}
+
+/**
+ * a refactored error handler
+ * @param  {object}   err
+ * @param  {string}   message
+ * @param  {function} callback
+ * @return {void}
+ */
+function errorHandler(err, message, callback) {
+	err.message = message;
+	callback(error, null);
+}
+
+/**
+ * a refactored success ajax handler
+ * @param  {object}   data
+ * @param  {function} callback
+ * @return {void}
+ */
+function successHandler(data, callback) {
+	callback(null, data);
+}
+
 
 module.exports = socketIO;

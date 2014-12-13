@@ -83,10 +83,8 @@ angular.module('myApp.controllers', [])
                 iAlert('Oops...', "Please enter a valid username. (3~15 Characters)", 'warning');
                 return;
               }
-              var memo = new Date();
-              var stamp = memo.toLocaleString();
 
-              newUser = {uid : uname, cTime: stamp};
+              newUser = {uid : uname, cTime: stamp()};
 
               socket.emit('createUser', newUser, function (error, data) {
 
@@ -149,7 +147,7 @@ angular.module('myApp.controllers', [])
               if (uname) {
                 socket.emit('backin', uname, function(error, data) {
                   if (error) console.log(error.message);
-                  if (data) console.log(data.message);
+                  $scope.coreData = data;
                 });
               } else {
                 $timeout(function() {
@@ -173,7 +171,7 @@ angular.module('myApp.controllers', [])
               $scope.delay = true;
               var uname = $scope.username;
               var stop = $scope.inputStop;
-
+              var uInfo; //updated info
               if (!checkInputStop(stop)){
                 $scope.delay = false;
                 iAlert("Oops...", "Please enter an valid bus stop number.", "warning");
@@ -189,8 +187,8 @@ angular.module('myApp.controllers', [])
                 $scope.inputStop = null;
                 return;
               }
-
-              socket.emit('addStop', stop, function (error, data) {
+              uInfo = {stop:stop, cTime:stamp()};
+              socket.emit('addStop', uInfo, function (error, data) {
 
                 if (error) {
                   iAlert('Oops...', error.message, 'error');
@@ -302,8 +300,15 @@ angular.module('myApp.controllers', [])
                delete obj[stop];
              }
 
-
-
+             /**
+              * create a timeStamp from current user
+              * @return {date}
+              */
+              function stamp() {
+                var memo = new Date();
+                var stamp = memo.toLocaleString();
+                return stamp;
+              }
 
              // <------------------ end of helper functions ------------------->
 
