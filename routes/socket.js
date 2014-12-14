@@ -14,10 +14,7 @@ var apiKey = 'yDC04D3XtydprTHAeB0Z', count = 1, tf = 60;
 
 // https://dashboard.orchestrate.io/  ||extra importent piece
 // COL = collection , db = the database connection instance
-var COL, TOKEN, db;
-
-var coreArray = [];
-var coreUser;
+var COL, TOKEN;
 
 // error and sucess code used to notify client
 var error = {status:"error", message:null};
@@ -39,6 +36,8 @@ var socketIO = function() {
 
 	io.on('connection', function(socket){
 
+		var coreArray, coreUser;
+		var db = orchestrate(TOKEN);
 
 		socket.on('localhost', function () {
 			COL = cloud.DEV_DB;
@@ -48,7 +47,6 @@ var socketIO = function() {
 		socket.on('createUser', function (data, callback) {
 			var uname = data.uid;
 			var stamp = data.cTime;
-			db = orchestrate(TOKEN);
 
 			//check if the username has been used
 			db.get(COL, uname)
@@ -59,16 +57,28 @@ var socketIO = function() {
 			})
 			.fail(function () {
 				// it's good, create the entry with key=uname, then callback when done or failed
-				updateUser(db, uname, stamp, callback);
+					db.put(COL, uname, {
+					  info : [],
+					  reg : stamp
+					})
+					.then(function (result) {
+						var info = 'Welcome, ' + uname + '!';
+						coreArray = [];
+						coreUser = uname;
+						callback(null, {status:"success", message: info});
+					})
+					.fail(function (err) {
+						var error = {status:"error", message:"Something went wrong, please check the Internet connection."};
+						callback(error, null);
+					})
 			});
 		});
 
 
 		// activated when user tries login with username
 		socket.on('login', function(data, callback) {
-			var uname = data;
-			db = orchestrate(TOKEN);
 
+			var uname = data;
 			//check if the username does exist
 			db.get(COL, uname)
 			.then(function (res) {
@@ -76,8 +86,8 @@ var socketIO = function() {
 				var info = 'Welcome back, ' + uname + '!';
 				coreArray = res.body.info ? res.body.info : [];
 				coreUser = uname;
-				emitCoreData(socket);
-				startListening(socket);
+				emitCoreData(socket, coreArray);
+				startListening(socket, db, coreArray, coreUser);
 				callback(null, {status:"success", message: info});
 			})
 			.fail(function () {
@@ -99,8 +109,8 @@ var socketIO = function() {
 				var info = 'Welcome back, ' + uname + '!';
 				coreArray = res.body.info ? res.body.info : [];
 				coreUser = uname;
-				emitCoreData(socket); // emit coreData at once.
-				startListening(socket);
+				emitCoreData(socket, coreArray); // emit coreData at once.
+				startListening(socket, db, coreArray, coreUser);
 				callback(null, {status:"success", message: info});
 			})
 			.fail(function () {
@@ -146,9 +156,12 @@ var socketIO = function() {
 /**
  * listening to those events only with user logged in
  * @param  {object} socket
+ * @param  {object} db
+ * @param  {array} coreArray
+ * @param  {string} coreAUser
  * @return {void}
  */
- function startListening(socket) {
+ function startListening(socket, db, coreArray, coreUser) {
 
 			/**
 			 * Refresh a single bus stop information, given its stop number
@@ -162,7 +175,6 @@ var socketIO = function() {
 				});
 
 			});
-
 
 
 			/**
@@ -199,7 +211,6 @@ var socketIO = function() {
 					var stopRes = createStop(stop, info);
 					successHandler(stopRes, callback);
 					//console.log(stopRes);
-					if (!db) db = orchestrate(TOKEN);
 					db.put(COL, coreUser, {
 					  info : coreArray,
 					  reg : stamp
@@ -226,14 +237,9 @@ var socketIO = function() {
 			};
 
 			var i = _.indexOf(coreArray, stop);
-			if (i < 0) {
-				error.message = 'Something went wrong, please directly contact the author PoundKey.';
-				callback(error);
-			}
+			if (i < 0) return;
 
 			coreArray.splice(i, 1);
-
-			if (!db) db = orchestrate(TOKEN);
 
 			db.put(COL, coreUser, {
 			  info : coreArray,
@@ -243,30 +249,6 @@ var socketIO = function() {
 		}); //end of remove event
 
 
- }
-
-/**
- * create/update user entry on the collection
- * @param  {object} db
- * @param  {string} uname
- * @param  {string} stamp
- * @return {callback} callback(null, msg) if create/update successfully, callback(error, null) otherwise
- */
- function updateUser (db, uname, stamp, callback) {
-		db.put(COL, uname, {
-		  info : [],
-		  reg : stamp
-		})
-		.then(function (result) {
-			var info = 'Welcome, ' + uname + '!';
-			coreArray = [];
-			coreUser = uname;
-			callback(null, {status:"success", message: info});
-		})
-		.fail(function (err) {
-			var error = {status:"error", message:"Something went wrong, please check the Internet connection."};
-			callback(error, null);
-		})
  }
 
 /**
@@ -329,7 +311,7 @@ function createStop(stopNumber, res) {
  * @param {object} socket
  * @return {object} coreData used for $scope.coreData
  */
-function emitCoreData(socket) {
+function emitCoreData(socket, coreArray) {
 	_.each(coreArray, function(stop, index) {
 
 			translinkAPI(stop, apiKey, count, tf, function (res) {
