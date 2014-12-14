@@ -110,19 +110,6 @@ var socketIO = function() {
 			});
 		});
 
-		// activate when user tries to remove a bus stop
-		socket.on('remove', function(stop, callback) {
-			var error = {status:"error", message:null};
-			var i = _.indexOf(coreArray, stop);
-			if (i < 0) {
-				error.message = 'Something went wrong, please directly contact the author PoundKey.';
-				callback(error);
-			}
-
-			coreArray.splice(i, 1);
-			callback(null);
-
-		}); //end of remove event
 
 
 	});
@@ -225,9 +212,35 @@ var socketIO = function() {
 					});
 				});
 
+			}); // end of addStop event
+
+		// activate when user tries to remove a bus stop
+		socket.on('remove', function(data) {
+
+			var stop = data.stop;
+			var stamp = data.cTime;
+
+			if (!coreUser) {
+				errorHandler(error, 'Something went wrong (Code: Xe86)...', callback);
+				return;
+			};
+
+			var i = _.indexOf(coreArray, stop);
+			if (i < 0) {
+				error.message = 'Something went wrong, please directly contact the author PoundKey.';
+				callback(error);
+			}
+
+			coreArray.splice(i, 1);
+
+			if (!db) db = orchestrate(TOKEN);
+
+			db.put(COL, coreUser, {
+			  info : coreArray,
+			  reg : stamp
 			});
 
-
+		}); //end of remove event
 
 
  }
@@ -336,8 +349,11 @@ function emitCoreData(socket) {
 * @return {string}
 */
 function trimConf(string) {
-	var spaceIndex = string.indexOf(' ');
-	var str = spaceIndex < 0 ? string : string.substr(0,string.indexOf(' '));
+	var str = string;
+	if (str.length > 10) {
+		var spaceIndex = str.indexOf(' ');
+		var str = spaceIndex < 0 ? str : str.substr(0,str.indexOf(' '));
+	}
 	return str;
 }
 

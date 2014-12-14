@@ -224,14 +224,27 @@ angular.module('myApp.controllers', [])
              * @param  {int} stop number
              */
             $scope.remove = function (stop) {
-              //todo
+              var uInfo; //updated info
               removal($scope.coreData, stop);
-              socket.emit('remove', stop, function (error) {
-                if (error) {
-                  iAlert('Oops...', error.message, 'error');
-                  return;
-                }
-              });
+              uInfo = {stop:stop, cTime:stamp()};
+              socket.emit('remove', uInfo);
+              sweetAlert("Deleted!", "The bus stop entry has been deleted.", "success");
+               /*
+               sweetAlert({title: "Are you sure?",
+                text: "Sure to delete this bus stop? You can always add it back again.",
+                type: "info", allowOutsideClick:true, showCancelButton: true, confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Confirm", closeOnConfirm: false;
+                }, function(ans){
+                  if (ans){
+                    var uInfo; //updated info
+                    removal($scope.coreData, stop);
+                    uInfo = {stop:stop, cTime:stamp()};
+                    socket.emit('remove', uInfo);
+                    sweetAlert("Deleted!", "The bus stop entry has been deleted.", "success");
+                  }
+                });
+              */
+
             };
 
 
@@ -271,16 +284,6 @@ angular.module('myApp.controllers', [])
                   return "Arrive in: " + cTime + " min";
               };
 
-            /**
-             * Trim the date and time format return from the api with time only
-             * @param  {date} aTime
-             * @return {time}
-             */
-            $scope.timeConf = function (aTime) {
-              var spaceIndex = aTime.indexOf(' ')
-              var time = spaceIndex < 0 ? aTime : aTime.substr(0,aTime.indexOf(' '));
-              return time;
-            };
 
             /**
              * logout the user, if logged in
