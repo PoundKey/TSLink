@@ -10,7 +10,9 @@ var orchestrate = require('orchestrate');
  * Info of the translink API Request
  * apiKey: UID, count: next {count} number of bus scheduled, tf: time frame, in minutes
  */
-var apiKey = 'yDC04D3XtydprTHAeB0Z', count = 1, tf = 60;
+var apiKey = 'yDC04D3XtydprTHAeB0Z', count = 4, tf = 60;
+
+
 
 // https://dashboard.orchestrate.io/  ||extra importent piece
 // COL = collection , db = the database connection instance
@@ -285,7 +287,7 @@ var socketIO = function() {
  * @param  {int} stopNumber
  * @param  {array} res   response array returned from the API call
  * @return {object}
- * example: {"59844" : [{route:'003', dest:'dest', cTime:'countdown', aTime:'arrival'}, {...}]}
+ * example: {"59844" : [{route:'003', dest:'dest', cTime:'countdown', aTime:'arrival', extra:[], {...}]}
  */
 function createStop(stopNumber, res) {
 	var stop = {};
@@ -293,12 +295,24 @@ function createStop(stopNumber, res) {
 	//stopDetail array contains 1 to many route
 	_.each(res, function(el, i){
 		var route = {};
-		var sche = el.Schedules[0]; //count = 1
-		route['route'] = el.RouteNo;
-		route['dest'] = trimConf(sche.Destination);
-		route['cTime'] = sche.ExpectedCountdown; // count down time, in minute
-		route['aTime'] = trimConf(sche.ExpectedLeaveTime); // estimated arrival time, in date format
-		//console.log("Route: " + route);
+		var extra = [];
+		var sche = el.Schedules; //count = 4, sche is an array
+		_.each(sche, function(el, index){
+			if (index == 0) {
+				route['route'] = el.RouteNo;
+				route['dest'] = trimConf(el.Destination);
+				route['cTime'] = el.ExpectedCountdown; // count down time, in minute
+				route['aTime'] = trimConf(el.ExpectedLeaveTime); // estimated arrival time, in date format
+			} else {
+				//etc: extra bus arrival time, ec => estinamted countdown, ea => estinamted arrival
+				var etc = {ec: el.ExpectedCountdown, ea: trimConf(el.ExpectedLeaveTime)};
+				extra.push(etc);
+			}
+
+		});
+
+		route['extra'] = extra;
+		//console.log(route);
 		stopDetail.push(route);
 	});
 	//console.log('stopDetail: ' + stopDetail);
