@@ -290,11 +290,13 @@ angular.module('myApp.controllers', [])
              * @return login.set('user', undefined);
              */
             $scope.logout = function() {
-                if ($scope.user) {
+
+              if ($scope.user){
                 $scope.user = null;
                 login.set('user', undefined);
-              }
-            }
+                sweetAlert("See you!", "Please keep your username for future log in.", "success");
+              };
+            } // end of logout
 
              /*
               * Checking the validity of the user input
