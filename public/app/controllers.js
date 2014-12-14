@@ -233,6 +233,15 @@ angular.module('myApp.controllers', [])
             };
 
             $scope.nearby = function() {
+              var message, lat, log;
+              if (navigator.geolocation) {
+                  navigator.geolocation.getCurrentPosition(function(pos) {
+                    lat = position.coords.latitude;
+                    log = position.coords.longitude;
+                  });
+              } else {
+                  message = 'Geolocation not available: please enable Geolocation or switch browser.';
+              }
               sweetAlert("Coming soon...", "Searching stops that near your current location.", "info");
             };
 
