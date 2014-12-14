@@ -176,6 +176,7 @@ angular.module('myApp.controllers', [])
               var uname = $scope.username;
               var stop = $scope.inputStop;
               var uInfo; //updated info
+              var keys = _.keys($scope.coreData)
               if (!checkInputStop(stop)){
                 $scope.delay = false;
                 iAlert("Oops...", "Please enter an valid bus stop number.", "warning");
@@ -183,7 +184,15 @@ angular.module('myApp.controllers', [])
                 return;
               }
 
-              if (_.keys($scope.coreData).length > 5) {
+              if (_.contains(keys, stop)) {
+                $scope.delay = false;
+                scope.inputStop = null;
+                iAlert("Oops...",
+                  "The bus stop has already been added.",
+                  "warning");
+                return;
+              }
+              if (keys.length > 5) {
                 $scope.delay = false;
                 iAlert("Oops...",
                   "Sorry, you have reached the maxium number of stops can be added for now. Remove some of them before proceeding.",

@@ -205,24 +205,23 @@ var socketIO = function() {
 						errorHandler(error, val.info, callback);
 						return;
 					}
+					coreArray.push(stop);
 					// a response stop object to via the socket
 					// example:
 					// { '59844': [ { route: '003', dest: 'DOWNTOWN', cTime: 10, aTime: '8:27pm' } ] }
 					var stopRes = createStop(stop, info);
+					successHandler(stopRes, callback);
 					//console.log(stopRes);
 					if (!db) db = orchestrate(TOKEN);
-
-					coreArray.push(stop);
 					db.put(COL, coreUser, {
 					  info : coreArray,
 					  reg : stamp
 					})
 					.then(function (res) {
-						successHandler(stopRes, callback);
+						// success, do nothing
 					})
 					.fail(function (err) {
 						coreArray.pop();
-					  errorHandler(error, 'Something went wrong... Please check the Internet connection.', callback);
 					});
 				});
 
@@ -301,9 +300,9 @@ function createStop(stopNumber, res) {
 		var route = {};
 		var sche = el.Schedules[0]; //count = 1
 		route['route'] = el.RouteNo;
-		route['dest'] = sche.Destination;
+		route['dest'] = trimConf(sche.Destination);
 		route['cTime'] = sche.ExpectedCountdown; // count down time, in minute
-		route['aTime'] = timeConf(sche.ExpectedLeaveTime); // estimated arrival time, in date format
+		route['aTime'] = trimConf(sche.ExpectedLeaveTime); // estimated arrival time, in date format
 		//console.log("Route: " + route);
 		stopDetail.push(route);
 	});
@@ -333,13 +332,13 @@ function emitCoreData(socket) {
 
 /**
 * Trim the date and time format return from the api with time only
-* @param  {date} aTime
-* @return {time}
+* @param  {string} string
+* @return {string}
 */
-function timeConf(aTime) {
-	var spaceIndex = aTime.indexOf(' ');
-	var time = spaceIndex < 0 ? aTime : aTime.substr(0,aTime.indexOf(' '));
-	return time;
+function trimConf(string) {
+	var spaceIndex = string.indexOf(' ');
+	var str = spaceIndex < 0 ? string : string.substr(0,string.indexOf(' '));
+	return str;
 }
 
 /**
