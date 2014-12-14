@@ -23,16 +23,21 @@
           <div ng-if="user">
             <form id="newsletter-form" class="the-form anim-go-left" ng-submit="addStop()">
               <div class="field-wrapper">
-                <input type="text" class="textfield required" ng-model="$parent.inputStop"
-                name="stop" placeholder="Enter a bus stop number..." />
-                <button type="submit" class="btn">
+                <input type="text" class="textfield required tsinput" ng-model="$parent.inputStop"
+                name="stop" placeholder="Enter a five-digit bus stop number..." /> <br>
+                <button type="submit" class="btn" style="width:100px">
                   <i class="fa fa-search-plus"></i> Add
+                </button>
+                &nbsp;
+                <button class="btn tsbtn" type="button" style="width:100px" ng-click="nearby()">
+                  <i class="fa fa-map-marker"></i> Nearby
                 </button>
               </div>
             </form>
           </div>
-          <div ng-if='delay'><br><i class="fa fa-spinner fa-spin"></i></div>
           <br>
+          <div ng-if='delay'><br><i class="fa fa-spinner fa-spin"></i></div>
+
           <div ng-repeat="err in errArray" ng-show="errShow" ng-if="false">
             <div class="err animated bounceIn">{{err}}</div>
           </div>

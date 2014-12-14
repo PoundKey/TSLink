@@ -347,7 +347,7 @@ function emitCoreData(socket, coreArray) {
 */
 function trimConf(string) {
 	var str = string;
-	if (str.length > 10) {
+	if (str.length > 12) {
 		var spaceIndex = str.indexOf(' ');
 		var str = spaceIndex < 0 ? str : str.substr(0,str.indexOf(' '));
 	}

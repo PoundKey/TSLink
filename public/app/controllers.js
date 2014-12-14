@@ -192,7 +192,7 @@ angular.module('myApp.controllers', [])
                   "warning");
                 return;
               }
-              if (keys.length > 5) {
+              if (keys.length >= 5) {
                 $scope.delay = false;
                 iAlert("Oops...",
                   "Sorry, you have reached the maxium number of stops can be added for now. Remove some of them before proceeding.",
@@ -229,22 +229,11 @@ angular.module('myApp.controllers', [])
               uInfo = {stop:stop, cTime:stamp()};
               socket.emit('remove', uInfo);
               sweetAlert("Deleted!", "The bus stop entry has been deleted.", "success");
-               /*
-               sweetAlert({title: "Are you sure?",
-                text: "Sure to delete this bus stop? You can always add it back again.",
-                type: "info", allowOutsideClick:true, showCancelButton: true, confirmButtonColor: "#DD6B55",
-                confirmButtonText: "Confirm", closeOnConfirm: false;
-                }, function(ans){
-                  if (ans){
-                    var uInfo; //updated info
-                    removal($scope.coreData, stop);
-                    uInfo = {stop:stop, cTime:stamp()};
-                    socket.emit('remove', uInfo);
-                    sweetAlert("Deleted!", "The bus stop entry has been deleted.", "success");
-                  }
-                });
-              */
 
+            };
+
+            $scope.nearby = function() {
+              sweetAlert("Coming soon...", "Searching stops that near your current location.", "info");
             };
 
 

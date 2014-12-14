@@ -11,7 +11,8 @@
 <div ng-if="!user && signin">
   <form id="newsletter-form" class="the-form anim-go-left" ng-submit="loginUser()">
     <div class="field-wrapper">
-      <input type="text" class="textfield required" ng-model="$parent.username" name="username" placeholder="Please enter your username..." autofocus />
+      <input type="text" class="textfield required" ng-model="$parent.username"
+      name="username" placeholder="Please enter your username..." style="width:230px" autofocus />
       <button type="submit" class="btn">
         <i class="fa fa-terminal"></i> Log in
       </button>
@@ -22,7 +23,8 @@
 <div ng-if="!user && signup">
   <form id="newsletter-form" class="the-form anim-go-left" ng-submit="createUser()">
     <div class="field-wrapper">
-      <input type="text" class="textfield required" ng-model="$parent.username" name="username" placeholder="Please enter your username..." autofocus />
+      <input type="text" class="textfield required" ng-model="$parent.username"
+      name="username" placeholder="Please enter your username..." style="width:230px" autofocus />
       <button type="submit" class="btn">
         <i class="fa fa-fire"></i> Sign up
       </button>
