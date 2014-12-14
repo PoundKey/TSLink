@@ -259,27 +259,30 @@ var socketIO = function() {
  * @return {string} error message
  */
  function checkAPICode (res) {
- 	var info, status;
+ 	var info, status, code;
  		if (res.Code) {
 				switch(res.Code) {
 				    case '3001':
 				    case '3002':
 					 			info = res.Message;
+					 			code = 3000;
 					 			status = false;
 				        break;
 				    case '3005':
 					 			info = "Sorry, no stop estimates found yet at this moment.";
+					 			code = 3005;
 					 			status = false;
 				        break;
 				    default:
 					 			info = "Oops... Something went wrong.";
+					 			code = null;
 					 			status = false;
 				}
  		} else {
 	 			info = 'Valid bus stop, proceeding...';
 	 			status = true;
  		}
- 		return {info:info, status:status};
+ 		return {info:info, status:status, code:code};
  }
 
 /**
@@ -332,6 +335,7 @@ function emitCoreData(socket, coreArray) {
 			translinkAPI(stop, apiKey, count, tf, function (res) {
 				var info = JSON.parse(res);
 				var val = checkAPICode(info);
+				//todo : optimized the return stop obect when no estinamte yet for given stop
 				if (!val.status) return;
 
 				var stopRes = createStop(stop, info);
