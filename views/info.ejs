@@ -8,7 +8,7 @@
       <div class='prev'>
         <span class="arrive-left-item"><i class="fa fa-bus"></i> {{route.route}} {{route.dest}} </span>
         <span class=" double-slash-bar">&nbsp;&#166;&nbsp;</span>
-        <div class="pulse-grow arrive-mid-item">
+        <div class="grow arrive-mid-item">
           <i class="fa fa-bell-o"></i> {{compute(route.cTime)}}
           <i class="fa fa-at"></i> {{route.aTime}}
         </div>
@@ -23,13 +23,15 @@
       <div class="future animated pullUp" ng-if="tuner">
         <hr />
         <div ng-if="(route.extra.length > 0)">
-          Next &#10098; <i class="fa fa-bus"></i>  {{route.route}}&#10099; :
+          Next <i class="fa fa-angle-left"></i>
+          <i class="fa fa-bus"></i>  {{route.route}}<i class="fa fa-angle-right"></i> :
           <span ng-repeat="next in route.extra">
             <span class='extra'> {{next.ec}} min @ {{next.ea}}</span>
           </span>
         </div>
         <div ng-if="!(route.extra.length > 0)">
-        No more &#10098; <i class="fa fa-bus"></i>  {{route.route}}&#10099; will arrive at this moment.
+        No more <i class="fa fa-angle-left"></i>
+         <i class="fa fa-bus"></i>  {{route.route}}<i class="fa fa-angle-right"></i>; will arrive at this moment.
         </div>
         <br>
       </div>
