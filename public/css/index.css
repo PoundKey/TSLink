@@ -11,6 +11,11 @@ html {
   background-size: cover;
 }
 
+.extra {
+  border-bottom: 1px dotted white;
+  margin-right: 10px;
+}
+
 .tslogo {
 	width:72px;
 	height:72px;
@@ -89,9 +94,16 @@ html {
 .double-slash-bar{
 	display: none;
 }
+
+.extra {
+	display: block;
+	width: 135px;
+	position: relative;
+	margin: auto;
+}
 }
 
-@media screen and (max-width: 640px) {
+@media screen and (max-width: 652px) {
 .arrive-box{
 	width: 85%;
 }

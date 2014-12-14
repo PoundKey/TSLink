@@ -22,9 +22,14 @@
 
       <div class="future animated pullUp" ng-if="tuner">
         <hr />
-        <div>
-        Next &#10098; <i class="fa fa-bus"></i>  {{route.route}}&#10099; Arrive in:
-
+        <div ng-if="(route.extra.length > 0)">
+          Next &#10098; <i class="fa fa-bus"></i>  {{route.route}}&#10099; :
+          <span ng-repeat="next in route.extra">
+            <span class='extra'> {{next.ec}} min @ {{next.ea}}</span>
+          </span>
+        </div>
+        <div ng-if="!(route.extra.length > 0)">
+        No more &#10098; <i class="fa fa-bus"></i>  {{route.route}}&#10099; will arrive at this moment.
         </div>
         <br>
       </div>

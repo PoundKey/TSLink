@@ -295,17 +295,18 @@ function createStop(stopNumber, res) {
 	//stopDetail array contains 1 to many route
 	_.each(res, function(el, i){
 		var route = {};
+		route['route'] = el.RouteNo;
 		var extra = [];
 		var sche = el.Schedules; //count = 4, sche is an array
-		_.each(sche, function(el, index){
+		_.each(sche, function(sc, index){
 			if (index == 0) {
-				route['route'] = el.RouteNo;
-				route['dest'] = trimConf(el.Destination);
-				route['cTime'] = el.ExpectedCountdown; // count down time, in minute
-				route['aTime'] = trimConf(el.ExpectedLeaveTime); // estimated arrival time, in date format
+				route['dest'] = trimConf(sc.Destination);
+				route['cTime'] = sc.ExpectedCountdown; // count down time, in minute
+				route['aTime'] = trimConf(sc.ExpectedLeaveTime); // estimated arrival time, in date format
 			} else {
+				// sc, schedule object
 				//etc: extra bus arrival time, ec => estinamted countdown, ea => estinamted arrival
-				var etc = {ec: el.ExpectedCountdown, ea: trimConf(el.ExpectedLeaveTime)};
+				var etc = {ec: sc.ExpectedCountdown, ea: trimConf(sc.ExpectedLeaveTime)};
 				extra.push(etc);
 			}
 
