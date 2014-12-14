@@ -186,6 +186,7 @@ angular.module('myApp.controllers', [])
 
               if (_.contains(keys, stop)) {
                 $scope.delay = false;
+                $scope.inputStop = null;
                 iAlert("Oops...",
                   "The bus stop has already been added.",
                   "warning");
