@@ -181,7 +181,7 @@ angular.module('myApp.controllers', [])
               var keys = _.keys($scope.coreData)
               if (!checkInputStop(stop)){
                 $scope.delay = false;
-                iAlert("Oops...", "Please enter a valid 5 digits bus stop number.", "warning");
+                iAlert("Oops...", "Please enter a valid five-digit bus stop number.", "warning");
                 $scope.inputStop = null;
                 return;
               }

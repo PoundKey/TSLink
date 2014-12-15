@@ -1,0 +1,15 @@
+<div ng-if="user">
+  <form id="newsletter-form" class="the-form anim-go-left" ng-submit="addStop()">
+    <div class="field-wrapper">
+      <input type="text" class="textfield required" ng-model="$parent.inputStop"
+      name="stop" placeholder="Enter a five-digit bus stop number..." /> <br>
+      <button type="submit" class="btn" style="width:100px">
+        <i class="fa fa-search-plus"></i> Add
+      </button>
+      &nbsp;
+      <button class="btn tsbtn" type="button" style="width:100px" ng-click="nearby()">
+        <i class="fa fa-map-marker"></i> Nearby
+      </button>
+    </div>
+  </form>
+</div>
