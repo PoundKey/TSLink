@@ -12,8 +12,6 @@ var orchestrate = require('orchestrate');
  */
 var apiKey = 'yDC04D3XtydprTHAeB0Z', count = 4, tf = 60;
 
-
-
 // https://dashboard.orchestrate.io/  ||extra importent piece
 // COL = collection , db = the database connection instance
 var COL, TOKEN;
@@ -35,9 +33,7 @@ var socketIO = function() {
 		console.log("Express now is listening on port with SocketIO: " + app.get('port'));
 	});
 
-
 	io.on('connection', function(socket){
-		console.log('connection from the client side....');
 		var coreArray, coreUser;
 		var db = orchestrate(TOKEN);
 
@@ -129,7 +125,13 @@ var socketIO = function() {
 			//socket.removeAllListeners("...");
 		});
 
+		socket.on('disconnect', function() {
+			socket.disconnect();
+			//console.log("Disconnect from the server-side...");
+		});
+
 	}); // end of 'connection' io
+
 } // end of 'socketIO'
 
 
