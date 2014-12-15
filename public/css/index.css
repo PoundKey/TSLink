@@ -27,86 +27,103 @@ html {
 }
 
 .mview {
-	opacity: 0.6;
-	background-color:#000000;
-	width: 68%;
-	margin: 0 auto;
+    opacity: 0.6;
+    background-color:#000000;
+    width: 68%;
+    margin: 0 auto;
 }
 
 @media screen and (max-width: 1280px) {
 .mview {
-	width: 80%;
-	}
+    width: 80%;
+    }
 }
 
 @media screen and (max-width: 720px) {
 .mview {
-	width: 100%;
-	}
+    width: 100%;
+    }
+}
+
+    .arrive-box{
+        width: 81%;
+        left: 0px;
+    }
+
+@media screen and (min-width: 1720px) {
+
+    .arrive-box{
+        width: 60%;
+        left: 0px;
+    }
+}
+
+@media screen and (min-width: 1480px) and (max-width: 1719px) {
+
+    .arrive-box{
+        width: 70%;
+        left: 0px;
+    }
 }
 
 
-.arrive-box{
-	width: 82%;
-	left: 0px;
-}
 
 .arrive-left-item{
-	position: relative;
-	display: inline-block;
-	left: 0%;
-	width: 32%;
+    position: relative;
+    display: inline-block;
+    left: 0%;
+    width: 32%;
 }
 
 .arrive-mid-item{
-	display: inline-block;
-	position: relative;
-	width: 40%;
+    display: inline-block;
+    position: relative;
+    width: 40%;
 }
 
 .arrive-right-item{
-	display: inline-block;
-	position: relative;
-	width: 17%;
+    display: inline-block;
+    position: relative;
+    width: 17%;
 }
 
 .double-slash-bar{
-	display: inline-block;
-	position: relative;
+    display: inline-block;
+    position: relative;
 }
 
 
-@media screen and (max-width: 1092px) {
+@media screen and (max-width: 1080px) {
 
 .arrive-box{
-	width: 60%;
+    width: 60%;
 }
   .arrive-left-item{
-	width: 100%;
+    width: 100%;
 }
 
 .arrive-mid-item{
-	width: 100%;
+    width: 100%;
 }
 
 .arrive-right-item{
-	width: 100%;
+    width: 100%;
 }
 
 .double-slash-bar{
-	display: none;
+    display: none;
 }
 
 .extra {
-	display: block;
-	width: 145px;
-	position: relative;
-	margin: auto;
+    display: block;
+    width: 145px;
+    position: relative;
+    margin: auto;
 }
 }
 
-@media screen and (max-width: 652px) {
+@media screen and (max-width: 664px) {
 .arrive-box{
-	width: 85%;
+    width: 85%;
 }
 }
