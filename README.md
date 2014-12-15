@@ -9,7 +9,6 @@ https://tslink.herokuapp.com
 - [Socket.io](http://socket.io) (Data Exchange Channel Via Websocket)
 - [Orchestrate](https://orchestrate.io) (Data Storage)
 - [Firebase/AngularFire](https://www.firebase.com/docs/web/libraries/angular/api.html) (Realtime Data)
-- [Orchestrate](https://orchestrate.io) (Data Storage)
 - [NodeJS](http://nodejs.org/api/) (Platform)
 - [ExpressJS](http://expressjs.com/4x/api.html) (Back-end Framework)
 - [AngularJS](https://docs.angularjs.org/api) (Front-end Framework)

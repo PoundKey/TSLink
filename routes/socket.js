@@ -37,13 +37,9 @@ var socketIO = function() {
 
 
 	io.on('connection', function(socket){
-
+		console.log('connection from the client side....');
 		var coreArray, coreUser;
 		var db = orchestrate(TOKEN);
-
-		socket.on('localhost', function () {
-			COL = cloud.DEV_DB;
-		});
 
 		// activated when user tries to create an account
 		socket.on('createUser', function (data, callback) {
@@ -68,6 +64,7 @@ var socketIO = function() {
 						coreArray = [];
 						coreUser = uname;
 						callback(null, {status:"success", message: info});
+						startListening(socket, db, coreArray, coreUser);
 					})
 					.fail(function (err) {
 						var error = {status:"error", message:"Something went wrong, please check the Internet connection."};
@@ -88,7 +85,7 @@ var socketIO = function() {
 				var info = 'Welcome back, ' + uname + '!';
 				coreArray = res.body.info ? res.body.info : [];
 				coreUser = uname;
-				emitCoreData(socket, coreArray);
+				emitCoreData(socket, coreArray, 'coreData');
 				startListening(socket, db, coreArray, coreUser);
 				callback(null, {status:"success", message: info});
 			})
@@ -103,7 +100,6 @@ var socketIO = function() {
 		// activated when user back in TSLink, with local cache log.get('user') defined.
 		socket.on('backin', function(data, callback) {
 			var uname = data;
-			if (!db) db = orchestrate(TOKEN);
 			//check if the username does exist
 			db.get(COL, uname)
 			.then(function (res) {
@@ -111,7 +107,7 @@ var socketIO = function() {
 				var info = 'Welcome back, ' + uname + '!';
 				coreArray = res.body.info ? res.body.info : [];
 				coreUser = uname;
-				emitCoreData(socket, coreArray); // emit coreData at once.
+				emitCoreData(socket, coreArray, 'coreData'); // emit coreData at once.
 				startListening(socket, db, coreArray, coreUser);
 				callback(null, {status:"success", message: info});
 			})
@@ -120,12 +116,21 @@ var socketIO = function() {
 				var error = {status:"error", message:'Something went wrong, please double check the Internet connection.'};
 				callback(error, null);
 			});
+		}); // end of 'backin' io
+
+
+		socket.on('localhost', function () {
+			COL = cloud.DEV_DB;
 		});
 
+		socket.on('logout', function () {
+			coreArray = [];
+			coreUser = null;
+			//socket.removeAllListeners("...");
+		});
 
-
-	});
-}
+	}); // end of 'connection' io
+} // end of 'socketIO'
 
 
 /**
@@ -165,19 +170,6 @@ var socketIO = function() {
  */
  function startListening(socket, db, coreArray, coreUser) {
 
-			/**
-			 * Refresh a single bus stop information, given its stop number
-			 * @param  {int} data :bus stop number
-			 * @return {json}  A JSON object containing the stop info or error code/message
-			 */
-			socket.on('refresh', function(data){
-				var stop = data;
-				translinkAPI(stop, apiKey, count, tf, function (res) {
-					//todo
-				});
-
-			});
-
 
 			/**
 			 * Add a single bus stop information, given its stop number
@@ -190,12 +182,12 @@ var socketIO = function() {
 				var stamp = data.cTime;
 
 				if (!coreUser) {
-					errorHandler(error, 'Something went wrong (Code: Xe86)...', callback);
+					errorHandler(error, 'Something went wrong (Code: XS860)...', callback);
 					return;
 				};
 
 				if (_.contains(coreArray, stop)){
-					errorHandler(error, 'The bus stop has already been added.', callback);
+					errorHandler(error, 'The bus stop has already been added. (Code: XS861', callback);
 					return;
 				}
 
@@ -327,9 +319,11 @@ function createStop(stopNumber, res) {
 /**
  * compute coreData when user login or backin
  * @param {object} socket
+ * @param {array} coreArray
+ * @param {string} eventType ('coreData' or 'update')
  * @return {object} coreData used for $scope.coreData
  */
-function emitCoreData(socket, coreArray) {
+function emitCoreData(socket, coreArray, eventType) {
 	_.each(coreArray, function(stop, index) {
 
 			translinkAPI(stop, apiKey, count, tf, function (res) {
@@ -339,9 +333,20 @@ function emitCoreData(socket, coreArray) {
 				if (!val.status) return;
 
 				var stopRes = createStop(stop, info);
-				socket.emit('coreData', stopRes);
+				socket.emit(eventType, stopRes);
 			});
 	});
+}
+
+
+/**
+ * update coreData after user login or backin, in minute basis
+ * @param {object} socket
+ * @param {array} coreArray
+ * @return {object} coreData used for $scope.coreData
+ */
+function updateCoreData (socket, coreArray) {
+	setInterval(emitCoreData(socket, coreArray, 'update'), 60000);
 }
 
 /**

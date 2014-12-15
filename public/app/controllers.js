@@ -15,8 +15,6 @@ angular.module('myApp.controllers', [])
             $scope.signin = false;
             $scope.delay = false;
             $scope.ajaxicon = false;
-            $scope.errArray = [];
-            $scope.errShow = true;
 
             $scope.signup_c = function() {
               $scope.signup = true;
@@ -35,15 +33,19 @@ angular.module('myApp.controllers', [])
 
             // <--------------------- Socket IO data exchange ------------------->
 
+            // activated when visiting tslink
             socket.on('connect', function() {
               controlFlow();
             });
 
 
+            // activated when backend update the bus stop information
             socket.on('update', function(data) {
-              console.log('Bus Stop Data: ' + data);
+              //todo
             });
 
+
+            // activated when receving core data from the back end (user login/backin)
             socket.on('coreData', function(data) {
               _.extend($scope.coreData, data);
             });
@@ -275,10 +277,7 @@ angular.module('myApp.controllers', [])
              */
               $scope.compute = function (cTime) {
 
-                  if (cTime == 'N/A')
-                    return 'Delay';
-                  if (cTime <=0)
-                    return "Arrvied Now";
+                  if (cTime <=0) return "Arrvied Now";
                   return "Arrive in: " + cTime + " min";
               };
 
@@ -291,8 +290,11 @@ angular.module('myApp.controllers', [])
 
               if ($scope.user){
                 $scope.user = null;
+                $scope.coreData = {};
                 login.set('user', undefined);
                 sweetAlert("See you!", "Please keep your username for future log in.", "success");
+                socket.disconnect();
+                socket.connect();
               };
             } // end of logout
 
