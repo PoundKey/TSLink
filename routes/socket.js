@@ -1,11 +1,11 @@
-var app = require('../app');
-var cloud = require('./models');
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
-var request = require('request');
-var _ = require('underscore');
-var async = require('async');
-var orchestrate = require('orchestrate');
+var app         = require('../app');
+var cloud       = require('./models');
+var http        = require('http').Server(app);
+var io          = require('socket.io')(http);
+var request     = require('request');
+var _           = require('underscore');
+var async       = require('async');
+
 /**
  * Info of the translink API Request
  * apiKey: UID, count: next {count} number of bus scheduled, tf: time frame, in minutes
@@ -14,11 +14,12 @@ var apiKey = 'yDC04D3XtydprTHAeB0Z', count = 4, tf = 60;
 
 // https://dashboard.orchestrate.io/  ||extra importent piece
 // COL = collection , db = the database connection instance
-var COL, TOKEN;
+
 
 // error and sucess code used to notify client
-var error = {status:"error", message:null};
+var error   = {status:"error",   message:null};
 var success = {status:'success', message:null};
+
 /**
  * Server side socket listens to requests coming from the client-side
  * @return SocketIO
@@ -26,102 +27,43 @@ var success = {status:'success', message:null};
 
 var socketIO = function() {
 
-	TOKEN = cloud.API_KEY;
-  COL = cloud.PRO_DB;
+	// iniitialize datastore instance as db when the server starts.
 
 	http.listen(app.get('port'), function() {
 		console.log("Express now is listening on port with SocketIO: " + app.get('port'));
 	});
 
 	io.on('connection', function(socket){
-		var coreArray, coreUser;
-		var db = orchestrate(TOKEN);
+		var coreArray = [];
+		var coreUser  = {uid : null};
 
 		// activated when user tries to create an account
 		socket.on('createUser', function (data, callback) {
 			var uname = data.uid;
 			var stamp = data.cTime;
-
-			//check if the username has been used
-			db.get(COL, uname)
-			.then(function () {
-				// it's used, callback(error, null)
-				var error = {status:"error", message:"Please choose another username. (3~15 Characters)"};
-				callback(error, null);
-			})
-			.fail(function () {
-				// it's good, create the entry with key=uname, then callback when done or failed
-					db.put(COL, uname, {
-					  info : [],
-					  reg : stamp
-					})
-					.then(function (result) {
-						var info = 'Welcome, ' + uname + '!';
-						coreArray = [];
-						coreUser = uname;
-						callback(null, {status:"success", message: info});
-						startListening(socket, db, coreArray, coreUser);
-					})
-					.fail(function (err) {
-						var error = {status:"error", message:"Something went wrong, please check the Internet connection."};
-						callback(error, null);
-					})
-			});
+			cloud.create(socket, uname, coreArray, coreUser, stamp);
 		});
-
 
 		// activated when user tries login with username
 		socket.on('login', function(data, callback) {
-
 			var uname = data;
-			//check if the username does exist
-			db.get(COL, uname)
-			.then(function (res) {
-				// it's good, fetch the bus stop array
-				var info = 'Welcome back, ' + uname + '!';
-				coreArray = res.body.info ? res.body.info : [];
-				coreUser = uname;
-				emitCoreData(socket, coreArray, 'coreData');
-				startListening(socket, db, coreArray, coreUser);
-				callback(null, {status:"success", message: info});
-			})
-			.fail(function () {
-				// it's  not existed, callback(error, null)
-				var error = {status:"error", message:'Are you sure that "' + uname + '" is your username?'};
-				callback(error, null);
-			});
-
+			cloud.login(socket, uname, coreArray, coreUser);
 		});
 
 		// activated when user back in TSLink, with local cache log.get('user') defined.
 		socket.on('backin', function(data, callback) {
 			var uname = data;
-			//check if the username does exist
-			db.get(COL, uname)
-			.then(function (res) {
-				// it's good, fetch the bus stop array
-				var info = 'Welcome back, ' + uname + '!';
-				coreArray = res.body.info ? res.body.info : [];
-				coreUser = uname;
-				emitCoreData(socket, coreArray, 'coreData'); // emit coreData at once.
-				startListening(socket, db, coreArray, coreUser);
-				callback(null, {status:"success", message: info});
-			})
-			.fail(function () {
-				// it's  not existed, callback(error, null)
-				var error = {status:"error", message:'Something went wrong, please double check the Internet connection.'};
-				callback(error, null);
-			});
+			cloud.backin(socket, uname, coreArray, coreUser);
 		}); // end of 'backin' io
 
 
 		socket.on('localhost', function () {
-			COL = cloud.DEV_DB;
+			cloud.localhost();
 		});
 
 		socket.on('logout', function () {
 			coreArray = [];
-			coreUser = null;
+			coreUser.uid = null;
 			//socket.removeAllListeners("...");
 		});
 
@@ -170,7 +112,7 @@ var socketIO = function() {
  * @param  {string} coreAUser
  * @return {void}
  */
- function startListening(socket, db, coreArray, coreUser) {
+ function startListening(socket, coreArray, coreUser) {
 
 
 			/**
@@ -183,13 +125,9 @@ var socketIO = function() {
 				var stop = data.stop;
 				var stamp = data.cTime;
 
-				if (!coreUser) {
-					errorHandler(error, 'Something went wrong (Code: XS860)...', callback);
-					return;
-				};
-
+				// late at night, no more bus coming, $scope.coreData won't contain the stop number; so catch it here
 				if (_.contains(coreArray, stop)){
-					errorHandler(error, 'The bus stop has already been added. (Code: XS861', callback);
+					errorHandler(error, 'The bus stop has already been added. (Code: XS860)', callback);
 					return;
 				}
 
@@ -206,17 +144,7 @@ var socketIO = function() {
 					// { '59844': [ { route: '003', dest: 'DOWNTOWN', cTime: 10, aTime: '8:27pm' } ] }
 					var stopRes = createStop(stop, info);
 					successHandler(stopRes, callback);
-					//console.log(stopRes);
-					db.put(COL, coreUser, {
-					  info : coreArray,
-					  reg : stamp
-					})
-					.then(function (res) {
-						// success, do nothing
-					})
-					.fail(function (err) {
-						coreArray.pop();
-					});
+					cloud.add(coreArray, coreUser);
 				});
 
 			}); // end of addStop event
@@ -227,20 +155,11 @@ var socketIO = function() {
 			var stop = data.stop;
 			var stamp = data.cTime;
 
-			if (!coreUser) {
-				errorHandler(error, 'Something went wrong (Code: Xe86)...', callback);
-				return;
-			};
-
 			var i = _.indexOf(coreArray, stop);
 			if (i < 0) return;
 
 			coreArray.splice(i, 1);
-
-			db.put(COL, coreUser, {
-			  info : coreArray,
-			  reg : stamp
-			});
+			cloud.remove(coreUser);
 
 		}); //end of remove event
 
@@ -336,10 +255,10 @@ function emitCoreData(socket, coreArray, eventType) {
 
 				var stopRes = createStop(stop, info);
 				socket.emit(eventType, stopRes);
+
 			});
 	});
 }
-
 
 /**
  * update coreData after user login or backin, in minute basis
@@ -386,6 +305,5 @@ function errorHandler(err, message, callback) {
 function successHandler(data, callback) {
 	callback(null, data);
 }
-
 
 module.exports = socketIO;
