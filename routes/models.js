@@ -4,13 +4,17 @@ var TOKEN = datastore.API_KEY;
 var COL   = datastore.PRO_DB;
 var db    = orchestrate(TOKEN);
 
+// error and sucess code used to notify client
+var error   = {status:"error",   message:null};
+var success = {status:'success', message:null};
+
 var OrchestrateDB = {
 
 	localhost : function() {
 		COL = datastore.DEV_DB;
 	},
 
-	create : function(socket, uname, coreArray, coreUser, stamp) {
+	create : function(uname, coreArray, coreUser, stamp, callback) {
 			//check if the username has been used
 		db.get(COL, uname)
 		.then(function () {
@@ -28,7 +32,6 @@ var OrchestrateDB = {
 					var info = 'Welcome, ' + uname + '!';
 					coreUser.uid = uname;
 					callback(null, {status:"success", message: info});
-					startListening(socket, coreArray, coreUser);
 				})
 				.fail(function (err) {
 					var error = {status:"error", message:"Something went wrong, please check the Internet connection."};
@@ -37,7 +40,7 @@ var OrchestrateDB = {
 		});
 	},
 
-	login : function(socket, uname, coreArray, coreUser) {
+	login : function(uname, coreArray, coreUser, callback) {
 			//check if the username does exist
 		db.get(COL, uname)
 		.then(function (res) {
@@ -45,18 +48,17 @@ var OrchestrateDB = {
 			var info = 'Welcome back, ' + uname + '!';
 			coreArray = res.body.info ? res.body.info : [];
 			coreUser.uid = uname;
-			emitCoreData(socket, coreArray, 'coreData');
-			startListening(socket, coreArray, coreUser);
 			callback(null, {status:"success", message: info});
 		})
 		.fail(function () {
 			// it's  not existed, callback(error, null)
-			var error = {status:"error", message:'Are you sure that "' + uname + '" is your username?'};
+			error.message = 'Are you sure that "' + uname + '" is your username?';
 			callback(error, null);
+
 		});
 	},
 
-	backin : function(socket, uname, coreArray, coreUser) {
+	backin : function(uname, coreArray, coreUser, callback) {
 		//can be refactored later
 		db.get(COL, uname)
 		.then(function (res) {
@@ -64,13 +66,11 @@ var OrchestrateDB = {
 			var info = 'Welcome back, ' + uname + '!';
 			coreArray = res.body.info ? res.body.info : [];
 			coreUser.uid = uname;
-			emitCoreData(socket, coreArray, 'coreData'); // emit coreData at once.
-			startListening(socket, coreArray, coreUser);
 			callback(null, {status:"success", message: info});
 		})
 		.fail(function () {
 			// it's  not existed, callback(error, null)
-			var error = {status:"error", message:'Something went wrong, please double check the Internet connection.'};
+			error.message = 'Something went wrong, please double check the Internet connection.';
 			callback(error, null);
 		});
 	},
@@ -88,7 +88,7 @@ var OrchestrateDB = {
 		});
 	},
 
-	remove :function(coreUser) {
+	remove : function(coreArray, coreUser) {
 		db.put(COL, coreUser.uid, {
 		  info : coreArray,
 		  reg : stamp

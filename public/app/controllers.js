@@ -103,6 +103,7 @@ angular.module('myApp.controllers', [])
 
                 iAlert(data.message, "You can start adding bus stops now. Wish you enjoy TSLink.", 'success');
                 $scope.delay = false;
+                socket.emit('listening');
                 login.set('user', uname);
                 $scope.user = uname;
                 $scope.coreData = {};
@@ -135,6 +136,7 @@ angular.module('myApp.controllers', [])
 
                 iAlert(data.message, "Good luck on catching the bus! Wish you enjoy TSLink.", 'success');
                 $scope.delay = false;
+                socket.emit('listening');
                 login.set('user', uname);
                 $scope.user = uname;
                 //todo
@@ -153,7 +155,7 @@ angular.module('myApp.controllers', [])
               if (uname) {
                 socket.emit('backin', uname, function(error, data) {
                   if (error) console.log(error.message);
-                  if (data) console.log(data.message);
+                  if (data) socket.emit('listening');
                 });
               } else {
                 $timeout(function() {
@@ -231,8 +233,8 @@ angular.module('myApp.controllers', [])
               uInfo = {stop:stop, cTime:stamp()};
               socket.emit('remove', uInfo);
               sweetAlert("Deleted!", "The bus stop entry has been deleted.", "success");
-
             };
+
 
             $scope.nearby = function() {
               var message, lat, log;
