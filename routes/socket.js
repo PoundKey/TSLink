@@ -48,6 +48,7 @@ var socketIO = function() {
 		socket.on('login', function(data, callback) {
 			var uname = data;
 			cloud.login(uname, coreArray, coreUser, callback);
+			//console.log('login, CoreArray: ' + coreArray);
 		});
 
 		// activated when user back in TSLink, with local cache log.get('user') defined.
@@ -108,6 +109,28 @@ var socketIO = function() {
 		});
  }
 
+/**
+ * compute coreData when user login or backin
+ * @param {object} socket
+ * @param {array} coreArray
+ * @param {string} eventType ('coreData' or 'update')
+ * @return {object} coreData used for $scope.coreData
+ */
+function emitCoreData(socket, coreArray, eventType) {
+	_.each(coreArray, function(stop, index) {
+
+			translinkAPI(stop, apiKey, count, tf, function (res) {
+				var info = JSON.parse(res);
+				var val = checkAPICode(info);
+				//todo : optimized the return stop obect when no estinamte yet for given stop
+				if (!val.status) return;
+
+				var stopRes = createStop(stop, info);
+				socket.emit(eventType, stopRes);
+
+			});
+	});
+}
 
 /**
  * listening to those events only with user logged in
@@ -118,7 +141,6 @@ var socketIO = function() {
  * @return {void}
  */
  function startListening(socket, coreArray, coreUser) {
-
 
 			/**
 			 * Add a single bus stop information, given its stop number
@@ -242,28 +264,6 @@ function createStop(stopNumber, res) {
 	return stop;
 }
 
-/**
- * compute coreData when user login or backin
- * @param {object} socket
- * @param {array} coreArray
- * @param {string} eventType ('coreData' or 'update')
- * @return {object} coreData used for $scope.coreData
- */
-function emitCoreData(socket, coreArray, eventType) {
-	_.each(coreArray, function(stop, index) {
-
-			translinkAPI(stop, apiKey, count, tf, function (res) {
-				var info = JSON.parse(res);
-				var val = checkAPICode(info);
-				//todo : optimized the return stop obect when no estinamte yet for given stop
-				if (!val.status) return;
-
-				var stopRes = createStop(stop, info);
-				socket.emit(eventType, stopRes);
-
-			});
-	});
-}
 
 /**
  * update coreData after user login or backin, in minute basis

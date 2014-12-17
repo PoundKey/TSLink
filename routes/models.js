@@ -46,7 +46,8 @@ var OrchestrateDB = {
 		.then(function (res) {
 			// it's good, fetch the bus stop array
 			var info = 'Welcome back, ' + uname + '!';
-			coreArray = res.body.info ? res.body.info : [];
+			var stopArray = res.body.info ? res.body.info : [];
+			coreArray.push.apply(coreArray, stopArray);
 			coreUser.uid = uname;
 			callback(null, {status:"success", message: info});
 		})
@@ -64,7 +65,8 @@ var OrchestrateDB = {
 		.then(function (res) {
 			// it's good, fetch the bus stop array
 			var info = 'Welcome back, ' + uname + '!';
-			coreArray = res.body.info ? res.body.info : [];
+			var stopArray = res.body.info ? res.body.info : [];
+			coreArray.push.apply(coreArray, stopArray);
 			coreUser.uid = uname;
 			callback(null, {status:"success", message: info});
 		})
