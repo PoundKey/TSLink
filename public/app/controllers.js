@@ -162,7 +162,6 @@ angular.module('myApp.controllers', [])
                   socket.emit('listen');
                 });
               } else {
-                /*
                 $timeout(function() {
                   sweetAlert({
                      title: "Welcome!",
@@ -172,7 +171,7 @@ angular.module('myApp.controllers', [])
                      imageSize: "120x120",
                      timer: 3000
                   })
-                }, 3000);  */
+                }, 3000);
               }
             } // end of getUserInfo();
 
