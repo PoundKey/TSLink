@@ -103,7 +103,7 @@ angular.module('myApp.controllers', [])
 
                 iAlert(data.message, "You can start adding bus stops now. Wish you enjoy TSLink.", 'success');
                 $scope.delay = false;
-                socket.emit('listening');
+                socket.emit('listen');
                 login.set('user', uname);
                 $scope.user = uname;
                 $scope.coreData = {};
@@ -134,9 +134,9 @@ angular.module('myApp.controllers', [])
                   return;
                 }
 
-                iAlert(data.message, "Good luck on catching the bus! Wish you enjoy TSLink.", 'success');
+                iAlert(data.message, "Good luck on catching the bus!", 'success');
                 $scope.delay = false;
-                socket.emit('listening');
+                socket.emit('listen');
                 login.set('user', uname);
                 $scope.user = uname;
                 //todo
@@ -154,10 +154,15 @@ angular.module('myApp.controllers', [])
 
               if (uname) {
                 socket.emit('backin', uname, function(error, data) {
-                  if (error) console.log(error.message);
-                  if (data) socket.emit('listening');
+                  if (error) {
+                    console.log(error.message);
+                    return;
+                  }
+                  console.log(data.message);
+                  socket.emit('listen');
                 });
               } else {
+                /*
                 $timeout(function() {
                   sweetAlert({
                      title: "Welcome!",
@@ -167,7 +172,7 @@ angular.module('myApp.controllers', [])
                      imageSize: "120x120",
                      timer: 3000
                   })
-                }, 3000);
+                }, 3000);  */
               }
             } // end of getUserInfo();
 

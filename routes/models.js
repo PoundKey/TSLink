@@ -75,7 +75,7 @@ var OrchestrateDB = {
 		});
 	},
 
-	add : function(coreArray, coreUser) {
+	add : function(coreArray, coreUser, stamp) {
 		db.put(COL, coreUser.uid, {
 		  info : coreArray,
 		  reg : stamp
@@ -88,7 +88,7 @@ var OrchestrateDB = {
 		});
 	},
 
-	remove : function(coreArray, coreUser) {
+	remove : function(coreArray, coreUser, stamp) {
 		db.put(COL, coreUser.uid, {
 		  info : coreArray,
 		  reg : stamp

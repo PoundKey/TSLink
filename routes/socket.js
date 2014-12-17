@@ -47,13 +47,13 @@ var socketIO = function() {
 		// activated when user tries login with username
 		socket.on('login', function(data, callback) {
 			var uname = data;
-			cloud.login(uname, coreArray, coreUser);
+			cloud.login(uname, coreArray, coreUser, callback);
 		});
 
 		// activated when user back in TSLink, with local cache log.get('user') defined.
 		socket.on('backin', function(data, callback) {
 			var uname = data;
-			cloud.backin(uname, coreArray, coreUser);
+			cloud.backin(uname, coreArray, coreUser, callback);
 		}); // end of 'backin' io
 
 
@@ -67,7 +67,7 @@ var socketIO = function() {
 			//socket.removeAllListeners("...");
 		});
 
-		socket.on('listening', function() {
+		socket.on('listen', function() {
 			emitCoreData(socket, coreArray, 'coreData');
 			startListening(socket, coreArray, coreUser);
 		});
@@ -149,7 +149,7 @@ var socketIO = function() {
 					// { '59844': [ { route: '003', dest: 'DOWNTOWN', cTime: 10, aTime: '8:27pm' } ] }
 					var stopRes = createStop(stop, info);
 					successHandler(stopRes, callback);
-					cloud.add(coreArray, coreUser);
+					cloud.add(coreArray, coreUser, stamp);
 				});
 
 			}); // end of addStop event
@@ -164,7 +164,7 @@ var socketIO = function() {
 			if (i < 0) return;
 
 			coreArray.splice(i, 1);
-			cloud.remove(coreArray, coreUser);
+			cloud.remove(coreArray, coreUser, stamp);
 
 		}); //end of remove event
 
