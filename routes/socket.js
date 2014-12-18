@@ -1,10 +1,10 @@
-var app         = require('../app');
-var cloud       = require('./models');
-var http        = require('http').Server(app);
-var io          = require('socket.io')(http);
-var request     = require('request');
-var _           = require('underscore');
-var async       = require('async');
+var app     = require('../app');
+var Orchestrate = require('./models');
+var http    = require('http').Server(app);
+var io      = require('socket.io')(http);
+var request = require('request');
+var _       = require('underscore');
+var async   = require('async');
 
 /**
  * Info of the translink API Request
@@ -14,6 +14,7 @@ var apiKey = 'yDC04D3XtydprTHAeB0Z', count = 4, tf = 60;
 
 // https://dashboard.orchestrate.io/  ||extra importent piece
 // COL = collection , db = the database connection instance
+var cloud = new Orchestrate();
 
 
 // error and sucess code used to notify client
@@ -28,12 +29,12 @@ var success = {status:'success', message:null};
 var socketIO = function() {
 
 	// iniitialize datastore instance as db when the server starts.
-
 	http.listen(app.get('port'), function() {
 		console.log("Express now is listening on port with SocketIO: " + app.get('port'));
 	});
 
 	io.on('connection', function(socket){
+
 		var coreArray = [];
 		var coreUser  = {uid : null};
 

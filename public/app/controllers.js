@@ -14,7 +14,6 @@ angular.module('myApp.controllers', [])
             $scope.signup = false;
             $scope.signin = false;
             $scope.delay = false;
-            $scope.ajaxicon = false;
 
             $scope.signup_c = function() {
               $scope.signup = true;

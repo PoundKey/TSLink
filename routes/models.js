@@ -8,7 +8,11 @@ var db    = orchestrate(TOKEN);
 var error   = {status:"error",   message:null};
 var success = {status:'success', message:null};
 
-var OrchestrateDB = {
+function OrchestrateDB () {
+	// private instance variable of OrchestrateDB
+}
+
+OrchestrateDB.prototype = {
 
 	localhost : function() {
 		COL = datastore.DEV_DB;
@@ -31,16 +35,18 @@ var OrchestrateDB = {
 				.then(function (result) {
 					var info = 'Welcome, ' + uname + '!';
 					coreUser.uid = uname;
-					callback(null, {status:"success", message: info});
+					success.message = info;
+					callback(null, success);
 				})
 				.fail(function (err) {
-					var error = {status:"error", message:"Something went wrong, please check the Internet connection."};
+					error.message = "Something went wrong, please check the Internet connection.";
 					callback(error, null);
 				})
 		});
 	},
 
 	login : function(uname, coreArray, coreUser, callback) {
+
 			//check if the username does exist
 		db.get(COL, uname)
 		.then(function (res) {
@@ -49,7 +55,8 @@ var OrchestrateDB = {
 			var stopArray = res.body.info ? res.body.info : [];
 			coreArray.push.apply(coreArray, stopArray);
 			coreUser.uid = uname;
-			callback(null, {status:"success", message: info});
+			success.message = info;
+			callback(null, success);
 		})
 		.fail(function () {
 			// it's  not existed, callback(error, null)
@@ -68,7 +75,8 @@ var OrchestrateDB = {
 			var stopArray = res.body.info ? res.body.info : [];
 			coreArray.push.apply(coreArray, stopArray);
 			coreUser.uid = uname;
-			callback(null, {status:"success", message: info});
+			success.message = info;
+			callback(null, success);
 		})
 		.fail(function () {
 			// it's  not existed, callback(error, null)
@@ -97,7 +105,6 @@ var OrchestrateDB = {
 		});
 	}
 
-};
-
+}; // end of OrchestrateDB prototype
 
 module.exports = OrchestrateDB;
