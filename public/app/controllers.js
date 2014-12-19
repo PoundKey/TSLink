@@ -282,7 +282,7 @@ angular.module('myApp.controllers', [])
              */
               $scope.compute = function (cTime) {
 
-                  if (cTime <=0) return "Arrvied Now";
+                  if (cTime <=0) return "Arriving now";
                   return "Arrive in: " + cTime + " min";
               };
 
