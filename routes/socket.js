@@ -72,6 +72,7 @@ var socketIO = function() {
 		socket.on('listen', function() {
 			emitCoreData(socket, coreArray, 'coreData');
 			startListening(socket, coreArray, coreUser);
+			updateCoreData (socket, coreArray);
 		});
 
 		socket.on('disconnect', function() {
@@ -131,6 +132,18 @@ function emitCoreData(socket, coreArray, eventType) {
 
 			});
 	});
+}
+
+/**
+ * update coreData after user login or backin, in minute basis
+ * @param {object} socket
+ * @param {array} coreArray
+ * @return {object} coreData used for $scope.coreData
+ */
+function updateCoreData (socket, coreArray) {
+	setInterval(function() {
+		emitCoreData(socket, coreArray, 'update');
+	}, 60000);
 }
 
 /**
@@ -194,6 +207,7 @@ function emitCoreData(socket, coreArray, eventType) {
 
  }
 
+
 /**
  * check the response error code from Translink API call
  * @param  {object} res
@@ -231,7 +245,7 @@ function emitCoreData(socket, coreArray, eventType) {
  * @param  {int} stopNumber
  * @param  {array} res   response array returned from the API call
  * @return {object}
- * example: {"59844" : [{route:'003', dest:'dest', cTime:'countdown', aTime:'arrival', extra:[], {...}]}
+ * example: {"59844" : [{route:'003', dest:'dest', cTime:'countdown', aTime:'arrival', extra:[]}, {...}]}
  */
 function createStop(stopNumber, res) {
 	var stop = {};
@@ -265,16 +279,6 @@ function createStop(stopNumber, res) {
 	return stop;
 }
 
-
-/**
- * update coreData after user login or backin, in minute basis
- * @param {object} socket
- * @param {array} coreArray
- * @return {object} coreData used for $scope.coreData
- */
-function updateCoreData (socket, coreArray) {
-	setInterval(emitCoreData(socket, coreArray, 'update'), 60000);
-}
 
 /**
 * Trim the date and time format return from the api with time only

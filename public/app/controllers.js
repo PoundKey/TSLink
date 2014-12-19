@@ -40,7 +40,7 @@ angular.module('myApp.controllers', [])
 
             // activated when backend update the bus stop information
             socket.on('update', function(data) {
-              //todo
+              refresh($scope.coreData, data)
             });
 
 
@@ -331,6 +331,24 @@ angular.module('myApp.controllers', [])
                 var memo = new Date();
                 var stamp = memo.toLocaleString();
                 return stamp;
+              }
+
+              /**
+               * refresh coreData base on the upcoming data via the socket
+               * @param  {Object} current $scope.coreData
+               * @param  {Object} update  {'59844':[...]}
+               * @return {void}         update the current data
+               */
+              function refresh(current, update) {
+                var stop = Object.keys(update)[0];
+                var stat = update[stop];
+                _.each(current[stop], function(el, i){
+                  //console.log('dest: ' + stat[i].dest, 'cTime: ' + stat[i].cTime, 'aTime: ' + stat[i].aTime);
+                  el.dest = stat[i].dest;
+                  el.cTime = stat[i].cTime;
+                  el.aTime = stat[i].aTime;
+                  el.extra = stat[i].extra;
+                });
               }
 
              // <------------------ end of helper functions ------------------->
