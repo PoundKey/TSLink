@@ -99,8 +99,7 @@ function emitCoreData(socket, coreArray, eventType) {
 	if (coreArray.length == 0) return;
 	_.each(coreArray, function(stop, index) {
 
-			tslink.realtime(stop, function (res) {
-				var info = JSON.parse(res);
+			tslink.realtime(stop, function (info) {
 				var val = checkAPICode(info);
 				//todo : optimized the return stop obect when no estinamte yet for given stop
 				if (!val.status) return;
@@ -138,8 +137,7 @@ function emitCoreData(socket, coreArray, eventType) {
 					return;
 				}
 
-				tslink.realtime(stop, function (res) {
-					var info = JSON.parse(res);
+				tslink.realtime(stop, function (info) {
 					var val = checkAPICode(info);
 					if (!val.status) {
 						errorHandler(error, val.info, callback);
