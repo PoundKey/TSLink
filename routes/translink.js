@@ -1,6 +1,6 @@
 var request = require('request');
 
-var apiKey = 'yDC04D3XtydprTHAeB0Z', count = 4, tf = 60, radius = 300;
+var apiKey = 'yDC04D3XtydprTHAeB0Z', count = 4, tf = 60, radius = 320;
 
 function Translink () {
 	//private instance variable goes here
