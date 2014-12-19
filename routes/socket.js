@@ -72,7 +72,11 @@ var socketIO = function() {
 		socket.on('listen', function() {
 			emitCoreData(socket, coreArray, 'coreData');
 			startListening(socket, coreArray, coreUser);
-			updateCoreData (socket, coreArray);
+
+			setInterval(function() {
+				emitCoreData(socket, coreArray, 'update');
+			}, 60000);
+
 		});
 
 		socket.on('disconnect', function() {
@@ -119,6 +123,7 @@ var socketIO = function() {
  * @return {object} coreData used for $scope.coreData
  */
 function emitCoreData(socket, coreArray, eventType) {
+	if (coreArray.length == 0) return;
 	_.each(coreArray, function(stop, index) {
 
 			translinkAPI(stop, apiKey, count, tf, function (res) {
@@ -132,18 +137,6 @@ function emitCoreData(socket, coreArray, eventType) {
 
 			});
 	});
-}
-
-/**
- * update coreData after user login or backin, in minute basis
- * @param {object} socket
- * @param {array} coreArray
- * @return {object} coreData used for $scope.coreData
- */
-function updateCoreData (socket, coreArray) {
-	setInterval(function() {
-		emitCoreData(socket, coreArray, 'update');
-	}, 60000);
 }
 
 /**

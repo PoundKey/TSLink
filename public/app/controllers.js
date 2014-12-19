@@ -342,8 +342,7 @@ angular.module('myApp.controllers', [])
               function refresh(current, update) {
                 var stop = Object.keys(update)[0];
                 var stat = update[stop];
-                _.each(current[stop], function(el, i){
-                  //console.log('dest: ' + stat[i].dest, 'cTime: ' + stat[i].cTime, 'aTime: ' + stat[i].aTime);
+                _.each(current[stop], function(el, i) {
                   el.dest = stat[i].dest;
                   el.cTime = stat[i].cTime;
                   el.aTime = stat[i].aTime;
