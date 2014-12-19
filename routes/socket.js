@@ -1,8 +1,8 @@
 var app     = require('../app');
 var Orchestrate = require('./models');
+var Translink = require('./translink');
 var http    = require('http').Server(app);
 var io      = require('socket.io')(http);
-var request = require('request');
 var _       = require('underscore');
 var async   = require('async');
 
@@ -10,12 +10,11 @@ var async   = require('async');
  * Info of the translink API Request
  * apiKey: UID, count: next {count} number of bus scheduled, tf: time frame, in minutes
  */
-var apiKey = 'yDC04D3XtydprTHAeB0Z', count = 4, tf = 60;
+var tslink = new Translink();
 
 // https://dashboard.orchestrate.io/  ||extra importent piece
 // COL = collection , db = the database connection instance
 var cloud = new Orchestrate();
-
 
 // error and sucess code used to notify client
 var error   = {status:"error",   message:null};
@@ -90,32 +89,6 @@ var socketIO = function() {
 
 
 /**
- * From the request and send it through translink API
- * @param  {int} stop      bus stop number
- * @param  {string} apiKey    user unique api key
- * @param  {int} count     next {count} number of bus scheduled
- * @param  {int} timeFrame     the range of bus coming interval, in minutes
- * @param {callback} A callback function to invoke after the request is finished
- * @return {JSON}      A JSON object containing the stop info or error code/message
- */
- function translinkAPI (stop, apiKey, count, timeFrame, callback) {
-
- 		var req = 'http://api.translink.ca/rttiapi/v1/stops/' + stop +
- 		          '/estimates?apikey=' + apiKey + '&count=' + count + '&timeframe=' + timeFrame;
-
-		request({url: req, method: "GET", timeout: 1500, headers: {Accept:'application/JSON'}},
-			function(error, response, body) {
-				if (error) {
-					//console.log(error);
-					return;
-				}
-				var res = body ? body : null;
-				if (!res) return;
-				callback(res);
-		});
- }
-
-/**
  * compute coreData when user login or backin
  * @param {object} socket
  * @param {array} coreArray
@@ -126,7 +99,7 @@ function emitCoreData(socket, coreArray, eventType) {
 	if (coreArray.length == 0) return;
 	_.each(coreArray, function(stop, index) {
 
-			translinkAPI(stop, apiKey, count, tf, function (res) {
+			tslink.realtime(stop, function (res) {
 				var info = JSON.parse(res);
 				var val = checkAPICode(info);
 				//todo : optimized the return stop obect when no estinamte yet for given stop
@@ -165,7 +138,7 @@ function emitCoreData(socket, coreArray, eventType) {
 					return;
 				}
 
-				translinkAPI(stop, apiKey, count, tf, function (res) {
+				tslink.realtime(stop, function (res) {
 					var info = JSON.parse(res);
 					var val = checkAPICode(info);
 					if (!val.status) {
