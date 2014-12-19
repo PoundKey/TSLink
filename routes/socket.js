@@ -154,6 +154,22 @@ function emitCoreData(socket, coreArray, eventType) {
 
 			}); // end of addStop event
 
+		// activate when user tries to search nearby stops
+		socket.on('nearby', function(data, callback) {
+			var lat = data.latitude;
+			var log = data.longitude;
+			tslink.nearby(lat, log, function(info) {
+				var val = checkAPICode(info);
+				if (!val.status) {
+					errorHandler(error, val.info, callback);
+					return;
+				}
+				var res = formatStops(info);
+				successHandler(res, callback);
+			});
+
+		});
+
 		// activate when user tries to remove a bus stop
 		socket.on('remove', function(data) {
 
@@ -181,6 +197,11 @@ function emitCoreData(socket, coreArray, eventType) {
  	var info, status, code;
  		if (res.Code) {
 				switch(res.Code) {
+						case '1012':
+						 		info = "TSLink only covers the beautiful Metro Vancouver, BC, Canada";
+					 			code = 1012;
+					 			status = false;
+					 			break;
 				    case '3001':
 				    case '3002':
 					 			info = res.Message;
@@ -244,6 +265,46 @@ function createStop(stopNumber, res) {
 }
 
 
+function formatStops (stopInfo) {
+	var ref = [];
+	_.each(stopInfo, function(el, i){
+			var entry = {}, loc;
+			loc = el.OnStreet + " & " + el.AtStreet;
+			entry.address   = tidify(loc);
+			entry.city      = tidify(el.City);
+			entry.distance  = el.Distance;
+			entry.direction = directify(el.Name.charAt(0));
+			entry.route     = el.Routes;
+			entry.stop      = el.StopNo;
+			ref.push(entry);
+	});
+	return ref;
+}
+
+// lowercase and capitalize the first letter on each word
+function tidify(str) {
+	var result = str.replace(/\w\S*/g,
+		function(txt){
+			return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+	});
+	return result;
+}
+
+//find out direction of a given stop
+function directify(str) {
+	switch(str) {
+			case 'E':
+					return 'East';
+	    case 'W':
+	    		return 'West';
+	    case 'N':
+	    		return 'North';
+	    case 'S':
+	    		return 'South';
+	    default:
+	    		return 'Unknown'
+	}
+}
 /**
 * Trim the date and time format return from the api with time only
 * @param  {string} string

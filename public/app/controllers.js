@@ -10,6 +10,9 @@ angular.module('myApp.controllers', [])
             $scope.user = login.get('user');
             $scope.coreData = {};
 
+            //nearby stops data
+            $scope.nearStops;
+
             // <---------------------- visibility control ----------------------->
             $scope.signup = false;
             $scope.signin = false;
@@ -216,13 +219,9 @@ angular.module('myApp.controllers', [])
                   $scope.inputStop = null;
                   return;
                 }
-                //iAlert(data.message, "Good luck on catching the bus! Wish you enjoy TSLink.", 'success');
-                //todo: configure coreData, data is a stop object
-                //example: data => { '59844': [ { route: '003', dest: 'DOWNTOWN', cTime: 10, aTime: '8:27pm' } ] }
                 _.extend($scope.coreData, data);
                 $scope.delay = false;
                 $scope.inputStop = null;
-                //console.log($scope.coreData);
               });
             };
 
@@ -240,6 +239,7 @@ angular.module('myApp.controllers', [])
 
 
             $scope.nearby = function() {
+              $scope.delay = true;
               var message, lat, log;
               if (navigator.geolocation) {
                   navigator.geolocation.getCurrentPosition(function(pos) {
@@ -248,8 +248,24 @@ angular.module('myApp.controllers', [])
                   });
               } else {
                   message = 'Geolocation not available: please enable Geolocation or switch browser.';
+                  sweetAlert('Not available.', message, "info");
+                  return;
               }
-              sweetAlert("Coming soon...", "Searching stops that near your current location.", "info");
+              //var info = {latitude : lat, longitude : log};
+              var info = {latitude : 49.226825, longitude : -123.074753};
+              socket.emit('nearby', info, function(error, data) {
+                if (error) {
+                  iAlert('Oops...', error.message, 'error');
+                  $scope.delay = false;
+                  return;
+                }
+                $scope.nearStops = data;
+                $scope.delay = false;
+              });
+            };
+
+            $scope.nearbyCancel = function() {
+
             };
 
 
