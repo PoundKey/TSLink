@@ -1,8 +1,15 @@
-<div class='message animated fadeInUp locations' ng-if='nearStops'>
-	<div ng-repeat="stop in nearStops">
+<div class='animated fadeInDown btn5' ng-if='nearStops'>
+	<div ng-repeat="stop in nearStops" class="local grow">
 
-	{{stop}}
-
-
+	 <i class="fa fa-angle-left">&nbsp;</i><i class="fa fa-bus"></i>
+	 {{stop.route}}<i class="fa fa-angle-right"></i> &nbsp;
+	 <i class="fa fa-compass"></i> {{stop.direction}} &nbsp;
+	 <i class="fa fa-map-marker"></i> {{stop.address}} &nbsp;
+	 	<i class="fa fa-location-arrow"></i> {{stop.distance}}m &nbsp;
+	 <i class="fa fa-flag-o"></i> {{stop.stop}} &nbsp;
+	 <a ng-click="addStop(stop.stop)" class="btn3"><i class="fa fa-search-plus"></i></a>
+	 <hr ng-if='!$last'>
 	</div>
 </div>
+<br>
+<a ng-if='nearStops' ng-click="nearbyCancel()" class="btn"><i class="fa fa-times-circle-o"></i> Cancel</a>

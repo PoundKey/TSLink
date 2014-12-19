@@ -182,10 +182,15 @@ angular.module('myApp.controllers', [])
              * add a bus stop number to the datastore
              * @param  {int} $scope.inputStop
              */
-             $scope.addStop = function() {
+             $scope.addStop = function(stopNo) {
               $scope.delay = true;
               var uname = $scope.username;
-              var stop = $scope.inputStop;
+              if (stopNo) {
+                var stop = stopNo.toString();
+              } else {
+                var stop = $scope.inputStop;
+              }
+
               var uInfo; //updated info
               var keys = _.keys($scope.coreData)
               if (!checkInputStop(stop)){
@@ -223,6 +228,8 @@ angular.module('myApp.controllers', [])
                 _.extend($scope.coreData, data);
                 $scope.delay = false;
                 $scope.inputStop = null;
+                $scope.locview = false;
+                $scope.nearStops = undefined;
               });
             };
 
@@ -272,7 +279,8 @@ angular.module('myApp.controllers', [])
             };
 
             $scope.nearbyCancel = function() {
-
+              $scope.nearStops = undefined;
+              $scope.locview = false;
             };
 
 
