@@ -16,6 +16,12 @@ html {
   margin-right: 10px;
 }
 
+.locations {
+    width: 80%;
+    margin: 0 auto;
+    border-style: solid;
+    border-width: 2px;
+}
 
 
 .tslogo {

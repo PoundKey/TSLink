@@ -17,6 +17,7 @@ angular.module('myApp.controllers', [])
             $scope.signup = false;
             $scope.signin = false;
             $scope.delay = false;
+            $scope.locview = false;
 
             $scope.signup_c = function() {
               $scope.signup = true;
@@ -240,28 +241,34 @@ angular.module('myApp.controllers', [])
 
             $scope.nearby = function() {
               $scope.delay = true;
-              var message, lat, log;
+              var info, message, lat, log;
               if (navigator.geolocation) {
                   navigator.geolocation.getCurrentPosition(function(pos) {
-                    lat = position.coords.latitude;
-                    log = position.coords.longitude;
+                    lat = pos.coords.latitude;
+                    log = pos.coords.longitude;
+                    if (!lat || !log) {
+                        message = 'Geolocation not available: please enable Geolocation or switch browsers.';
+                        sweetAlert('Not available.', message, "info");
+                        return;
+                    }
+                    //var info = {latitude : lat, longitude : log};
+                    info = {latitude : lat.toFixed(6), longitude : log.toFixed(6)};
+                    socket.emit('nearby', info, function(error, data) {
+                      if (error) {
+                        iAlert('Oops...', error.message, 'error');
+                        $scope.delay = false;
+                        return;
+                      }
+                      $scope.nearStops = data;
+                      $scope.locview = true;
+                      $scope.delay = false;
+                    });
                   });
               } else {
-                  message = 'Geolocation not available: please enable Geolocation or switch browser.';
+                  message = 'Geolocation not available: please enable Geolocation or switch browsers.';
                   sweetAlert('Not available.', message, "info");
                   return;
               }
-              //var info = {latitude : lat, longitude : log};
-              var info = {latitude : 49.226825, longitude : -123.074753};
-              socket.emit('nearby', info, function(error, data) {
-                if (error) {
-                  iAlert('Oops...', error.message, 'error');
-                  $scope.delay = false;
-                  return;
-                }
-                $scope.nearStops = data;
-                $scope.delay = false;
-              });
             };
 
             $scope.nearbyCancel = function() {

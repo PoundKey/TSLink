@@ -1,4 +1,4 @@
-<div class="message" ng-repeat="(stop, detail) in coreData">
+<div class="message" ng-repeat="(stop, detail) in coreData" ng-show="!locview">
   <div class="message animated fadeInUp" ng-repeat="route in detail">
     <button class="btn arrive-box" ng-init="tuner=false" ng-click="(tuner = tuner ? false : true)">
       <div class='prev'>
