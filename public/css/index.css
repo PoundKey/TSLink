@@ -16,6 +16,11 @@ html {
   margin-right: 10px;
 }
 
+.local {
+  border-bottom: 0px dashed white;
+  margin-bottom: 6px;
+}
+
 .btn5 {
   font: 200 17px 'Lato', Arial, Helvetica, sans-serif, serif;
   font-weight: 300;
