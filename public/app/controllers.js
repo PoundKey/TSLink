@@ -142,10 +142,9 @@ angular.module('myApp.controllers', [])
                 socket.emit('listen');
                 login.set('user', uname);
                 $scope.user = uname;
-                //todo
-                //$scope.coreData = {};
+
               });
-            }
+            };
 
 
             /**
@@ -331,8 +330,8 @@ angular.module('myApp.controllers', [])
                 sweetAlert("See you!", "Please keep your username for future log in.", "success");
                 socket.disconnect();
                 socket.connect();
-              };
-            } // end of logout
+              }
+            }; // end of logout
 
              /*
               * Checking the validity of the user input
@@ -340,7 +339,7 @@ angular.module('myApp.controllers', [])
              function checkInputStop(stop){
                 var validity = !isNaN(stop) && (stop > 50000) && (stop <= 70000);
                 return validity;
-             };
+             }
 
              /**
               * remove the property with key pf 'stop' from the obj object
@@ -381,6 +380,11 @@ angular.module('myApp.controllers', [])
                 });
               }
 
+
+
+
+
+
              // <------------------ end of helper functions ------------------->
 
 
@@ -388,6 +392,7 @@ angular.module('myApp.controllers', [])
 
 
 }]);
+
 
 
 

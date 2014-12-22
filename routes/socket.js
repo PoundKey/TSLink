@@ -314,7 +314,7 @@ function trimConf(string) {
 	var str = string;
 	if (str.length > 12) {
 		var spaceIndex = str.indexOf(' ');
-		var str = spaceIndex < 0 ? str : str.substr(0,str.indexOf(' '));
+		str = spaceIndex < 0 ? str : str.substr(0,str.indexOf(' '));
 	}
 	return str;
 }
